@@ -1,0 +1,3 @@
+class BetSite:
+    def __init__(self) -> None:
+        ...

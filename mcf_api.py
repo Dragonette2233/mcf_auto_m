@@ -1,0 +1,323 @@
+import logging
+import time
+from global_data import (
+    ActiveGame,
+    Validator,
+)
+from tg_api import TGApi
+from mcf_riot_api import RiotAPI
+from mcf_data import (
+    REGIONS_TUPLE,
+    ALL_CHAMPIONS_IDs,
+    SPECTATOR_MODE,
+    SPECTATOR_FILE_PATH,
+    Switches,
+)
+import itertools
+import modules.mcf_autogui as mcf_autogui
+from chrome_driver import Chrome
+from modules.ssim_recognition import RecognizedCharacters as SsimReco
+from modules.mcf_storage import MCFStorage
+from modules import mcf_utils
+logger = logging.getLogger(__name__)
+
+
+class MCFApi:
+    
+    @classmethod
+    def get_characters(cls):
+
+        while True:
+            if not ActiveGame.nick_region:
+                logger.info('Comparing icons...')
+                team_blue = SsimReco(team_color='blue')
+                team_red = SsimReco(team_color='red')
+                team_blue.run()
+                team_red.run()
+
+            if len(team_blue.characters) < 4 or len(team_red.characters) < 3:
+                if Validator.recognition == 40:
+                    Validator.recognition = 0
+                    return None
+                
+                Validator.recognition += 1
+                logger.warning('Recognizing Failed. Continue...')
+                time.sleep(2)
+                continue
+            else:
+                logger.info('Team BLUE: {team_blue}'.format(team_blue=' '.join(team_blue.characters)))
+                logger.info('Team RED: {team_red}'.format(team_red=' '.join(team_red.characters)))
+                return {
+                    'blue': team_blue,
+                    'red': team_red
+                }
+            
+    @classmethod
+    def get_games_by_character(cls, character: str):
+
+        all_matches = []
+
+        matches_by_regions_api = MCFStorage.get_selective_data(route=('MatchesAPI', ))
+        matches_by_regions_poro = MCFStorage.get_selective_data(route=('MatchesPoroRegions', ))
+
+        all_matches += [item for sublist in matches_by_regions_api.values() for item in sublist]
+        all_matches += [item for sublist in matches_by_regions_poro.values() for item in sublist]
+        all_matches += MCFStorage.get_selective_data(route=('MatchesPoroGlobal', ))
+            
+        finded_games = set()
+
+        for match in all_matches:
+            if character in match:
+                finded_games.add(match)
+
+        return list(finded_games)
+    
+    @classmethod
+    def parse_from_all_sources(cls, char_r):
+        
+        while True:
+            try:
+                logger.info('Parsing from RiotAPI and Poro...')
+                mcf_utils.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
+                mcf_utils.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
+                mcf_utils.async_riot_parsing() # Parse featured games from Riot API
+                logger.info('Games parsed succesfully.')
+                break
+            except Exception as ex:
+                logger.warning(str(ex))
+                time.sleep(4)
+                continue
+    
+    @classmethod
+    def get_common_characters(cls, charlist, team_blue):
+
+        set_1 = set([i.lower().capitalize() for i in team_blue])
+        set_2 = set(charlist.split('-|-')[0].split(' | '))
+        set_2 = set([i.lower().capitalize() for i in set_2])
+
+        nicknames = charlist.split('-|-')[1].split('_|_')
+
+        common_elements = set_1.intersection(set_2)
+
+        return nicknames, common_elements
+
+    @classmethod
+    def finded_game(cls, teams: dict):
+
+        team_cycle = itertools.cycle(zip(teams['blue'].characters, teams['red'].characters))
+
+        Validator.finded_game_characerts = teams['blue'].characters.copy()
+
+        for char_b, char_r in team_cycle:
+
+            cls.parse_from_all_sources(char_r=char_r)
+            games_by_character = cls.get_games_by_character(character=char_b)
+
+            for charlist in games_by_character:
+                nicknames, common_elements = cls.get_common_characters(charlist=charlist, team_blue=teams['blue'].characters)
+
+                if len(common_elements) >= 4:
+                    return nicknames
+            else:
+                logger.warning('No games for {char_r} -- {char_b}. CD 3s'.format(char_r=char_r, char_b=char_b))
+                Validator.findgame += 1
+
+                if Validator.findgame == 15:
+                    Validator.findgame = 0
+                    return None
+                time.sleep(3)
+    
+    @classmethod
+    def show_lastgame_info(cls):
+        
+        games_list = RiotAPI.get_matches_by_puuid(area=ActiveGame.area, 
+                                                  puuid=ActiveGame.puuid)
+        
+        if len(games_list) == 0:
+
+            logger.warning('No games for this summoner')
+            return
+
+        lastgame = RiotAPI.get_match_by_gameid(area=ActiveGame.area, gameid=games_list[0])
+        
+        # currentGameData.players_count = lastgame['info']['participants'] # [0] {}, [1] {}, 2 {}, ... [10] {}
+        
+        try:
+            if len(lastgame['info']['participants']) < 10:
+                logger.warning('Summoner data corrupted')
+                return
+        except:
+            logger.warning('Summoner data corrupted')
+            return
+        
+        teams_info = lastgame['info']['teams'] # [0] {}, [1] .
+        champions_ids = [lastgame['info']['participants'][p]['championId'] for p in 
+                                             range(10)]
+        
+        
+        champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
+        Validator.ended_game_characters = champions_names[0:5].copy()
+
+        kills = sum(lastgame['info']['participants'][k]['kills'] for k in range(10))
+        team_winner = 'blue' if teams_info[0]['win'] else 'red'
+
+
+    @classmethod
+    def get_aram_statistic(cls):
+        from modules import stats_by_roles
+
+        return stats_by_roles.get_aram_statistic(
+                blue_entry=ActiveGame.blue_team,
+                red_entry=ActiveGame.red_team,
+            )
+
+    @classmethod
+    def search_game(cls, nick_region: str):
+       
+        summoner_name = nick_region.split(':')
+        
+        for short, code, area in REGIONS_TUPLE:
+            if summoner_name[1].lower() == short or summoner_name[1].lower() == code:
+                ActiveGame.region = code
+                ActiveGame.area = area
+                break
+
+    
+        logger.info('Searching...')
+
+        summoner_data = RiotAPI.get_summoner_puuid(region=ActiveGame.region, name=summoner_name[0])
+
+       
+        if summoner_data == 404:
+            logger.warning('Summoner not found')
+            return
+        
+        ActiveGame.puuid = summoner_data['puuid']
+        response_activegame = RiotAPI.get_active_by_summonerid(region=ActiveGame.region, 
+                                                               summid=summoner_data['id'],
+                                                               status=True)
+            
+    
+        if response_activegame.status_code != 200:
+            logger.info('Loading last game')
+            cls.show_lastgame_info()
+        else:
+            
+            '''Запрос активной игры'''
+
+            response = response_activegame.json()
+            game_id = str(response['gameId']) # 1237890
+            ActiveGame.match_id = ActiveGame.region.upper() + '_' + game_id # EUW_12378912
+            champions_ids = [response['participants'][p]['championId'] for p in 
+                                             range(10)]
+            
+            champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
+            ActiveGame.encryptionKey = response['observers']['encryptionKey']
+            ActiveGame.blue_team = champions_names[0:5]
+            ActiveGame.red_team = champions_names[5:10]
+            ActiveGame.is_game_founded = True
+
+            TGApi.gamestart_notification(
+                nickname=ActiveGame.nick_region,
+                champions=champions_names,
+                statsrate=cls.get_aram_statistic()
+            )
+
+        return True
+    
+    @classmethod
+    def spectate_active_game(cls):
+        import os
+        import subprocess
+        list_task = os.popen('tasklist /FI "IMAGENAME eq League of Legends*"').readlines()
+        
+        if len(list_task) != 1:
+            logger.info('Game already running')
+            return
+        
+        logger.info('Launching spectator...')
+
+        enc_key = ActiveGame.encryptionKey
+        spectator = SPECTATOR_MODE.format(reg=ActiveGame.region)
+        args = spectator, enc_key, str(ActiveGame.match_id.split('_')[1]), ActiveGame.region.upper()
+
+        MCFStorage.write_data(route=("0", ), value=str(args))
+
+        subprocess.call([SPECTATOR_FILE_PATH, *args])
+
+    @classmethod
+    def get_activegame_parametres(cls, nicknames):
+
+        for nick in nicknames:
+            try:
+                cls.search_game(nick_region=nick)
+
+                if Validator.ended_game_characters is not None:
+
+                    set_1 = set([i.lower().capitalize() for i in Validator.ended_game_characters])
+                    set_2 = set([i.lower().capitalize() for i in Validator.finded_game_characerts])
+                    
+                    # Нахождение пересечения множеств
+                    common_elements = set_1.intersection(set_2)
+
+                    if len(common_elements) == 5:
+                        logger.info('Game ended! Restarting bot in 120s')
+                        Validator.ended_game_characters = None
+                        Validator.finded_game_characerts = None
+                        time.sleep(120)
+                        return
+                    
+                # else:
+                #     logger.info('Game ended.....')
+
+                if ActiveGame.is_game_founded:
+                    mcf_autogui.close_league_stream()
+                    return True
+                    
+            except Exception as ex:
+                logger.error('{ex}'.format(ex=ex), exc_info=True)
+    
+    
+    def awaiting_game_end(cls, chrome: Chrome = None):
+    
+        Switches.request = True
+
+        logger.info('Checker started')
+        while Switches.request:
+            
+            while True and Switches.request:
+                try:
+                    finished_game = RiotAPI.get_match_by_gameid(area=ActiveGame.area, 
+                                                        gameid=ActiveGame.match_id, 
+                                                        status=True)
+                    break
+                except Exception:
+                    logger.warning('Connection lose, reconnection..')
+                    time.sleep(2.5)
+                
+            if finished_game.status_code == 200:
+
+                response = finished_game.json()
+                kills = sum(response['info']['participants'][k]['kills'] for k in range(10))
+                time_stamp = list(divmod(response['info']['gameDuration'], 60))
+                
+                if time_stamp[1] < 10: 
+                    time_stamp[1] = f"0{time_stamp[1]}"
+                
+                if chrome is not None:
+                    is_opened = chrome.check_if_opened()
+                else:
+                    is_opened = False
+
+                if response['info']['teams'][0]['win']: 
+                    TGApi.winner_is(team='blue', kills=kills, timestamp=f"[{time_stamp[0]}:{time_stamp[1]}]", opened=is_opened)
+                else:
+                    TGApi.winner_is(team='red', kills=kills, timestamp=f"[{time_stamp[0]}:{time_stamp[1]}]", opened=is_opened)
+
+                
+                ActiveGame.is_game_founded = False
+                Switches.request = False
+                finished_game.close()
+                break
+            
+            time.sleep(1.25)
