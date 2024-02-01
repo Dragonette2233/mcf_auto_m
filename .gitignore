@@ -12,6 +12,7 @@ images_lib/screenshot_PIL.png
 arambot_lib/mcf_status.png
 arambot_lib/debug_stats.json
 testrun.bat
+testfield.py
 telegram.bat
 botrun.bat
 OTHERS.py
