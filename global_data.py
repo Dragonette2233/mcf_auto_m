@@ -27,7 +27,11 @@ class Validator:
     findgame = 0
     loop = False
     recognition = 0
-    ended_game_characters = None
+    ended_blue_characters = None
+    ended_red_characters = None
+    ended_kills = None
+    ended_time = None
+    ended_winner = None
     finded_game_characerts = None
     stats_register = {
         'W1_res': 0,

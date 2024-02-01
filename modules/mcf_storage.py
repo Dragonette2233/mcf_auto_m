@@ -3,7 +3,7 @@ import os
 from mcf_data import (
     DEBUG_STATS_PATH,
     JSON_GAMEDATA_PATH,
-    MCF_ROOT_PATH,
+    MCF_BOT_PATH,
 )
 
 class MCFStorage:
@@ -11,7 +11,7 @@ class MCFStorage:
     @classmethod
     def save_score(cls, score: dict = None, stop_tracking=False):
 
-        with open(os.path.join(MCF_ROOT_PATH, 'arambot_lib', 'activegame_score.json'), 'r') as file:
+        with open(os.path.join(MCF_BOT_PATH, 'arambot_lib', 'activegame_score.json'), 'r') as file:
             data = json.load(file)
 
         if stop_tracking:
@@ -19,7 +19,7 @@ class MCFStorage:
         else:
             data = score
         
-        with open(os.path.join(MCF_ROOT_PATH, 'arambot_lib', 'activegame_score.json'), 'w+') as file:
+        with open(os.path.join(MCF_BOT_PATH, 'arambot_lib', 'activegame_score.json'), 'w+') as file:
             json.dump(data, file, indent=4)
 
     @classmethod

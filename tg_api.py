@@ -70,18 +70,23 @@ class TGApi:
     @classmethod
     @switch_active
     def display_gamestart(cls, timer):
-
+        
+        if timer is None:
+            message = '⚪️ Игра началась'
+        else:
+            message = '⚪️ Игра началась -- {timer}'.format(timer=timer)
+    
         requests.post(
             url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
-            data={'chat_id': cls.CHAT_ID, 'text': f'⚪️ Игра началась -- {timer}' }
+            data={'chat_id': cls.CHAT_ID, 'text': message }
         )
 
     
     @classmethod
     @switch_active
-    def winner_is(cls, team, kills, timestamp, disabled):
+    def winner_is(cls, team, kills, timestamp, opened):
         
-        match team, disabled:
+        match team, opened:
             case 'blue', True:
                 message = f'🟢🔵 П1 -- {kills} -- {timestamp}'
             case 'blue', False:

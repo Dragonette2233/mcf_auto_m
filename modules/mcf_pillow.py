@@ -3,12 +3,23 @@ from .mcf_storage import MCFStorage
 import os
 import logging
 import numpy as np
-from skimage.metrics import structural_similarity as ssim 
+from skimage.metrics import structural_similarity as ssim
+from mcf_data import GREYSHADE_CLOCKS_CUT
 
 logger = logging.getLogger(__name__)
 
 def convert_to_greyshade(img):
     return Image.open(img).convert('L')
+
+def is_game_started():
+
+    screen_cut = ImageGrab.grab().crop((1855, 310, 1872, 320)).convert('L')
+    np_cut = np.array(screen_cut)
+
+    diff = ssim(np_cut, GREYSHADE_CLOCKS_CUT)
+
+    if diff > 0.93:
+        return True
 
 def is_league_stream_active():
 

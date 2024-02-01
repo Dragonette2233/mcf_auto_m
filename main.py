@@ -32,77 +32,64 @@ def main():
     chrome.delay(3)
 
     logger.info('BOT started')
-
+    Switches.bot_activity = True
     while True:
         
         chrome.open_league_stream()
         chrome.delay(6)
         chrome.remove_cancel()
-        logger.info('Waiting for game...')
         chrome.notify_when_starts()
+        chrome.stream_fullscreen()
 
-        stream_avaliable = chrome.stream_activate()
+        teams = MCFApi.get_characters()
 
-        if stream_avaliable:
-            chrome.stream_reactivate()
-            chrome.stream_fullscreen()
-            teams = MCFApi.get_characters()
-
-            if not teams:
-                TGApi.send_simple_message('Распрознавание неудачно. Ждем следующую игру')
-                logger.warning('Recognizing failed. Bot restart in 300s')
-                chrome.driver.quit()
-                time.sleep(300)
-                break
-            
-            MCFApi.parse_from_all_sources()
-            
+        if not teams:
+            TGApi.send_simple_message('Распрознавание неудачно. Ждем следующую игру')
+            logger.warning('Recognizing failed!')
+            nicknames = False
+        else:
+            MCFApi.parse_from_all_sources(teams['red'][0])
             nicknames = MCFApi.finded_game(teams=teams)
+            logger.info(nicknames)
 
             if not nicknames:
-                TGApi.send_simple_message('Игра не найдена. Повторная попытка')
-                chrome.driver.quit()
-                break
+                TGApi.send_simple_message('Игра не найдена. Ждем следующую')
+                # chrome.driver.quit()
+        
+        if nicknames and MCFApi.get_activegame_parametres(nicknames=nicknames):
+
+            MCFThread(func=MCFApi.awaiting_game_end, args=(chrome, )).start()
+            MCFApi.spectate_active_game()
+
+            while not mcf_pillow.is_league_stream_active():
+                time.sleep(2)
+            mcf_autogui.open_score_tab()
+
+            while Switches.request:
+                mcf_autogui.doubleClick(x=658, y=828)
+                score = mcf_pillow.generate_scoreboard()
+                if not Switches.predicted:
+                    chrome.generate_predict(score)
+                chrome.remove_cancel()
+                time.sleep(2)
+
+            logger.info('Game {game_id} ended.')
+            if Switches.coeff_opened is False:
+                for _ in range(120):
+                    is_opened = chrome.check_if_opened()
+                    if is_opened:
+                        TGApi.send_simple_message('🟢Открыты')
+                        break
+                    time.sleep(1)
             
-            if MCFApi.get_activegame_parametres(nicknames=nicknames):
+            Switches.coeff_opened = False
+            ActiveGame.refresh()
+        
 
-                MCFThread(func=MCFApi.awaiting_game_end, args=(chrome, )).start()
-                MCFApi.spectate_active_game()
-
-                while not mcf_pillow.is_league_stream_active():
-                    time.sleep(2)
-                mcf_autogui.open_score_tab()
-
-                while Switches.request:
-                    mcf_autogui.doubleClick(x=658, y=828)
-                    score = mcf_pillow.generate_scoreboard()
-                    if not Switches.predicted:
-                        chrome.generate_predict(score)
-                    chrome.remove_cancel()
-                    time.sleep(2)
-
-                logger.info('Game {game_id} ended.')
-                if Switches.coeff_opened is False:
-                    for _ in range(120):
-                        is_opened = chrome.check_if_opened()
-                        if is_opened:
-                            TGApi.send_simple_message('🟢Открыты')
-                            break
-                        time.sleep(1)
-                
-                Switches.coeff_opened = False
-                ActiveGame.refresh()
-                time.sleep(130)
-            
-
-            logger.info('Bot restart in 200 seconds')
-            time.sleep(200)
-
-        else:
-            TGApi.send_simple_message('Кнопка стрима не активна. Ждем следующую')
-            time.sleep(300)
+        logger.info('Bot restart')
+        # time.sleep(200)
 
 
 if __name__ == "__main__":
-    while True:
-        main()
+    main()
+        

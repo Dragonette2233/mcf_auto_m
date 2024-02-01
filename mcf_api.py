@@ -35,6 +35,8 @@ class MCFApi:
                 team_blue.run()
                 team_red.run()
 
+            logger.info(team_blue.characters)
+            logger.info(team_red.characters)
             if len(team_blue.characters) < 4 or len(team_red.characters) < 3:
                 if Validator.recognition == 40:
                     Validator.recognition = 0
@@ -48,8 +50,8 @@ class MCFApi:
                 logger.info('Team BLUE: {team_blue}'.format(team_blue=' '.join(team_blue.characters)))
                 logger.info('Team RED: {team_red}'.format(team_red=' '.join(team_red.characters)))
                 return {
-                    'blue': team_blue,
-                    'red': team_red
+                    'blue': team_blue.characters,
+                    'red': team_red.characters
                 }
             
     @classmethod
@@ -104,9 +106,9 @@ class MCFApi:
     @classmethod
     def finded_game(cls, teams: dict):
 
-        team_cycle = itertools.cycle(zip(teams['blue'].characters, teams['red'].characters))
+        team_cycle = itertools.cycle(zip(teams['blue'], teams['red']))
 
-        Validator.finded_game_characerts = teams['blue'].characters.copy()
+        Validator.finded_game_characerts = teams['blue'].copy()
 
         for char_b, char_r in team_cycle:
 
@@ -114,7 +116,7 @@ class MCFApi:
             games_by_character = cls.get_games_by_character(character=char_b)
 
             for charlist in games_by_character:
-                nicknames, common_elements = cls.get_common_characters(charlist=charlist, team_blue=teams['blue'].characters)
+                nicknames, common_elements = cls.get_common_characters(charlist=charlist, team_blue=teams['blue'])
 
                 if len(common_elements) >= 4:
                     return nicknames
@@ -156,11 +158,12 @@ class MCFApi:
         
         
         champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
-        Validator.ended_game_characters = champions_names[0:5].copy()
-
-        kills = sum(lastgame['info']['participants'][k]['kills'] for k in range(10))
-        team_winner = 'blue' if teams_info[0]['win'] else 'red'
-
+        timestamp = list(divmod(lastgame['info']['gameDuration'], 60))
+        Validator.ended_blue_characters = champions_names[0:5].copy()
+        Validator.ended_red_characters = champions_names[5:].copy()
+        Validator.ended_kills = sum(lastgame['info']['participants'][k]['kills'] for k in range(10))
+        Validator.ended_winner = 'blue' if teams_info[0]['win'] else 'red'
+        Validator.ended_time = f"{timestamp[0]}:{timestamp[1]}"
 
     @classmethod
     def get_aram_statistic(cls):
@@ -185,7 +188,7 @@ class MCFApi:
     
         logger.info('Searching...')
 
-        summoner_data = RiotAPI.get_summoner_puuid(region=ActiveGame.region, name=summoner_name[0])
+        summoner_data = RiotAPI.get_summoner_puuid(region=ActiveGame.region, name=summoner_name[0].split('#')[0])
 
        
         if summoner_data == 404:
@@ -214,8 +217,9 @@ class MCFApi:
             champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
             ActiveGame.encryptionKey = response['observers']['encryptionKey']
             ActiveGame.blue_team = champions_names[0:5]
-            ActiveGame.red_team = champions_names[5:10]
+            ActiveGame.red_team = champions_names[5:]
             ActiveGame.is_game_founded = True
+            ActiveGame.nick_region = summoner_name[0]
 
             TGApi.gamestart_notification(
                 nickname=ActiveGame.nick_region,
@@ -252,9 +256,9 @@ class MCFApi:
             try:
                 cls.search_game(nick_region=nick)
 
-                if Validator.ended_game_characters is not None:
+                if Validator.ended_blue_characters is not None:
 
-                    set_1 = set([i.lower().capitalize() for i in Validator.ended_game_characters])
+                    set_1 = set([i.lower().capitalize() for i in Validator.ended_blue_characters])
                     set_2 = set([i.lower().capitalize() for i in Validator.finded_game_characerts])
                     
                     # Нахождение пересечения множеств
@@ -262,7 +266,7 @@ class MCFApi:
 
                     if len(common_elements) == 5:
                         logger.info('Game ended! Restarting bot in 120s')
-                        Validator.ended_game_characters = None
+                        Validator.ended_blue_characters = None
                         Validator.finded_game_characerts = None
                         time.sleep(120)
                         return
@@ -277,12 +281,10 @@ class MCFApi:
             except Exception as ex:
                 logger.error('{ex}'.format(ex=ex), exc_info=True)
     
-    
+    @classmethod
     def awaiting_game_end(cls, chrome: Chrome = None):
-    
+        # from mcf_data import Switches
         Switches.request = True
-
-        logger.info('Checker started')
         while Switches.request:
             
             while True and Switches.request:
@@ -294,7 +296,7 @@ class MCFApi:
                 except Exception:
                     logger.warning('Connection lose, reconnection..')
                     time.sleep(2.5)
-                
+            
             if finished_game.status_code == 200:
 
                 response = finished_game.json()

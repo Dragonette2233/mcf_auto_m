@@ -122,8 +122,8 @@ class RecognizedCharacters:
                     best_similarity = similarity_index
                     best_character = char
 
-            if best_similarity > 0.65:
-                self.characters.append(best_character)
+            # if best_similarity > 0.56:
+            self.characters.append(best_character)
             
             best_similarity = 0 
             best_character = None

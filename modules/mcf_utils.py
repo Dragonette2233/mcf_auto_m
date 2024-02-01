@@ -1,5 +1,5 @@
 from mcf_data import (
-    MCF_ROOT_PATH,
+    MCF_BOT_PATH,
     ALL_CHAMPIONS_IDs,
     REGIONS_TUPLE,
     FEATURED_GAMES_URL,
@@ -26,7 +26,7 @@ def delete_scoreboard(self):
     MCFStorage.save_score(stop_tracking=True)
     try:
         # os.remove(os.path.join('images_lib', 'scorecrop.png'))
-        os.remove(os.path.join(MCF_ROOT_PATH, 'images_lib', 'buildcrop.png'))
+        os.remove(os.path.join(MCF_BOT_PATH, 'images_lib', 'buildcrop.png'))
     except FileNotFoundError:
         pass
 
@@ -199,7 +199,7 @@ def async_poro_parsing(champion_name):
                     featured_games.append(whole_string)
                 
                 # print('writed')
-                MCFStorage.write_data(route=('MatchesPoroRegions', region), value=featured_games)
+                MCFStorage.write_data(route=('MatchesPoroRegions', region,), value=featured_games)
                     
     async def main_aram(champion_name):
 

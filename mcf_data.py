@@ -1,5 +1,7 @@
 import os
 import threading
+import numpy as np
+from PIL import Image
 
 """
     Values for interacting with League of Legends data
@@ -46,7 +48,7 @@ ALL_CHAMPIONS_IDs = {
     498: 'Xayah', 516: 'Ornn', 517: 'Sylas', 526: 'Rell',
     518: 'Neeko', 523: 'Aphelios', 555: 'Pyke', 875: "Sett",
     711: "Vex", 777: "Yone", 887: "Gwen", 876: "Lillia",
-    888: "Renata", 895: "Nilah", 897: "KSante", 902: "Milio", 950: "Naafiri", 
+    888: "Renata", 895: "Nilah", 897: "KSante", 901: "Smolder", 902: "Milio", 950: "Naafiri", 
     2002: 'Kayn_b', 910: "Hwei",
     2001: "MonkeyKing"
 }
@@ -78,6 +80,12 @@ ten_roles_dict = {
 
 }
 
+GREYSHADE_CLOCKS_CUT = np.array(
+                                Image.open(
+                                os.path.join('.', 'mcf_lib', 'xbt.png')
+                            ).convert('L')
+                            )
+
 SPECTATOR_MODE = 'spectator.{reg}.lol.pvp.net:8080'
 FEATURED_GAMES_URL = "https://{region}.api.riotgames.com/lol/spectator/v4/featured-games"
 URL_PORO_BY_REGIONS = "https://porofessor.gg/current-games/{champion}/{region}/queue-450"
@@ -97,12 +105,12 @@ REGIONS_TUPLE = (
     
 """
 
-MCF_ROOT_PATH = os.environ.get('MCF_ROOT')
-JSON_GAMEDATA_PATH = os.path.join(MCF_ROOT_PATH, 'mcf_lib', 'GameData.json')
-SCREEN_GAMESCORE_PATH = os.path.join(MCF_ROOT_PATH, 'images_lib', 'gamescore_PIL.png')
-SPECTATOR_FILE_PATH = os.path.join('.', 'mcf_lib', 'spectate.bat')
-STATISTICS_PATH = os.path.join(MCF_ROOT_PATH, 'mcf_lib', 'stats_21.txt')
-SCREENSHOT_FILE_PATH = os.path.join(MCF_ROOT_PATH, 'images_lib', 'screenshot_PIL.png')
+MCF_BOT_PATH = os.environ.get('MCF_BOT')
+JSON_GAMEDATA_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'GameData.json')
+SCREEN_GAMESCORE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'gamescore_PIL.png')
+SPECTATOR_FILE_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'spectate.bat')
+STATISTICS_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'stats_21.txt')
+SCREENSHOT_FILE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'screenshot_PIL.png')
 
 
 """
@@ -110,13 +118,13 @@ SCREENSHOT_FILE_PATH = os.path.join(MCF_ROOT_PATH, 'images_lib', 'screenshot_PIL
 
 """
 
-GTIME_DATA_PATH = os.path.join(MCF_ROOT_PATH, 'ssim_score_data', 'gametime')
-BLUE_SCORE_PATH = os.path.join(MCF_ROOT_PATH, 'ssim_score_data', 'team_blue', 'score_{pos}')
-RED_SCORE_PATH =  os.path.join(MCF_ROOT_PATH, 'ssim_score_data', 'team_red', 'score_{pos}')
-BLUE_TOWER_PATH = os.path.join(MCF_ROOT_PATH, 'ssim_score_data', 'team_blue', 'towers')
-RED_TOWER_PATH = os.path.join(MCF_ROOT_PATH, 'ssim_score_data', 'team_red', 'towers')
+GTIME_DATA_PATH = os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'gametime')
+BLUE_SCORE_PATH = os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_blue', 'score_{pos}')
+RED_SCORE_PATH =  os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_red', 'score_{pos}')
+BLUE_TOWER_PATH = os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_blue', 'towers')
+RED_TOWER_PATH = os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_red', 'towers')
 
-DEBUG_STATS_PATH = os.path.join(MCF_ROOT_PATH, 'arambot_lib', 'debug_stats.json')
+DEBUG_STATS_PATH = os.path.join(MCF_BOT_PATH, 'arambot_lib', 'debug_stats.json')
 
 """
     Classes for finded game and switches for controling threads and activity 
@@ -137,6 +145,7 @@ class MCFThread(threading.Thread):
 
 class Validator:
     findgame = 0
+    gametime = False
     loop = False
     recognition = 0
     ended_game_characters = None

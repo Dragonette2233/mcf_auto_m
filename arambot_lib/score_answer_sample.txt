@@ -1,0 +1,4 @@
+🐳 Киллы: {blue_kills} | Башни: {blue_towers}
+🐙 Киллы: {red_kills} | Башни: {red_towers}
+
+Время: {time}
