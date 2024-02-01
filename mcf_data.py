@@ -109,7 +109,7 @@ MCF_BOT_PATH = os.environ.get('MCF_BOT')
 JSON_GAMEDATA_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'GameData.json')
 SCREEN_GAMESCORE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'gamescore_PIL.png')
 SPECTATOR_FILE_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'spectate.bat')
-STATISTICS_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'stats_21.txt')
+STATISTICS_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'stats_24.txt')
 SCREENSHOT_FILE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'screenshot_PIL.png')
 
 

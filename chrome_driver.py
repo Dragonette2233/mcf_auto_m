@@ -94,11 +94,15 @@ class Chrome:
         try:
             button = games[0].find_element(By.CSS_SELECTOR, 'button.ui-market.ui-market--nameless')
             if not button.get_attribute('disabled'):
+                Switches.coeff_opened = True
                 return True
+                
         except NoSuchElementException:
             pass
         except IndexError:
             pass
+            
+        return False
   
     def generate_predict(self, score):
 
@@ -181,13 +185,13 @@ class Chrome:
                             time.sleep(1)
 
                     else:
-                        logger.info('Waiting for end previos game')
+                        logger.info('Waiting for ending previos game')
                         self.remove_cancel()
                         time.sleep(1)
 
             except IndexError:
-                self.remove_cancel()
                 time.sleep(1)
             except (NoSuchElementException, StaleElementReferenceException):
-                self.remove_cancel()
                 time.sleep(1)
+
+            self.remove_cancel()

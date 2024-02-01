@@ -15,7 +15,7 @@ from mcf_data import (
 from mcf_api import MCFApi
 from tg_api import TGApi
 
-game = ActiveGame()
+# game = ActiveGame()
 
 # Примеры использования логгера
 # logger.debug('Это сообщение уровня DEBUG')
@@ -86,10 +86,9 @@ def main():
             ActiveGame.refresh()
         
 
-        logger.info('Bot restart')
-        # time.sleep(200)
+        logger.info('Bot restarting')
 
 
 if __name__ == "__main__":
-    main()
-        
+    while True:
+        main()

@@ -11,7 +11,8 @@ images_lib/scorecrop.png
 images_lib/screenshot_PIL.png
 arambot_lib/mcf_status.png
 arambot_lib/debug_stats.json
-testrun.bat  
+testrun.bat
+telegram.bat
 botrun.bat
 OTHERS.py
 testfield.py
