@@ -53,7 +53,18 @@ class MCFApi:
                     'blue': team_blue.characters,
                     'red': team_red.characters
                 }
-            
+
+    @classmethod
+    def count_of_common(cls, sequence_1, sequence_2) -> int:
+
+         set_1 = set([i.lower().capitalize() for i in sequence_1])
+         set_2 = set([i.lower().capitalize() for i in sequence_2])
+        
+         # Нахождение пересечения множеств
+         common_elements = set_1.intersection(set_2)
+         return len(common_elements)
+
+
     @classmethod
     def get_games_by_character(cls, character: str):
 
@@ -215,17 +226,28 @@ class MCFApi:
                                              range(10)]
             
             champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
+
             ActiveGame.encryptionKey = response['observers']['encryptionKey']
             ActiveGame.blue_team = champions_names[0:5]
             ActiveGame.red_team = champions_names[5:]
             ActiveGame.is_game_founded = True
             ActiveGame.nick_region = summoner_name[0]
 
-            TGApi.gamestart_notification(
-                nickname=ActiveGame.nick_region,
-                champions=champions_names,
-                statsrate=cls.get_aram_statistic()
+            common_check = cls.count_of_common(
+                sequence_1=ActiveGame.blue_team,
+                sequence_2=Validator.finded_game_characerts
             )
+
+            if common_check != 5:
+                logger.info(f'Active game characters: {ActiveGame.blue_team}')
+                logger.info(f'Finded game characters: {Validator.finded_game_characerts}')
+                return False
+            else:
+                TGApi.gamestart_notification(
+                    nickname=ActiveGame.nick_region,
+                    champions=champions_names,
+                    statsrate=cls.get_aram_statistic()
+                )
 
         return True
     
@@ -257,20 +279,20 @@ class MCFApi:
                 cls.search_game(nick_region=nick)
 
                 if Validator.ended_blue_characters is not None:
-
-                    set_1 = set([i.lower().capitalize() for i in Validator.ended_blue_characters])
-                    set_2 = set([i.lower().capitalize() for i in Validator.finded_game_characerts])
                     
-                    # Нахождение пересечения множеств
-                    common_elements = set_1.intersection(set_2)
-
-                    if len(common_elements) == 5:
+                    common_elements = cls.count_of_common(
+                        sequence_1=Validator.ended_blue_characters,
+                        sequence_2=Validator.finded_game_characerts
+                    )
+                    
+                    if common_elements == 5:
                         logger.info('Game ended! Restarting bot in 120s')
                         Validator.ended_blue_characters = None
                         Validator.finded_game_characerts = None
                         time.sleep(120)
                         return
-                    
+                
+
                 # else:
                 #     logger.info('Game ended.....')
 

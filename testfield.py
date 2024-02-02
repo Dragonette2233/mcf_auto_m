@@ -13,6 +13,12 @@ logger = logging.getLogger(__name__)
 command = input('Enter test command: ')
 
 match command:
+    case 'cmpactive':
+        from modules import mcf_pillow
+        mcf_pillow.is_league_stream_active(debug=True)
+    case 'scrgrab':
+        ImageGrab.grab().crop((862, 2, 951, 22)).save('spectator_compare.png')
+        # ImageGrab.grab().save('screenshot.png')
     case 'last':
             from global_data import ActiveGame
             from mcf_data import Switches

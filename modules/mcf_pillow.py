@@ -21,14 +21,17 @@ def is_game_started():
     if diff > 0.93:
         return True
 
-def is_league_stream_active():
+def is_league_stream_active(debug=False):
 
-    compare_slice_active = ImageGrab.grab().crop((1675, 839, 1764, 887)).convert('L')
-    compare_slice_main = Image.open(os.path.join('.', 'images_lib', 'build_compare.png')).convert('L')
+    compare_slice_active = ImageGrab.grab().crop((862, 2, 951, 22)).convert('L')
+    compare_slice_main = Image.open(os.path.join('.', 'images_lib', 'spectator_compare.png')).convert('L')
     np_active = np.array(compare_slice_active)
     np_main = np.array(compare_slice_main)
 
     similarity_index = ssim(np_main, np_active)
+
+    if debug:
+        logger.info(similarity_index)
 
     if similarity_index > 0.949:
         return True
