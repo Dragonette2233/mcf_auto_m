@@ -11,6 +11,7 @@ images_lib/scorecrop.png
 images_lib/screenshot_PIL.png
 arambot_lib/mcf_status.png
 arambot_lib/debug_stats.json
+mcf_lib/xbt.png
 testrun.bat
 testfield.py
 telegram.bat
