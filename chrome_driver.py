@@ -172,6 +172,8 @@ class Chrome:
                             
                                     logger.info('Game started: {gametime}'.format(gametime=gametime))
                                     TGApi.display_gamestart(timer=gametime)
+                                else:
+                                    TGApi.display_gamestart(timer=None)
                                 # return
                             except:
                                 TGApi.display_gamestart(timer=None)
