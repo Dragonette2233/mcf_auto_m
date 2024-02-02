@@ -63,6 +63,7 @@ def main():
 
             while not mcf_pillow.is_league_stream_active():
                 time.sleep(2)
+            logger.info('Spectator activated')
             mcf_autogui.open_score_tab()
 
             while Switches.request:

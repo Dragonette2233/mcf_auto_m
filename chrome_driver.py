@@ -159,7 +159,7 @@ class Chrome:
                         stream_btn = games[0].find_element(By.XPATH, self.XPATH_BTN_GAME)
                         stream_btn.click()
                         time.sleep(3)
-                        logger.info('btn clicked')
+                        # logger.info('btn clicked')
 
                         if mcf_pillow.is_game_started():
                             logger.info('Game started: (from comparing stream)')
@@ -181,7 +181,7 @@ class Chrome:
                             stream_btn.click()
                             time.sleep(1)
                             stream_btn.click()
-                            logger.info('Compare done. Waiting')
+                            # logger.info('Compare done. Waiting')
                             time.sleep(1)
 
                     else:
