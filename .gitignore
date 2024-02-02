@@ -12,7 +12,7 @@ images_lib/screenshot_PIL.png
 arambot_lib/mcf_status.png
 arambot_lib/debug_stats.json
 mcf_lib/xbt.png
-mcf_lib/mirror_page.png
+mcf_lib/mirror_page.txt
 testrun.bat
 testfield.py
 telegram.bat
