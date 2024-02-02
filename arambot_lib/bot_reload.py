@@ -7,8 +7,8 @@ def close_mcf_and_chrome():
         'mcf_development',
         'Ставки на спорт',
         'Матчи онлайн',
-        'C:\Windows'
-        # 'C:\\Windows\\System32\\cmd.exe'
+        # 'C:\Windows',
+        'C:\\Windows\\System32\\cmd.exe'
     ]
 
     # Получение списка всех активных окон
@@ -33,8 +33,8 @@ def start_mcf():
     import os
     import ctypes
 
-    mcf_root_path = os.environ.get('MCF_ROOT')
-    bat_file_path = os.path.join(mcf_root_path, 'MCF_dev.bat')
+    mcf_root_path = os.environ.get('MCF_BOT')
+    bat_file_path = os.path.join(mcf_root_path, 'botrun.bat')
 
     # Функция для запуска файла в свернутом режиме
     SW_SHOWMINIMIZED = 2
