@@ -185,7 +185,7 @@ class Chrome:
                             time.sleep(1)
 
                     else:
-                        logger.info('Waiting for ending previos game')
+                        # logger.info('Waiting for ending previos game')
                         self.remove_cancel()
                         time.sleep(1)
 
