@@ -22,12 +22,12 @@ class RiotAPI:
             except (requests.exceptions.ConnectTimeout, 
                     requests.exceptions.ConnectionError,
                     requests.exceptions.ReadTimeout):
-                raise MCFException('No connection | Timeout')
+                pass
+                # raise MCFException('No connection | Timeout')
             except MCFException as mcf_ex:
-                raise MCFException(str(mcf_ex))
+                logging.error(mcf_ex, exc_info=True)
             except Exception as exc:
-                logging.error(exc, exc_info=True)
-                raise MCFException('Unknown error')
+                logging.warning(exc, exc_info=True)
             return result
         return wrapper
 
@@ -38,7 +38,11 @@ class RiotAPI:
                               **RiotAPI.__headers_timeout)
         
         status = result.status_code
-
+        # logger.info(status, exc_info=True)
+        if status != 200:
+            logger.info('Debugging puuid:')
+            logger.info(result.json())
+            logger.info(status)
         if status == 404:
             return status
         

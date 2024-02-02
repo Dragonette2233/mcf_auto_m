@@ -199,6 +199,8 @@ class MCFApi:
     
         logger.info('Searching...')
 
+        print(summoner_name[0].split('#')[0])
+
         summoner_data = RiotAPI.get_summoner_puuid(region=ActiveGame.region, name=summoner_name[0].split('#')[0])
 
        
