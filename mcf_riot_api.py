@@ -19,6 +19,7 @@ class RiotAPI:
         def wrapper(*args, **kwargs):
             try:
                 result = func(*args, **kwargs)
+                return result
             except (requests.exceptions.ConnectTimeout, 
                     requests.exceptions.ConnectionError,
                     requests.exceptions.ReadTimeout):
@@ -28,7 +29,7 @@ class RiotAPI:
                 logging.error(mcf_ex, exc_info=True)
             except Exception as exc:
                 logging.warning(exc, exc_info=True)
-            return result
+            
         return wrapper
 
     @connection_handler
