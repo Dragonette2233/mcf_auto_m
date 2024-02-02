@@ -24,6 +24,13 @@ async def start(update: Update, context: CallbackContext):
 
     await update.message.reply_text('Здарова, тварына', reply_markup=reply_markup)
 
+async def devkit(update: Update, context: CallbackContext):
+    keyboard = [ [KeyboardButton('game'), KeyboardButton('build')], [KeyboardButton('stats_result')],
+                [KeyboardButton('/mcf_reload'), KeyboardButton('/mcf_stop'), KeyboardButton('/mcf_status')] ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+
+    await update.message.reply_text('Dev mode', reply_markup=reply_markup)
+
 async def gen_url(update: Update, context: CallbackContext):
     logger.info('here')
     league_route = '/live/cyber-zone/league-of-legends'
@@ -87,6 +94,13 @@ async def mcf_reload(update: Update, context: CallbackContext) -> None:
 
     await update.message.reply_text('Бот перезагружен')
 
+async def mcf_stop(update: Update, context: CallbackContext) -> None:
+    
+    close_mcf_and_chrome()
+    # start_mcf()
+
+    await update.message.reply_text('Бот остановлен')
+
 async def mcf_status(update: Update, context: CallbackContext) -> None:
     
     status_path = status_mcf()
@@ -113,7 +127,9 @@ def main() -> None:
     # application.add_handler(CommandHandler('build', echo_build))
     # application.add_handler(CommandHandler('stats_check', stats_check))
     application.add_handler(CommandHandler('mcf_reload', mcf_reload))
+    application.add_handler(CommandHandler('mcf_stop', mcf_stop))
     application.add_handler(CommandHandler('mcf_status', mcf_status))
+    application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bfallside\b'), devkit))
     # application.add_handler(CommandHandler('stats_check', stats_check))
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
