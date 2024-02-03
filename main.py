@@ -49,16 +49,16 @@ def main():
             logger.warning('Recognizing failed!')
             nicknames = False
         else:
-            #@ MCFApi.parse_from_all_sources(teams['red'][0])
+            
             nicknames = MCFApi.finded_game(teams=teams)
             logger.info(nicknames)
 
-            if not nicknames:
-                TGApi.send_simple_message('Игра не найдена. Ждем следующую')
-                # chrome.driver.quit()
+            # if not nicknames:
+            #     TGApi.send_simple_message('Игра не найдена.')
+            #     # chrome.driver.quit()
         
         if nicknames and MCFApi.get_activegame_parametres(nicknames=nicknames):
-
+            
             MCFThread(func=MCFApi.awaiting_game_end, args=(chrome, )).start()
             MCFApi.spectate_active_game()
 
@@ -89,7 +89,10 @@ def main():
             
             Switches.coeff_opened = False
             ActiveGame.refresh()
-        
+            time.sleep(300)
+        else:
+            TGApi.send_simple_message('❌ Игра не найдена')
+            time.sleep(500)
 
         logger.info('Bot restarting')
 

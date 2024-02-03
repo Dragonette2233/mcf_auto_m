@@ -25,16 +25,16 @@ class TGApi:
     
     @classmethod
     @switch_active
-    def gamestart_notification(cls, nickname: str, champions: list, statsrate: dict):
+    def gamestart_notification(cls, champions: list, statsrate: dict):
 
-        sample_message: str = open('mcf_lib/telegram_message_sample.txt', 'r', encoding='utf-8').read()
+        sample_message: str = open('mcf_lib/tg_send_statistics.txt', 'r', encoding='utf-8').read()
 
         formated_dict = {}
         # print(len(champions))
         for i, name in enumerate(champions):
             formated_dict[f'p_{i}'] = name
 
-        formated_dict['nickname'] = nickname
+        # formated_dict['nickname'] = nickname
         # formated_dict['W1'], formated_dict['W1_e'] = statsrate['w1'][0], statsrate['w1'][1]
         # formated_dict['W2'], formated_dict['W2_e'] = statsrate['w2'][0], statsrate['w2'][1]
         formated_dict['TB'], formated_dict['TB_e'] = statsrate['tb'][0], statsrate['tb'][1]

@@ -38,7 +38,7 @@ class MCFApi:
 
             logger.info(team_blue.characters)
             logger.info(team_red.characters)
-            if len(team_blue.characters) < 4 or len(team_red.characters) < 3:
+            if len(team_blue.characters) < 5 and len(team_red.characters) < 5:
                 if Validator.recognition == 40:
                     Validator.recognition = 0
                     return None
@@ -48,8 +48,16 @@ class MCFApi:
                 time.sleep(2)
                 continue
             else:
-                logger.info('Team BLUE: {team_blue}'.format(team_blue=' '.join(team_blue.characters)))
-                logger.info('Team RED: {team_red}'.format(team_red=' '.join(team_red.characters)))
+                TGApi.gamestart_notification(
+                    # nickname=ActiveGame.nick_region,
+                    champions=team_blue.characters + team_red.characters,
+                    statsrate=cls.get_aram_statistic(
+                        blue=team_blue.characters,
+                        red=team_red.characters
+                    )
+                )
+                # logger.info('Team BLUE: {team_blue}'.format(team_blue=' '.join(team_blue.characters)))
+                # logger.info('Team RED: {team_red}'.format(team_red=' '.join(team_red.characters)))
                 return {
                     'blue': team_blue.characters,
                     'red': team_red.characters
@@ -204,12 +212,12 @@ class MCFApi:
         Validator.ended_time = f"{timestamp[0]}:{timestamp[1]}"
 
     @classmethod
-    def get_aram_statistic(cls):
+    def get_aram_statistic(cls, blue: list, red: list):
         from modules import stats_by_roles
 
         return stats_by_roles.get_aram_statistic(
-                blue_entry=ActiveGame.blue_team,
-                red_entry=ActiveGame.red_team,
+                blue_entry=blue,
+                red_entry=red,
             )
 
     @classmethod
@@ -271,12 +279,12 @@ class MCFApi:
                 logger.info(f'Active game characters: {ActiveGame.blue_team}')
                 logger.info(f'Finded game characters: {Validator.finded_game_characerts}')
                 return False
-            else:
-                TGApi.gamestart_notification(
-                    nickname=ActiveGame.nick_region,
-                    champions=champions_names,
-                    statsrate=cls.get_aram_statistic()
-                )
+            # else:
+            #     TGApi.gamestart_notification(
+            #         nickname=ActiveGame.nick_region,
+            #         champions=champions_names,
+            #         statsrate=cls.get_aram_statistic()
+            #     )
 
         return True
     
@@ -326,6 +334,7 @@ class MCFApi:
                 #     logger.info('Game ended.....')
 
                 if ActiveGame.is_game_founded:
+                    TGApi.send_simple_message('✅ Игра найдена: {nick}'.format(nick=nick))
                     mcf_autogui.close_league_stream()
                     return True
                     
