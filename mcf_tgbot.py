@@ -31,26 +31,33 @@ async def devkit(update: Update, context: CallbackContext):
 
     await update.message.reply_text('Dev mode', reply_markup=reply_markup)
 
-async def gen_url(update: Update, context: CallbackContext):
+async def actual_mirror(update: Update, context: CallbackContext):
+    with open('./mcf_lib/mirror_page.txt', 'r') as ex_url:
+        await update.message.reply_text(f'Актуальное зеркало: {ex_url.read()}')
+
+async def change_actual_mirror(update: Update, context: CallbackContext):
     logger.info('here')
     league_route = '/live/cyber-zone/league-of-legends'
     league_alt_rout = '/ru/live/cyber-zone/league-of-legends'
-    message = (update.message.text).split('_')[1]
+    message = update.message.text
 
     if not message.startswith('https://1xlite-'):
         await update.message.reply_text(f'Неверная ссылка для зеркала')
-    elif message.endswith('ru/') or message.endswith('/ru'):
-        new_link = message + league_route
+    else:
+        # https://1xlite-792232.top/ru/live/cyber-zone/league-of-legends
+        # message.endswith('ru/') or message.endswith('/ru'):
+        link_parts = message.split('/')
+        new_link = '/'.join(link_parts[0:3]) + league_alt_rout
         with open('./mcf_lib/mirror_page.txt', 'w+') as ex_url:
             ex_url.write(new_link)
 
         await update.message.reply_text(f'Зеркало добавлено: {new_link}')
-    elif message.endswith('.top'):
-        new_link = message + league_alt_rout
-        with open('./mcf_lib/mirror_page.txt', 'w+') as ex_url:
-            ex_url.write(new_link)
+    # elif message.endswith('.top'):
+    #     new_link = message + league_alt_rout
+    #     with open('./mcf_lib/mirror_page.txt', 'w+') as ex_url:
+    #         ex_url.write(new_link)
 
-        await update.message.reply_text(f'Зеркало добавлено: {new_link}')
+    #     await update.message.reply_text(f'Зеркало добавлено: {new_link}')
 
     # await update.message.reply_text(f'Result: {message}')# {message}'.format(message=message))
 
@@ -123,12 +130,13 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bgame\b'), echo_score))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bbuild\b'), echo_build))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bstats_result\b'), stats_check))
-    application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'mirr_\S+'), gen_url))
+    application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'https\S+'), change_actual_mirror))
     # application.add_handler(CommandHandler('build', echo_build))
     # application.add_handler(CommandHandler('stats_check', stats_check))
     application.add_handler(CommandHandler('mcf_reload', mcf_reload))
     application.add_handler(CommandHandler('mcf_stop', mcf_stop))
     application.add_handler(CommandHandler('mcf_status', mcf_status))
+    application.add_handler(CommandHandler('mirror', actual_mirror))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bfallside\b'), devkit))
     # application.add_handler(CommandHandler('stats_check', stats_check))
     application.run_polling(allowed_updates=Update.ALL_TYPES)

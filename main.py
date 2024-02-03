@@ -27,6 +27,7 @@ from tg_api import TGApi
 
 def main():
 
+    MCFApi.delete_scoreboard()
     chrome = Chrome()
     chrome.start()
     chrome.delay(3)
