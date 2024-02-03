@@ -78,7 +78,6 @@ class Chrome:
         time.sleep(2)
 
     def stream_fullscreen(self):
-        time.sleep(1.5)
         mcf_autogui.click(x=1871, y=325)
         time.sleep(3.5)
 
@@ -131,13 +130,7 @@ class Chrome:
 
     def notify_when_starts(self):
 
-        
-
         while True:
-
-            # if Switches.force_start:
-            #     Switches.force_start = False
-            #     return
 
             try:
                 games = self.driver.find_elements(By.CSS_SELECTOR, 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray')
@@ -158,7 +151,7 @@ class Chrome:
                     if self.game_index_ended != self.game_index_new:
                         stream_btn = games[0].find_element(By.XPATH, self.XPATH_BTN_GAME)
                         stream_btn.click()
-                        time.sleep(3)
+                        time.sleep(2)
                         # logger.info('btn clicked')
 
                         if mcf_pillow.is_game_started():
@@ -180,9 +173,10 @@ class Chrome:
                                 pass
                             return
                         else:
+                            
                             stream_btn.click()
-                            time.sleep(1)
-                            stream_btn.click()
+                            # time.sleep(1)
+                            # stream_btn.click()
                             # logger.info('Compare done. Waiting')
                             time.sleep(1)
 
