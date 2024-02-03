@@ -74,6 +74,9 @@ def main():
                 chrome.remove_cancel()
                 time.sleep(2)
 
+            MCFApi.delete_scoreboard()
+            MCFApi.close_league_of_legends()
+
             logger.info('Game {game_id} ended.')
             if Switches.coeff_opened is False:
                 for _ in range(120):

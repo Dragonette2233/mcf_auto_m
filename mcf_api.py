@@ -13,6 +13,7 @@ from mcf_data import (
     SPECTATOR_FILE_PATH,
     Switches,
 )
+import os
 import itertools
 import modules.mcf_autogui as mcf_autogui
 from chrome_driver import Chrome
@@ -53,6 +54,30 @@ class MCFApi:
                     'blue': team_blue.characters,
                     'red': team_red.characters
                 }
+
+    @classmethod   
+    def close_league_of_legends(cls):
+
+        list_task = os.popen('tasklist /FI "IMAGENAME eq League of Legends*"').readlines()
+        if len(list_task) == 1:
+            logger.info('Game not launched')
+            return
+        
+        list_task[3] = list_task[3].replace(' ', '')
+        process_pid = list_task[3].split('exe')[1].split('Console')[0]
+        os.popen(f'taskkill /PID {process_pid} /F')
+        # app_blueprint.delete_screenscore()
+        logger.info('League of Legends closed')
+
+    @classmethod
+    def delete_scoreboard(cls):
+
+        MCFStorage.save_score(stop_tracking=True)
+        try:
+            # os.remove(os.path.join('images_lib', 'scorecrop.png'))
+            os.remove(os.path.join('.', 'images_lib', 'buildcrop.png'))
+        except FileNotFoundError:
+            pass
 
     @classmethod
     def count_of_common(cls, sequence_1, sequence_2) -> int:
