@@ -79,16 +79,6 @@ class MCFApi:
         except FileNotFoundError:
             pass
 
-    @classmethod
-    def count_of_common(cls, sequence_1, sequence_2) -> int:
-
-         set_1 = set([i.lower().capitalize() for i in sequence_1])
-         set_2 = set([i.lower().capitalize() for i in sequence_2])
-        
-         # Нахождение пересечения множеств
-         common_elements = set_1.intersection(set_2)
-         return len(common_elements)
-
 
     @classmethod
     def get_games_by_character(cls, character: str):
@@ -126,18 +116,28 @@ class MCFApi:
                 time.sleep(4)
                 continue
     
+    # @classmethod
+    # def get_common_characters(cls, charlist, team_blue):
+
+    #     set_1 = set([i.lower().capitalize() for i in team_blue])
+    #     set_2 = set(charlist.split('-|-')[0].split(' | '))
+    #     set_2 = set([i.lower().capitalize() for i in set_2])
+
+    #     # nicknames = charlist.split('-|-')[1].split('_|_')
+
+    #     common_elements = set_1.intersection(set_2)
+
+    #     return common_elements
+    
     @classmethod
-    def get_common_characters(cls, charlist, team_blue):
+    def count_of_common(cls, sequence_1, sequence_2) -> int:
 
-        set_1 = set([i.lower().capitalize() for i in team_blue])
-        set_2 = set(charlist.split('-|-')[0].split(' | '))
-        set_2 = set([i.lower().capitalize() for i in set_2])
-
-        nicknames = charlist.split('-|-')[1].split('_|_')
-
-        common_elements = set_1.intersection(set_2)
-
-        return nicknames, common_elements
+         set_1 = set([i.lower().capitalize() for i in sequence_1])
+         set_2 = set([i.lower().capitalize() for i in sequence_2])
+        
+         # Нахождение пересечения множеств
+         common_elements = set_1.intersection(set_2)
+         return len(common_elements)
 
     @classmethod
     def finded_game(cls, teams: dict):
@@ -149,12 +149,14 @@ class MCFApi:
         for char_b, char_r in team_cycle:
 
             cls.parse_from_all_sources(char_r=char_r)
-            games_by_character = cls.get_games_by_character(character=char_b)
+            games_by_character: list[str] = cls.get_games_by_character(character=char_b)
 
             for charlist in games_by_character:
-                nicknames, common_elements = cls.get_common_characters(charlist=charlist, team_blue=teams['blue'])
+                nicknames = charlist.split('-|-')[1].split('_|_')
+                characters = charlist.split('-|-')[0].split(' | ')
+                common_elements = cls.count_of_common(sequence_1=characters, sequence_2=Validator.finded_game_characerts)
 
-                if len(common_elements) >= 4:
+                if common_elements >= 4:
                     return nicknames
             else:
                 logger.warning('No games for {char_r} -- {char_b}. CD 3s'.format(char_r=char_r, char_b=char_b))
@@ -163,7 +165,7 @@ class MCFApi:
                 if Validator.findgame == 15:
                     Validator.findgame = 0
                     return None
-                time.sleep(3)
+                time.sleep(2)
     
     @classmethod
     def show_lastgame_info(cls):

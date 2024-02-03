@@ -13,6 +13,14 @@ logger = logging.getLogger(__name__)
 command = input('Enter test command: ')
 
 match command:
+    case 'poroasync':
+        from modules.mcf_utils import async_poro_parsing, direct_poro_parsing
+        async_poro_parsing('Garen')
+        direct_poro_parsing('Garen')
+    case 'riotasync':
+        from modules.mcf_utils import async_riot_parsing
+        miss_region = async_riot_parsing()
+        logger.info('Missing: {miss_region}'.format(miss_region=miss_region))
     case 'cmpactive':
         from modules import mcf_pillow
         mcf_pillow.is_league_stream_active(debug=True)

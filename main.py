@@ -49,7 +49,7 @@ def main():
             logger.warning('Recognizing failed!')
             nicknames = False
         else:
-            MCFApi.parse_from_all_sources(teams['red'][0])
+            #@ MCFApi.parse_from_all_sources(teams['red'][0])
             nicknames = MCFApi.finded_game(teams=teams)
             logger.info(nicknames)
 
