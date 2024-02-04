@@ -37,7 +37,6 @@ def main():
     while True:
         
         chrome.open_league_stream()
-        chrome.delay(6)
         chrome.remove_cancel()
         chrome.notify_when_starts()
         chrome.stream_fullscreen()

@@ -41,6 +41,7 @@ class Chrome:
         with open('./mcf_lib/mirror_page.txt', 'r') as ex_url:
             url = ex_url.read().strip()
         self.driver.get(url=url)
+        time.sleep(6)
 
     def remove_cancel(self):
         try:
@@ -130,6 +131,8 @@ class Chrome:
 
     def notify_when_starts(self):
 
+        passages = 0
+
         while True:
 
             try:
@@ -191,3 +194,11 @@ class Chrome:
                 time.sleep(1)
 
             self.remove_cancel()
+
+
+            if passages == 40:
+                passages = 0
+                self.open_league_stream()
+            else:
+                passages += 1
+            
