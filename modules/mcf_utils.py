@@ -302,7 +302,7 @@ def async_riot_parsing():
                 await asyncio.gather(task)
             except asyncio.exceptions.TimeoutError:
                 missing_regions += 1
-            except (ClientConnectionError, ClientProxyConnectionError) as ex_:
+            except (ClientConnectionError, ClientProxyConnectionError):
                 missing_regions = 20
                 
     missing_regions = 0

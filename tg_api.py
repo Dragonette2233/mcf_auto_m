@@ -63,7 +63,7 @@ class TGApi:
         # Switches.predicted = True
         if predict:
             Switches.predicted = True
-            
+
         requests.post(
             url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
             data={'chat_id': cls.CHAT_ID, 'text': message }
@@ -91,10 +91,12 @@ class TGApi:
         
         match team, opened:
             case 'blue', True:
+                # Switches.coeff_opened = True
                 message = f'🟢🔵 П1 -- {kills} -- {timestamp}'
             case 'blue', False:
                 message = f'🔵 П1 -- {kills} -- {timestamp}'
             case 'red', True:
+                # Switches.coeff_opened = True
                 message = f'🟢🔴 П2 -- {kills} -- {timestamp}'
             case 'red', False:
                 message = f'🔴 П2 -- {kills} -- {timestamp}'

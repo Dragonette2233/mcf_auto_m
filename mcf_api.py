@@ -124,19 +124,6 @@ class MCFApi:
                 time.sleep(4)
                 continue
     
-    # @classmethod
-    # def get_common_characters(cls, charlist, team_blue):
-
-    #     set_1 = set([i.lower().capitalize() for i in team_blue])
-    #     set_2 = set(charlist.split('-|-')[0].split(' | '))
-    #     set_2 = set([i.lower().capitalize() for i in set_2])
-
-    #     # nicknames = charlist.split('-|-')[1].split('_|_')
-
-    #     common_elements = set_1.intersection(set_2)
-
-    #     return common_elements
-    
     @classmethod
     def count_of_common(cls, sequence_1, sequence_2) -> int:
 
@@ -242,6 +229,8 @@ class MCFApi:
         if summoner_data == 404:
             logger.warning('Summoner not found')
             return
+        elif summoner_data == 403:
+            logger.error('API key wrong or exipred')
         
         ActiveGame.puuid = summoner_data['puuid']
         response_activegame = RiotAPI.get_active_by_summonerid(region=ActiveGame.region, 
@@ -279,13 +268,7 @@ class MCFApi:
                 logger.info(f'Active game characters: {ActiveGame.blue_team}')
                 logger.info(f'Finded game characters: {Validator.finded_game_characerts}')
                 return False
-            # else:
-            #     TGApi.gamestart_notification(
-            #         nickname=ActiveGame.nick_region,
-            #         champions=champions_names,
-            #         statsrate=cls.get_aram_statistic()
-            #     )
-
+            
         return True
     
     @classmethod
@@ -370,6 +353,9 @@ class MCFApi:
                     is_opened = chrome.check_if_opened()
                 else:
                     is_opened = False
+
+                if is_opened:
+                    Switches.coeff_opened = True
 
                 if response['info']['teams'][0]['win']: 
                     TGApi.winner_is(team='blue', kills=kills, timestamp=f"[{time_stamp[0]}:{time_stamp[1]}]", opened=is_opened)

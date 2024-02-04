@@ -39,12 +39,7 @@ class RiotAPI:
                               **RiotAPI.__headers_timeout)
         
         status = result.status_code
-        # logger.info(status, exc_info=True)
-        if status != 200:
-            logger.info('Debugging puuid:')
-            logger.info(result.json())
-            logger.info(status)
-        if status == 404:
+        if status in (403, 404):
             return status
         
         return {
