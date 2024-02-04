@@ -354,8 +354,8 @@ class MCFApi:
                 else:
                     is_opened = False
 
-                if is_opened:
-                    Switches.coeff_opened = True
+                # if is_opened:
+                #     Switches.coeff_opened = True
 
                 if response['info']['teams'][0]['win']: 
                     TGApi.winner_is(team='blue', kills=kills, timestamp=f"[{time_stamp[0]}:{time_stamp[1]}]", opened=is_opened)

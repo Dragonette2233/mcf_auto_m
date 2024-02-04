@@ -104,7 +104,6 @@ class Chrome:
             # else:
             #     app_blueprint.info_view.exception(f'PR: b{blue_kills} r{red_kills} twb {blue_towers} twr{red_towers}')
 
-
     def notify_when_starts(self):
 
         passages = 0

@@ -72,6 +72,7 @@ def main():
             MCFApi.close_league_of_legends()
 
             logger.info('Game {game_id} ended.')
+            
             if Switches.coeff_opened is False:
                 for _ in range(120):
                     is_opened = chrome.check_if_opened()
@@ -85,6 +86,7 @@ def main():
             ActiveGame.refresh()
             time.sleep(300)
         else:
+            mcf_autogui.close_league_stream()
             TGApi.send_simple_message('❌ Игра не найдена')
             time.sleep(500)
 
