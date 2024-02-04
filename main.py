@@ -4,6 +4,7 @@ logging.basicConfig(level=logging.INFO)
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+import getpass
 from modules import mcf_pillow
 from modules import mcf_autogui
 from global_data import ActiveGame
@@ -32,7 +33,10 @@ def main():
     chrome.start()
 
     logger.info('BOT started')
-    Switches.bot_activity = True
+    
+    if getpass.getuser() == 'ARA-M':
+        Switches.bot_activity = True
+
     while True:
         
         chrome.open_league_stream()
@@ -63,6 +67,7 @@ def main():
             while Switches.request:
                 mcf_autogui.doubleClick(x=658, y=828)
                 score = mcf_pillow.generate_scoreboard()
+                
                 if not Switches.predicted:
                     chrome.generate_predict(score)
                 chrome.remove_cancel()

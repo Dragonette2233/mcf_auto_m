@@ -1,17 +1,17 @@
 from PIL import Image, ImageChops, ImageGrab
-from .mcf_storage import MCFStorage
 import os
 import logging
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
-from mcf_data import GREYSHADE_CLOCKS_CUT
 
 logger = logging.getLogger(__name__)
 
-def convert_to_greyshade(img):
-    return Image.open(img).convert('L')
+def greyshade_array(image_path):
+    
+    return np.array(Image.open(image_path).convert('L'))
 
 def is_game_started():
+    from mcf_data import GREYSHADE_CLOCKS_CUT
 
     screen_cut = ImageGrab.grab().crop((1855, 310, 1872, 320)).convert('L')
     np_cut = np.array(screen_cut)
@@ -38,6 +38,7 @@ def is_league_stream_active(debug=False):
 
 def generate_scoreboard():
     from modules.ssim_recognition import ScoreRecognition
+    from modules.mcf_storage import MCFStorage
     screen = ImageGrab.grab()
     score = screen.crop((681, 7, 1261, 99))
     scoredata = ScoreRecognition.screen_score_recognition(image=score)

@@ -4,6 +4,7 @@ from mcf_data import (
     REGIONS_TUPLE,
     FEATURED_GAMES_URL,
     URL_PORO_BY_REGIONS,
+    URL_PORO_ADVANCE,
     MCFException,
     poro_headers,
     riot_headers,
@@ -42,6 +43,9 @@ def close_league_of_legends(self):
     os.popen(f'taskkill /PID {process_pid} /F')
     # app_blueprint.delete_screenscore()
     self.info_view.success('League of Legends closed')
+
+def advance_poro_search():
+    ...
 
 def direct_poro_parsing(red_champion):
 
@@ -127,7 +131,7 @@ def direct_poro_parsing(red_champion):
     
     MCFStorage.write_data(route=('MatchesPoroGlobal', ), value=featured_games)
 
-def async_poro_parsing(champion_name):
+def async_poro_parsing(champion_name, bronze=False):
 
     """
         This function parsing games from Riot API Featured Games into
@@ -138,7 +142,10 @@ def async_poro_parsing(champion_name):
     async def parsing(champion, region):
         nonlocal missing_regions
         # print('inhere')
-        url = URL_PORO_BY_REGIONS.format(region=region, champion=champion)
+        if bronze:
+            url = URL_PORO_ADVANCE.format(region=region, champion=champion)
+        else:
+            url = URL_PORO_BY_REGIONS.format(region=region, champion=champion)
         headers = {
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
                 'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
@@ -183,17 +190,9 @@ def async_poro_parsing(champion_name):
 
                 if len(soup) != 0:
                     nicknames = [blue + red for blue, red in zip(nicknames_blue, nicknames_red)]
-                    # for i in (range(soup) / 2):
                 else:
                     nicknames = []
 
-
-                # print(nicknames)
-                #  print(len(soup), region)
-                # exit(0)
-                # print(len(soup))
-                
-                # TESTS
                 for game in games['teams']:
                     
                     for i, champ in enumerate(game):
@@ -221,8 +220,10 @@ def async_poro_parsing(champion_name):
                     whole_string = f"{champs}-|-{names_region}"
                     featured_games.append(whole_string)
                 
-                # print('writed')
-                MCFStorage.write_data(route=('MatchesPoroRegions', region,), value=featured_games)
+                if bronze:
+                    MCFStorage.write_data(route=('MatchesPoroBronze', region,), value=featured_games)
+                else:
+                    MCFStorage.write_data(route=('MatchesPoroRegions', region,), value=featured_games)
                     
     async def main_aram(champion_name):
 

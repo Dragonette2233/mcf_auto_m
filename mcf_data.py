@@ -1,6 +1,7 @@
 import os
 import threading
 import numpy as np
+from modules import mcf_pillow
 from PIL import Image
 
 """
@@ -80,15 +81,13 @@ ten_roles_dict = {
 
 }
 
-GREYSHADE_CLOCKS_CUT = np.array(
-                                Image.open(
-                                os.path.join('.', 'mcf_lib', 'xbt.png')
-                            ).convert('L')
-                            )
+
 
 SPECTATOR_MODE = 'spectator.{reg}.lol.pvp.net:8080'
 FEATURED_GAMES_URL = "https://{region}.api.riotgames.com/lol/spectator/v4/featured-games"
 URL_PORO_BY_REGIONS = "https://porofessor.gg/current-games/{champion}/{region}/queue-450"
+URL_PORO_ADVANCE = "https://porofessor.gg/current-games/{champion}/{region}/bronze/queue-450"
+
 REGIONS_TUPLE = (
     ('br', 'br1', 'americas'), ('lan', 'la1', 'americas'),
     ('na', 'na1', 'americas'), ('las', 'la2', 'americas'),
@@ -110,7 +109,8 @@ JSON_GAMEDATA_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'GameData.json')
 SCREEN_GAMESCORE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'gamescore_PIL.png')
 SPECTATOR_FILE_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'spectate.bat')
 STATISTICS_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'stats_24.txt')
-SCREENSHOT_FILE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'screenshot_PIL.png')
+
+# SCREENSHOT_FILE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'screenshot_PIL.png')
 
 
 """
@@ -123,8 +123,40 @@ BLUE_SCORE_PATH = os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_blue', 'sc
 RED_SCORE_PATH =  os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_red', 'score_{pos}')
 BLUE_TOWER_PATH = os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_blue', 'towers')
 RED_TOWER_PATH = os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_red', 'towers')
-
 DEBUG_STATS_PATH = os.path.join(MCF_BOT_PATH, 'arambot_lib', 'debug_stats.json')
+BLUE_CUT_PATH = os.path.join('.', 
+                        'images_lib', 
+                        'chars',  
+                        'blue', 'char_{indx}.png')
+RED_CUT_PATH = os.path.join('.', 
+                        'images_lib', 
+                        'chars', 
+                        'red', 'char_{indx}.png')
+
+BLUEPATH_IMAGES_TO_COMPARE = {
+    char: os.path.join('.', 
+                        'images_lib', 
+                        'chars', 
+                        'origin', 
+                        'blue', f'{char.lower().capitalize()}.png') 
+                        for char in ALL_CHAMPIONS_IDs.values()
+    }
+REDPATH_IMAGES_TO_COMPARE = {
+    char: os.path.join('.', 
+                        'images_lib', 
+                        'chars', 
+                        'origin', 
+                        'red', f'{char.lower().capitalize()}.png') 
+                        for char in ALL_CHAMPIONS_IDs.values()
+    }
+BLUE_GREYSHADE_ARRAY = {
+            char: mcf_pillow.greyshade_array(img) for char, img in BLUEPATH_IMAGES_TO_COMPARE.items()
+}
+RED_GREYSHADE_ARRAY = {
+            char: mcf_pillow.greyshade_array(img) for char, img in REDPATH_IMAGES_TO_COMPARE.items()
+}
+
+GREYSHADE_CLOCKS_CUT = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'xbt.png'))
 
 """
     Classes for finded game and switches for controling threads and activity 
@@ -146,7 +178,6 @@ class MCFThread(threading.Thread):
 class Validator:
     findgame = 0
     gametime = False
-    loop = False
     recognition = 0
     ended_game_characters = None
     finded_game_characerts = None
@@ -164,12 +195,8 @@ class Validator:
     }
 
 class Switches:
-    force_start = False
     coeff_opened = False
     request = False
-    after_info = None
-    after_delay = None
-    calibration_index = 0
     timer = None
     bot_activity = False
     predicted = False

@@ -95,9 +95,11 @@ class MCFApi:
 
         matches_by_regions_api = MCFStorage.get_selective_data(route=('MatchesAPI', ))
         matches_by_regions_poro = MCFStorage.get_selective_data(route=('MatchesPoroRegions', ))
+        matches_by_regions_poro_bronze = MCFStorage.get_selective_data(route=('MatchesPoroBronze', ))
 
         all_matches += [item for sublist in matches_by_regions_api.values() for item in sublist]
         all_matches += [item for sublist in matches_by_regions_poro.values() for item in sublist]
+        all_matches += [item for sublist in matches_by_regions_poro_bronze.values() for item in sublist]
         all_matches += MCFStorage.get_selective_data(route=('MatchesPoroGlobal', ))
             
         finded_games = set()
@@ -115,6 +117,7 @@ class MCFApi:
             try:
                 logger.info('Parsing from RiotAPI and Poro...')
                 mcf_utils.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
+                mcf_utils.async_poro_parsing(champion_name=char_r, bronze=True) # Parse for Bronze+
                 mcf_utils.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
                 mcf_utils.async_riot_parsing() # Parse featured games from Riot API
                 logger.info('Games parsed succesfully.')

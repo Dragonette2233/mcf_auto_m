@@ -2,55 +2,19 @@ from PIL import Image, ImageGrab
 import numpy as np
 import os
 from skimage.metrics import structural_similarity as ssim
-from modules.mcf_pillow import convert_to_greyshade
+from modules.mcf_pillow import greyshade_array
 from mcf_data import (
-    SCREENSHOT_FILE_PATH,
     GTIME_DATA_PATH,
     BLUE_SCORE_PATH,
     RED_SCORE_PATH,
     BLUE_TOWER_PATH,
     RED_TOWER_PATH,
-    ALL_CHAMPIONS_IDs,
+    BLUE_CUT_PATH,
+    RED_CUT_PATH,
+    BLUE_GREYSHADE_ARRAY,
+    RED_GREYSHADE_ARRAY
 
 )
-
-BLUE_CUT_PATH = os.path.join('.', 
-                        'images_lib', 
-                        'chars',  
-                        'blue', 'char_{indx}.png')
-RED_CUT_PATH = os.path.join('.', 
-                        'images_lib', 
-                        'chars', 
-                        'red', 'char_{indx}.png')
-
-BLUEPATH_IMAGES_TO_COMPARE = {
-    char: os.path.join('.', 
-                        'images_lib', 
-                        'chars', 
-                        'origin', 
-                        'blue', f'{char.lower().capitalize()}.png') 
-                        for char in ALL_CHAMPIONS_IDs.values()
-    }
-REDPATH_IMAGES_TO_COMPARE = {
-    char: os.path.join('.', 
-                        'images_lib', 
-                        'chars', 
-                        'origin', 
-                        'red', f'{char.lower().capitalize()}.png') 
-                        for char in ALL_CHAMPIONS_IDs.values()
-    }
-BLUE_GREYSHADE_COMPARE = {
-            char: convert_to_greyshade(img) for char, img in BLUEPATH_IMAGES_TO_COMPARE.items()
-}
-RED_GREYSHADE_COMPARE = {
-            char: convert_to_greyshade(img) for char, img in REDPATH_IMAGES_TO_COMPARE.items()
-}
-BLUE_ARRIMAGES_COMPARE = {
-    char: np.array(img) for char, img in BLUE_GREYSHADE_COMPARE.items()
-}
-RED_ARRIMAGES_COMPARE = {
-    char: np.array(img) for char, img in RED_GREYSHADE_COMPARE.items()
-}
 
 class RecognizedCharacters:
     def __init__(self, team_color: str) -> None:
@@ -61,16 +25,12 @@ class RecognizedCharacters:
         self.characters = []
         self.team_color = team_color
                                 
-    def screenshot(self):
-        screen = ImageGrab.grab()
-        screen.save(SCREENSHOT_FILE_PATH)
-
     def cut_from_screenshot(self):
 
         y = [160, 263, 366, 469, 572, 194, 297, 400, 503, 606]
         x = [45, 58, 1858, 1873]
         
-        im = Image.open(SCREENSHOT_FILE_PATH)
+        im = ImageGrab.grab()
         
         if im.size != (1920, 1080):
             im = im.resize((1920, 1080))
@@ -100,18 +60,17 @@ class RecognizedCharacters:
                                 'chars', 
                                 self.team_color, 
                                 f'char_{i}.png') for i in range(5)] # Путь к основному изображению (35x35)
-        main_images_converted = [Image.open(img).convert('L') for img in main_images]
-
+        
         # Подготовка массива основного изображения для последующего сравнения
-        main_images_arr = [np.array(img) for img in main_images_converted]
+        main_images_arr = [greyshade_array(img) for img in main_images]
 
         best_similarity = 0
         best_character = None
 
         if self.team_color == 'blue':
-            arr_images_compare = BLUE_ARRIMAGES_COMPARE
+            arr_images_compare = BLUE_GREYSHADE_ARRAY
         else:
-            arr_images_compare = RED_ARRIMAGES_COMPARE
+            arr_images_compare = RED_GREYSHADE_ARRAY
 
         for main_img_arr in main_images_arr:
 
@@ -122,19 +81,15 @@ class RecognizedCharacters:
                     best_similarity = similarity_index
                     best_character = char
 
-            # if best_similarity > 0.56:
+
             self.characters.append(best_character)
-            
+
             best_similarity = 0 
             best_character = None
         
-        # self.characters = simul_team
-        
     def run(self):
-        self.screenshot()
         self.cut_from_screenshot()
         self.compare_shorts()
-        # return recognized_list
 
         
 class ScoreRecognition:

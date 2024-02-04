@@ -10,17 +10,22 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
-command = input('Enter test command: ')
+command: str = input('Enter test command: ')
 
 match command:
-    case 'poroasync':
-        from modules.mcf_utils import async_poro_parsing, direct_poro_parsing
-        async_poro_parsing('Garen')
-        direct_poro_parsing('Garen')
-    case 'riotasync':
-        from modules.mcf_utils import async_riot_parsing
-        miss_region = async_riot_parsing()
-        logger.info('Missing: {miss_region}'.format(miss_region=miss_region))
+    case 'parse':
+        from mcf_api import MCFApi
+        MCFApi.parse_from_all_sources(char_r='Leona')
+        featured: list[str] = MCFApi.get_games_by_character(character='Malphite')
+        finded_game_characerts = ['Kogmaw', 'Ezreal', 'Aphelios', 'Fizz', 'Malphite']
+        for charlist in featured:
+            nicknames = charlist.split('-|-')[1].split('_|_')
+            characters = charlist.split('-|-')[0].split(' | ')
+            common_elements = MCFApi.count_of_common(sequence_1=characters, sequence_2=finded_game_characerts)
+
+            if common_elements >= 4:
+                logger.info('Finded!: {characters}'.format(characters=nicknames))
+                break
     case 'cmpactive':
         from modules import mcf_pillow
         mcf_pillow.is_league_stream_active(debug=True)
