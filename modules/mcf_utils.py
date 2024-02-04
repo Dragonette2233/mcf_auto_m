@@ -89,7 +89,14 @@ def direct_poro_parsing(red_champion):
     }
 
 
-    nicknames = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 == 0]
+    nicknames_blue = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 == 0]
+    nicknames_red = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 != 0]
+
+    if len(soup) != 0:
+        nicknames = [blue + red for blue, red in zip(nicknames_blue, nicknames_red)]
+        # for i in (range(soup) / 2):
+    else:
+        nicknames = []
 
     for game in games['teams']:
         
@@ -168,9 +175,25 @@ def async_poro_parsing(champion_name):
                 }
 
 
-                nicknames = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 == 0]
-                
+                ### TESTS
 
+                # single_game = [game.find_all('div', class_='name') for game in soup]
+                nicknames_blue = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 == 0]
+                nicknames_red = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 != 0]
+
+                if len(soup) != 0:
+                    nicknames = [blue + red for blue, red in zip(nicknames_blue, nicknames_red)]
+                    # for i in (range(soup) / 2):
+                else:
+                    nicknames = []
+
+
+                # print(nicknames)
+                #  print(len(soup), region)
+                # exit(0)
+                # print(len(soup))
+                
+                # TESTS
                 for game in games['teams']:
                     
                     for i, champ in enumerate(game):
