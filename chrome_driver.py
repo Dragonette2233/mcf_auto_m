@@ -36,6 +36,7 @@ class Chrome:
         self.driver.maximize_window()
         time.sleep(3)
         mcf_autogui.click(x=1896, y=99) #disable infobar
+        time.sleep(3)
 
     def open_league_stream(self):
         with open('./mcf_lib/mirror_page.txt', 'r') as ex_url:
@@ -53,44 +54,18 @@ class Chrome:
     def delay(self, second: int):
         time.sleep(second)
 
-    def stream_activate(self, aram_block):
-        stream_active = 0
-        while True:
-            try:
-                element = WebDriverWait(self.driver, 4).until(
-                    EC.element_to_be_clickable((By.XPATH, self.XPATH_BTN_GAME))
-                )
-                element.click()
-                break
-            except (TimeoutException, NoSuchElementException):
-                if stream_active == 20:
-                    return False
-                logger.info('No stream finded yet')
-                time.sleep(1.5)
-                stream_active += 1
-                continue
-    
-        return True
-
-    def stream_reactivate(self):
-        self.stream_activate()
-        time.sleep(2)
-        self.stream_activate()
-        time.sleep(2)
-
     def stream_fullscreen(self):
         mcf_autogui.click(x=1871, y=325)
         time.sleep(3.5)
 
 
     def check_if_opened(self):
-        # for _ in range(120):
+       
         try:
             games = self.driver.find_elements(By.CSS_SELECTOR, 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray')
-        except Exception as ex_:
+        except Exception:
             games = []
-            # print(ex_)
-            
+
         try:
             button = games[0].find_element(By.CSS_SELECTOR, 'button.ui-market.ui-market--nameless')
             if not button.get_attribute('disabled'):
@@ -106,25 +81,26 @@ class Chrome:
   
     def generate_predict(self, score):
 
-        is_opened = self.check_if_opened()
-        if is_opened:
+        # is_opened = self.check_if_opened()
+        gametime = int(score["time"])
+        if gametime < 600:
             blue_kills = score["blue_kills"] # "blue_kiils": 49,
             red_kills = score["red_kills"] # "red_kills": 43,
             blue_towers = score["blue_towers"] # "blue_towers": 3,
             red_towers = score["red_towers"] # "red_towers": 1,
-            gametime = int(score["time"]) # "time": 1034,
+            # gametime = int(score["time"]) # "time": 1034,
 
             if blue_kills + red_kills >= 60 and abs(blue_kills - red_kills) < 5 and (blue_towers == 0 and red_towers == 0):
-                TGApi.send_simple_message('⬆️ Predict 110Б ⬆️')
+                TGApi.send_simple_message('⬆️ Predict 110Б ⬆️', predict=True)
 
             elif blue_kills + red_kills >= 80 and abs(blue_kills - red_kills) < 5 and (blue_towers == 1 and red_towers == 1):
-                TGApi.send_simple_message('⬆️ Predict 110Б ⬆️')
+                TGApi.send_simple_message('⬆️ Predict 110Б ⬆️', predict=True)
 
             elif blue_kills + red_kills <= 35 and abs(blue_kills - red_kills) >= 7 and (blue_towers > 0 or red_towers > 0):
-                TGApi.send_simple_message('⬇️ Predict 110M ⬇️')
+                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
 
             elif gametime > 420 and blue_kills + red_kills < 25 and abs(blue_kills - red_kills) > 5:
-                TGApi.send_simple_message('⬇️ Predict 110M ⬇️')
+                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
             # else:
             #     app_blueprint.info_view.exception(f'PR: b{blue_kills} r{red_kills} twb {blue_towers} twr{red_towers}')
 
@@ -155,7 +131,6 @@ class Chrome:
                         stream_btn = games[0].find_element(By.XPATH, self.XPATH_BTN_GAME)
                         stream_btn.click()
                         time.sleep(2)
-                        # logger.info('btn clicked')
 
                         if mcf_pillow.is_game_started():
                             logger.info('Game started: (from comparing stream)')
@@ -170,24 +145,16 @@ class Chrome:
                                     TGApi.display_gamestart(timer=gametime)
                                 else:
                                     TGApi.display_gamestart(timer=None)
-                                # return
                             except:
                                 TGApi.display_gamestart(timer=None)
                                 pass
                             return
                         else:
-                            
                             stream_btn.click()
-                            # time.sleep(1)
-                            # stream_btn.click()
-                            # logger.info('Compare done. Waiting')
                             time.sleep(1)
-
                     else:
-                        # logger.info('Waiting for ending previos game')
                         self.remove_cancel()
                         time.sleep(1)
-
             except IndexError:
                 time.sleep(1)
             except (NoSuchElementException, StaleElementReferenceException):

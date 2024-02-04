@@ -30,7 +30,6 @@ def main():
     MCFApi.delete_scoreboard()
     chrome = Chrome()
     chrome.start()
-    chrome.delay(3)
 
     logger.info('BOT started')
     Switches.bot_activity = True
@@ -48,14 +47,9 @@ def main():
             logger.warning('Recognizing failed!')
             nicknames = False
         else:
-            
             nicknames = MCFApi.finded_game(teams=teams)
             logger.info(nicknames)
-
-            # if not nicknames:
-            #     TGApi.send_simple_message('Игра не найдена.')
-            #     # chrome.driver.quit()
-        
+    
         if nicknames and MCFApi.get_activegame_parametres(nicknames=nicknames):
             
             MCFThread(func=MCFApi.awaiting_game_end, args=(chrome, )).start()
@@ -87,6 +81,7 @@ def main():
                     time.sleep(1)
             
             Switches.coeff_opened = False
+            Switches.predicted = False
             ActiveGame.refresh()
             time.sleep(300)
         else:
