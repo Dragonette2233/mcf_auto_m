@@ -158,6 +158,8 @@ class Chrome:
                 time.sleep(1)
             except (NoSuchElementException, StaleElementReferenceException):
                 time.sleep(1)
+            except Exception:
+                time.sleep(1)
 
             self.remove_cancel()
 
