@@ -122,8 +122,6 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bbuild\b'), echo_build))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bstats_result\b'), stats_check))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'https\S+'), change_actual_mirror))
-    # application.add_handler(CommandHandler('build', echo_build))
-    # application.add_handler(CommandHandler('stats_check', stats_check))
     application.add_handler(CommandHandler('mcf_reload', mcf_reload))
     application.add_handler(CommandHandler('mcf_stop', mcf_stop))
     application.add_handler(CommandHandler('mcf_status', mcf_status))
