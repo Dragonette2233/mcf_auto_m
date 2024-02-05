@@ -1,8 +1,7 @@
 import os
 import threading
-import numpy as np
+import getpass
 from modules import mcf_pillow
-from PIL import Image
 
 """
     Values for interacting with League of Legends data
@@ -82,7 +81,7 @@ ten_roles_dict = {
 }
 
 
-
+WINDOWS_USER = getpass.getuser()
 SPECTATOR_MODE = 'spectator.{reg}.lol.pvp.net:8080'
 FEATURED_GAMES_URL = "https://{region}.api.riotgames.com/lol/spectator/v4/featured-games"
 URL_PORO_BY_REGIONS = "https://porofessor.gg/current-games/{champion}/{region}/queue-450"

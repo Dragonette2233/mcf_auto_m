@@ -5,19 +5,6 @@ from mcf_data import (
 
 def get_aram_statistic(blue_entry: list, red_entry: list):
 
-    def _change_total_matches_value(value):
-        
-        execute_value = [value, None]
-        
-        if value in range(7, 12):
-            execute_value[1] = 'yellow'
-        elif value < 7:
-            execute_value[1] = 'red'       
-        else:
-            execute_value[1] = '#8EF13C'
-        
-        return execute_value
-
     def _rate_chance_and_color(income_value, divider):
         '''
             divider: count of all games
@@ -28,8 +15,10 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
         out_value = income_value / divider * 100
 
         match out_value, divider:
-            case 100.0, div:
+            case 100.0, div if div > 3:
                 return ['100%', '🟩']
+            case 100.0, div if div <= 3:
+                return ['0', '🟥']
             case 0, div:
                 return ['0%', '🟥']
             case out, div if div < 9:
@@ -127,8 +116,8 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
         'w2': _rate_chance_and_color(int(ten_roles_rate['w2']), int(ten_roles_rate['all_m'])),
         'tb': _rate_chance_and_color(int(ten_roles_rate['tb']), int(ten_roles_rate['all_ttl'])),
         'tl': _rate_chance_and_color(int(ten_roles_rate['tl']), int(ten_roles_rate['all_ttl'])),
-        'all_m': _change_total_matches_value(ten_roles_rate['all_m']),
-        'all_ttl': _change_total_matches_value(ten_roles_rate['all_ttl'])
+        'all_m': ten_roles_rate['all_m'],
+        'all_ttl': ten_roles_rate['all_ttl']
     }
         
     return final_result

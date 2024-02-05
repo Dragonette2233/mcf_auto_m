@@ -4,7 +4,6 @@ logging.basicConfig(level=logging.INFO)
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-import getpass
 from modules import mcf_pillow
 from modules import mcf_autogui
 from global_data import ActiveGame
@@ -34,9 +33,6 @@ def main():
 
     logger.info('BOT started')
     
-    if getpass.getuser() == 'ARA-M':
-        Switches.bot_activity = True
-
     while True:
         
         chrome.open_league_stream()
