@@ -1,5 +1,7 @@
 def close_mcf_and_chrome():
     import pygetwindow as gw
+    import shutil
+    import os
     # import os
     # Указать заголовок окна, которое вы хотите закрыть
     wins_to_close = [
@@ -20,6 +22,10 @@ def close_mcf_and_chrome():
         for w in wins_to_close:
             if str(window_title).startswith(w):
                 gw.getWindowsWithTitle(window_title)[0].close()
+    
+    temp_dir = "C:\Windows\SystemTemp"
+    shutil.rmtree(temp_dir)
+    os.makedirs(temp_dir)
 
 def status_mcf():
     from PIL import ImageGrab
