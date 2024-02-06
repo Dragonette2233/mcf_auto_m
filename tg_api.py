@@ -22,10 +22,23 @@ class TGApi:
                 func(*args, **kwargs)
     
         return wrapper
+    
+    def timeout_handler(func):
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    func(*args, **kwargs)
+                    break
+                except (requests.exceptions.ConnectTimeout,
+                        requests.exceptions.ConnectionError):
+                    pass
+    
+        return wrapper
 
     
     @classmethod
     @switch_active
+    @timeout_handler
     def gamestart_notification(cls, champions: list, statsrate: dict):
 
         sample_message: str = open('mcf_lib/tg_send_statistics.txt', 'r', encoding='utf-8').read()
@@ -60,6 +73,7 @@ class TGApi:
     
     @classmethod
     @switch_active
+    @timeout_handler
     def send_simple_message(cls, message, predict = False):
         # Switches.predicted = True
         if predict:
@@ -73,6 +87,7 @@ class TGApi:
     
     @classmethod
     @switch_active
+    @timeout_handler
     def display_gamestart(cls, timer):
         
         if timer is None:
@@ -88,6 +103,7 @@ class TGApi:
     
     @classmethod
     @switch_active
+    @timeout_handler
     def winner_is(cls, team, kills, timestamp, opened):
         
         match team, opened:
