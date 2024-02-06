@@ -130,9 +130,8 @@ class ScoreRecognition:
     @classmethod
     def screen_score_recognition(cls, image=None) -> dict[str, int]:
 
-        screen = ImageGrab.grab()
         if not image:
-            image = screen.crop((681, 7, 1261, 99))
+            image = ImageGrab.grab().crop((681, 7, 1261, 99))
         
         final_time = [
             cls.get_compare(np.array(image.crop((264, 72, 271, 85)).convert('L')), 'gtime', 0),

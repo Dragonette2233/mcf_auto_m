@@ -321,7 +321,7 @@ class MCFApi:
 
                 if ActiveGame.is_game_founded:
                     TGApi.send_simple_message('✅ Игра найдена: {nick}'.format(nick=nick))
-                    mcf_autogui.close_league_stream()
+                    # mcf_autogui.close_league_stream()
                     return True
                     
             except Exception as ex:

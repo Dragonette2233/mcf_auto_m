@@ -39,7 +39,6 @@ def main():
         chrome.remove_cancel()
         chrome.notify_when_starts()
         chrome.stream_fullscreen()
-
         teams = MCFApi.get_characters()
 
         if not teams:
@@ -47,6 +46,7 @@ def main():
             logger.warning('Recognizing failed!')
             nicknames = False
         else:
+            chrome.stream_close()
             nicknames = MCFApi.finded_game(teams=teams)
             logger.info(nicknames)
     

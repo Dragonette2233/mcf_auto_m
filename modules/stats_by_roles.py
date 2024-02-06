@@ -100,15 +100,7 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
     ten_roles_rate = _find_games_from_stats(teams_by_ten_roles)
     
     if ten_roles_rate is None:
-        final_result = {
-                'w1': ['0%', '🟥'],
-                'w2': ['0%', '🟥'],
-                'tb': ['0%', '🟥'],
-                'tl': ['0%', '🟥'],
-                'all_m': '0',
-                'all_ttl': '0'
-            }
-        return final_result
+        return None
 
     else:
         final_result = {

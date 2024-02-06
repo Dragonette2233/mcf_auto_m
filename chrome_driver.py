@@ -54,6 +54,9 @@ class Chrome:
     def delay(self, second: int):
         time.sleep(second)
 
+    def stream_close(self):
+        mcf_autogui.close_league_stream()
+
     def stream_fullscreen(self):
         mcf_autogui.click(x=1871, y=325)
         time.sleep(3.5)
