@@ -1,6 +1,7 @@
 .env/
 __pycache__/
 APIKEY
+stats_field/
 images_lib/chars/blue/*
 images_lib/chars/red/*
 images_lib/chars/testfield/red/

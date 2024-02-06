@@ -49,7 +49,7 @@ class TGApi:
 
         requests.post(
             url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
-            data={'chat_id': cls.CHAT_ID, 'text': full_message }
+            data={'chat_id': cls.CHAT_ID, 'text': full_message }, timeout=5
         )
 
         # Validator.stats_register['W1_pr'] = 0 if formated_dict['W1_e'] == '🟥' else 1
@@ -67,7 +67,7 @@ class TGApi:
 
         requests.post(
             url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
-            data={'chat_id': cls.CHAT_ID, 'text': message }
+            data={'chat_id': cls.CHAT_ID, 'text': message }, timeout=5
         )
 
     
@@ -82,7 +82,7 @@ class TGApi:
     
         requests.post(
             url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
-            data={'chat_id': cls.CHAT_ID, 'text': message }
+            data={'chat_id': cls.CHAT_ID, 'text': message }, timeout=5
         )
 
     
@@ -107,5 +107,5 @@ class TGApi:
 
         requests.post(
             url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
-            data={'chat_id': cls.CHAT_ID, 'text': message}
+            data={'chat_id': cls.CHAT_ID, 'text': message}, timeout=5
         )
