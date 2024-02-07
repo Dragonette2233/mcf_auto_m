@@ -66,18 +66,15 @@ class Chrome:
        
         try:
             games = self.driver.find_elements(By.CSS_SELECTOR, 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray')
-        except Exception:
-            games = []
-
-        try:
-            button = games[0].find_element(By.CSS_SELECTOR, 'button.ui-market.ui-market--nameless')
-            if not button.get_attribute('disabled'):
-                Switches.coeff_opened = True
-                return True
-                
-        except NoSuchElementException:
-            pass
-        except IndexError:
+            aram_title_outer = games[0].find_element(By.CSS_SELECTOR, 'span.caption.ui-dashboard-champ-name__caption.caption--size-m')
+            aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, 'span.caption__label').get_attribute('innerText')
+              
+            if aram_title_inner == 'All Random All Mid':
+                button = games[0].find_element(By.CSS_SELECTOR, 'button.ui-market.ui-market--nameless')
+                if not button.get_attribute('disabled'):
+                    Switches.coeff_opened = True
+                    return True
+        except (NoSuchElementException, IndexError, Exception):
             pass
             
         return False
