@@ -48,7 +48,7 @@ class Chrome:
         try:
             element = self.driver.find_element(By.CSS_SELECTOR, self.CSS_BTN_REJECT_LIVE)
             element.click()
-        except NoSuchElementException:
+        except (NoSuchElementException, TimeoutException):
             pass
 
     def delay(self, second: int):
