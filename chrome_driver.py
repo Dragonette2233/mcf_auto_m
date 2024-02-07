@@ -127,7 +127,7 @@ class Chrome:
                         self.game_index_new = game_index
                     
                     if self.game_index_ended != self.game_index_new:
-                        stream_btn = games[0].find_element(By.XPATH, self.XPATH_BTN_GAME)
+                        stream_btn = aram_title_outer.find_element(By.XPATH, self.XPATH_BTN_GAME)
                         stream_btn.click()
                         time.sleep(2)
 
