@@ -11,19 +11,30 @@ def greyshade_array(image_path):
     return np.array(Image.open(image_path).convert('L'))
 
 def is_game_started():
-    from mcf_data import GREYSHADE_CLOCKS_CUT, GREYSHADE_EMBL_CUT
+    from mcf_data import (
+        GREYSHADE_CMP_BLUE,
+        GREYSHADE_CMP_MAP,
+        GREYSHADE_CMP_RED,
+        GREYSHADE_CMP_RIOT,
+    )
 
     image_ = ImageGrab.grab()
 
-    cut_map = image_.crop((1855, 310, 1872, 320)).convert('L')
-    cut_riot_embleme = image_.crop((1645, 330, 1683, 344)).convert('L')
-    np_cut_map = np.array(cut_map)
-    np_cut_riot = np.array(cut_riot_embleme)
+    cut_cmp_map = image_.crop((1855, 310, 1872, 320)).convert('L')
+    cut_cmp_riot = image_.crop((1645, 330, 1683, 344)).convert('L')
+    cut_cmp_blue = image_.crop((1689, 207, 1755, 214)).convert('L')
+    cut_cmp_red = image_.crop((1782, 207, 1847, 214)).convert('L')
+    np_cut_map = np.array(cut_cmp_map)
+    np_cut_riot = np.array(cut_cmp_riot)
+    np_cut_blue = np.array(cut_cmp_blue)
+    np_cut_red = np.array(cut_cmp_red)
 
-    diff_1 = ssim(np_cut_map, GREYSHADE_CLOCKS_CUT)
-    diff_2 = ssim(np_cut_riot, GREYSHADE_EMBL_CUT)
+    diff_1 = ssim(np_cut_map, GREYSHADE_CMP_MAP)
+    diff_2 = ssim(np_cut_riot, GREYSHADE_CMP_RIOT)
+    diff_3 = ssim(np_cut_blue, GREYSHADE_CMP_BLUE)
+    diff_4 = ssim(np_cut_red, GREYSHADE_CMP_RED)
 
-    if diff_1 > 0.93 or diff_2 > 0.93:
+    if diff_1 > 0.93 or diff_2 > 0.93 or diff_3 > 0.93 or diff_4 > 0.93:
         return True
 
 def is_league_stream_active(debug=False):
