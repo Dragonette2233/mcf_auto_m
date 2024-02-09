@@ -13,6 +13,13 @@ logger = logging.getLogger(__name__)
 command: str = input('Enter test command: ')
 
 match command:
+    case 'cut':
+        from selenium import webdriver
+        from PIL import ImageGrab
+        driver = webdriver.Chrome()
+        driver.get('https://1xlite-702387.top/ru/live/cyber-zone/league-of-legends')
+        input('press to grab')
+        ImageGrab.grab().save('x_full.png')
     case 'parse':
         from mcf_api import MCFApi
         MCFApi.parse_from_all_sources(char_r='Leona')
