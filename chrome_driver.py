@@ -156,11 +156,13 @@ class Chrome:
                     else:
                         self.remove_cancel()
                         time.sleep(1)
+            except AttributeError:
+                time.sleep(1)
             except IndexError:
                 time.sleep(1)
             except (NoSuchElementException, StaleElementReferenceException):
                 time.sleep(1)
-            except Exception:
+            except:
                 time.sleep(1)
 
             self.remove_cancel()
