@@ -156,6 +156,7 @@ RED_GREYSHADE_ARRAY = {
 }
 
 GREYSHADE_CLOCKS_CUT = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'xbt.png'))
+GREYSHADE_EMBL_CUT = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'embl.png'))
 
 """
     Classes for finded game and switches for controling threads and activity 

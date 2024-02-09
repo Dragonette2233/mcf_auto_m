@@ -11,17 +11,19 @@ def greyshade_array(image_path):
     return np.array(Image.open(image_path).convert('L'))
 
 def is_game_started():
-    from mcf_data import GREYSHADE_CLOCKS_CUT
+    from mcf_data import GREYSHADE_CLOCKS_CUT, GREYSHADE_EMBL_CUT
 
-    cut_map = ImageGrab.grab().crop((1855, 310, 1872, 320)).convert('L')
-    # cat_riot_embleme = ImageGrab.grab().crop((1855, 310, 1872, 320)).convert('L')
+    image_ = ImageGrab.grab()
+
+    cut_map = image_.crop((1855, 310, 1872, 320)).convert('L')
+    cut_riot_embleme = image_.crop((1645, 330, 1683, 344)).convert('L')
     np_cut_map = np.array(cut_map)
-    # np_cut_riot = np.array(screen_cut)
+    np_cut_riot = np.array(cut_riot_embleme)
 
     diff_1 = ssim(np_cut_map, GREYSHADE_CLOCKS_CUT)
-    # diff_2 = ssim(np_cut_riot, GREYSHADE_CLOCKS_CUT)
+    diff_2 = ssim(np_cut_riot, GREYSHADE_EMBL_CUT)
 
-    if diff_1 > 0.93: # or diff_2 > 0.93:
+    if diff_1 > 0.93 or diff_2 > 0.93:
         return True
 
 def is_league_stream_active(debug=False):
