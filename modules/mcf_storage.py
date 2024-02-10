@@ -9,6 +9,17 @@ from mcf_data import (
 class MCFStorage:
 
     @classmethod
+    def get_gameid():
+        with open(os.path.join(MCF_BOT_PATH, 'mcf_lib', 'previous_gameid.txt'), 'r') as file:
+            return file.read()
+
+    @classmethod
+    def save_gameid(game_id: str):
+
+        with open(os.path.join(MCF_BOT_PATH, 'mcf_lib', 'previous_gameid.txt'), 'w+') as file:
+            file.write(game_id)
+        # open()
+    @classmethod
     def save_score(cls, score: dict = None, stop_tracking=False):
 
         with open(os.path.join(MCF_BOT_PATH, 'arambot_lib', 'activegame_score.json'), 'r') as file:

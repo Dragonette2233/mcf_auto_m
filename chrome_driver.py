@@ -1,6 +1,7 @@
 import time
 import modules.mcf_autogui as mcf_autogui
 import modules.mcf_pillow as mcf_pillow
+from modules.mcf_storage import MCFStorage
 import logging
 from mcf_data import Validator
 from PIL import Image
@@ -123,6 +124,8 @@ class Chrome:
                 if aram_title_inner == 'All Random All Mid':
                     game_link = games[0].find_element(By.CSS_SELECTOR, 'a.dashboard-game-block__link.dashboard-game-block-link').get_attribute('href')
                     game_index = '_'.join(game_link.split('/')[7:])
+                    self.game_index_new = MCFStorage.get_gameid()
+
 
                     if game_index != self.game_index_new:
                         logger.info('Gamelink changed, refreshing driver')
@@ -130,6 +133,7 @@ class Chrome:
                         time.sleep(6)
                         self.game_index_ended = self.game_index_new
                         self.game_index_new = game_index
+                        MCFStorage.save_gameid(self.game_index_ended)
                     # 
                     if self.game_index_ended != self.game_index_new:
                         stream_btn = aram_title_outer.find_element(By.XPATH, self.XPATH_BTN_GAME)
