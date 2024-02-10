@@ -103,6 +103,9 @@ class Chrome:
 
             elif gametime > 420 and blue_kills + red_kills < 25 and abs(blue_kills - red_kills) > 5:
                 TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
+                
+            elif gametime > 500 and blue_kills + red_kills < 30:
+                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
             # else:
             #     app_blueprint.info_view.exception(f'PR: b{blue_kills} r{red_kills} twb {blue_towers} twr{red_towers}')
 

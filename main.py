@@ -28,13 +28,14 @@ from tg_api import TGApi
 def main():
 
     MCFApi.delete_scoreboard()
-    chrome = Chrome()
-    chrome.start()
-
+    # chrome = Chrome()
+    # chrome.start()
     logger.info('BOT started')
     
     while True:
         
+        chrome = Chrome()
+        chrome.start()
         chrome.open_league_stream()
         chrome.remove_cancel()
         chrome.notify_when_starts()
@@ -92,8 +93,8 @@ def main():
             time.sleep(500)
 
         logger.info('Bot restarting')
-
+        chrome.driver.quit()
+        del chrome
 
 if __name__ == "__main__":
-    while True:
-        main()
+    main()
