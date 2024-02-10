@@ -9,12 +9,13 @@ from mcf_data import (
 class MCFStorage:
 
     @classmethod
-    def get_gameid():
+    def get_gameid(cls):
         with open(os.path.join(MCF_BOT_PATH, 'mcf_lib', 'previous_gameid.txt'), 'r') as file:
-            return file.read()
+            gameid = file.read()
+            return gameid
 
     @classmethod
-    def save_gameid(game_id: str):
+    def save_gameid(cls, game_id: str):
 
         with open(os.path.join(MCF_BOT_PATH, 'mcf_lib', 'previous_gameid.txt'), 'w+') as file:
             file.write(game_id)

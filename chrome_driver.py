@@ -124,9 +124,10 @@ class Chrome:
                 if aram_title_inner == 'All Random All Mid':
                     game_link = games[0].find_element(By.CSS_SELECTOR, 'a.dashboard-game-block__link.dashboard-game-block-link').get_attribute('href')
                     game_index = '_'.join(game_link.split('/')[7:])
-                    self.game_index_new = MCFStorage.get_gameid()
-
-
+                    if self.game_index_new == '':
+                        self.game_index_new = MCFStorage.get_gameid()
+                    logger.info(game_index)
+                    logger.info(self.game_index_new)
                     if game_index != self.game_index_new:
                         logger.info('Gamelink changed, refreshing driver')
                         self.open_league_stream()
@@ -170,6 +171,7 @@ class Chrome:
             except (NoSuchElementException, StaleElementReferenceException):
                 time.sleep(1)
             except:
+                # logger.warning(exc_info=True)
                 time.sleep(1)
 
             self.remove_cancel()
