@@ -15,9 +15,9 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
         out_value = income_value / divider * 100
 
         match out_value, divider:
-            case 100.0, div if div > 3:
+            case 100.0, div if div > 4:
                 return ['100%', '🟩']
-            case 100.0, div if div <= 3:
+            case 100.0, div if div <= 4:
                 return ['0', '🟥']
             case 0, div:
                 return ['0%', '🟥']

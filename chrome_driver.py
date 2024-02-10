@@ -126,8 +126,8 @@ class Chrome:
                     game_index = '_'.join(game_link.split('/')[7:])
                     if self.game_index_new == '':
                         self.game_index_new = MCFStorage.get_gameid()
-                    logger.info(game_index)
-                    logger.info(self.game_index_new)
+                    # logger.info(game_index)
+                    # logger.info(self.game_index_new)
                     if game_index != self.game_index_new:
                         logger.info('Gamelink changed, refreshing driver')
                         self.open_league_stream()
@@ -181,5 +181,6 @@ class Chrome:
                 passages = 0
                 self.open_league_stream()
             else:
+                time.sleep(0.5)
                 passages += 1
             
