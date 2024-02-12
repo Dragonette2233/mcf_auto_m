@@ -31,7 +31,7 @@ class Chrome:
         self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
         self.driver = None
         self.game_index_new = ''
-        self.game_index_ended = ''
+        self.game_index_ended = MCFStorage.get_gameid()
         
     
     def start(self):
@@ -41,7 +41,7 @@ class Chrome:
         mcf_autogui.click(x=1896, y=99) #disable infobar
         time.sleep(3)
 
-    def open_league_stream(self):
+    def open_league_page(self):
         with open('./mcf_lib/mirror_page.txt', 'r') as ex_url:
             url = ex_url.read().strip()
         self.driver.get(url=url)
@@ -124,27 +124,28 @@ class Chrome:
                 if aram_title_inner == 'All Random All Mid':
                     game_link = games[0].find_element(By.CSS_SELECTOR, 'a.dashboard-game-block__link.dashboard-game-block-link').get_attribute('href')
                     game_index = '_'.join(game_link.split('/')[7:])
-                    if self.game_index_new == '':
-                        self.game_index_new = MCFStorage.get_gameid()
-                    # logger.info(game_index)
-                    # logger.info(self.game_index_new)
-                    if game_index != self.game_index_new:
+                    # if self.game_index_ended == '':
+                    #     self.game_index_ended = MCFStorage.get_gameid()
+                    logger.info(self.game_index_new)
+                    logger.info(self.game_index_ended)
+                    if game_index != self.game_index_ended:
                         logger.info('Gamelink changed, refreshing driver')
-                        self.open_league_stream()
+                        self.open_league_page()
                         time.sleep(6)
-                        self.game_index_ended = self.game_index_new
                         self.game_index_new = game_index
-                        MCFStorage.save_gameid(self.game_index_ended)
-                    # 
-                    if self.game_index_ended != self.game_index_new:
-                        self.game_index_ended = self.game_index_new
+                        self.game_index_ended = game_index
+          
+                    if game_index == self.game_index_new:
+                        # self.game_index_ended = self.game_index_new
                         stream_btn = aram_title_outer.find_element(By.XPATH, self.XPATH_BTN_GAME)
                         stream_btn.click()
                         time.sleep(2)
 
                         if mcf_pillow.is_game_started():
                             logger.info('Game started: (from comparing stream)')
-                            self.game_index_ended = game_index
+                            # self.game_index_ended = game_index
+                            self.game_index_new = ''
+                            MCFStorage.save_gameid(self.game_index_ended)
                             try:
                                 gametime_element = games[0].find_element(By.CSS_SELECTOR, 'span.dashboard-game-info__item.dashboard-game-info__time')
                                 gametime = str(gametime_element.get_attribute('innerText'))
@@ -171,7 +172,10 @@ class Chrome:
                 time.sleep(1)
             except (NoSuchElementException, StaleElementReferenceException):
                 time.sleep(1)
-            except:
+            except Exception as ex_:
+                logger.info(self.game_index_new)
+                logger.info(self.game_index_ended)
+                logger.warning(ex_)
                 # logger.warning(exc_info=True)
                 time.sleep(1)
 
@@ -180,7 +184,7 @@ class Chrome:
 
             if passages == 40:
                 passages = 0
-                self.open_league_stream()
+                self.open_league_page()
             else:
                 time.sleep(0.5)
                 passages += 1

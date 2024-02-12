@@ -36,7 +36,7 @@ def main():
         
         chrome = Chrome()
         chrome.start()
-        chrome.open_league_stream()
+        chrome.open_league_page()
         chrome.remove_cancel()
         chrome.notify_when_starts()
         chrome.stream_fullscreen()
