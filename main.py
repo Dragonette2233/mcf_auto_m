@@ -79,7 +79,7 @@ def main():
                 for _ in range(120):
                     is_opened = chrome.check_if_opened()
                     if is_opened:
-                        TGApi.send_simple_message('🟢Открыты')
+                        TGApi.send_simple_message('🟢 Открыты')
                         break
                     time.sleep(1)
             
