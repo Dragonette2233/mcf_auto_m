@@ -137,6 +137,7 @@ class Chrome:
                         MCFStorage.save_gameid(self.game_index_ended)
                     # 
                     if self.game_index_ended != self.game_index_new:
+                        self.game_index_ended = self.game_index_new
                         stream_btn = aram_title_outer.find_element(By.XPATH, self.XPATH_BTN_GAME)
                         stream_btn.click()
                         time.sleep(2)
