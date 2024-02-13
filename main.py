@@ -65,8 +65,12 @@ def main():
                 mcf_autogui.doubleClick(x=658, y=828)
                 score = mcf_pillow.generate_scoreboard()
                 
-                if not Switches.predicted:
-                    chrome.generate_predict(score)
+                if not Switches.predicted_total:
+                    chrome.generate_predict_total(score)
+
+                if not Switches.predicted_winner:
+                    chrome.generate_predict_winner(score)
+                
                 chrome.remove_cancel()
                 time.sleep(2)
 
@@ -84,7 +88,8 @@ def main():
                     time.sleep(1)
             
             Switches.coeff_opened = False
-            Switches.predicted = False
+            Switches.predicted_total = False
+            Switches.predicted_winner = False
             ActiveGame.refresh()
             time.sleep(300)
         else:

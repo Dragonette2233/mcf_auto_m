@@ -3,7 +3,8 @@ import os
 from mcf_data import (
     Switches,
     Validator,
-    WINDOWS_USER
+    WINDOWS_USER,
+    StatsRate
 
 )
 
@@ -18,7 +19,7 @@ class TGApi:
     # @classmethod
     def switch_active(func):
         def wrapper(*args, **kwargs):
-            if WINDOWS_USER == 'ARA-M':
+            if WINDOWS_USER == 'ARA-M': # REMOVE !
                 func(*args, **kwargs)
     
         return wrapper
@@ -36,27 +37,38 @@ class TGApi:
     
         return wrapper
 
-    
-    @classmethod
     @switch_active
     @timeout_handler
-    def gamestart_notification(cls, champions: list, statsrate: dict):
+    @classmethod
+    def post_request(cls, message: str):
+
+        requests.post(
+            url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
+            data={'chat_id': cls.CHAT_ID, 'text': message }, timeout=2
+        )
+    
+    @classmethod
+    def gamestart_notification(cls, champions: list):
 
         formated_dict = {}
 
-        if statsrate is None:
-            sample_message: str = open('mcf_lib/tg_send_empty.txt', 'r', encoding='utf-8').read()
-        else:
+        if StatsRate.is_stats_avaliable():
             sample_message: str = open('mcf_lib/tg_send_statistics.txt', 'r', encoding='utf-8').read()
 
             # formated_dict['W1'], formated_dict['W1_e'] = statsrate['w1'][0], statsrate['w1'][1]
             # formated_dict['W2'], formated_dict['W2_e'] = statsrate['w2'][0], statsrate['w2'][1]
-            formated_dict['TB'], formated_dict['TB_e'] = statsrate['tb'][0], statsrate['tb'][1]
-            formated_dict['TL'], formated_dict['TL_e'] = statsrate['tl'][0], statsrate['tl'][1]
-            formated_dict['ALL'] = statsrate['all_m']
-            formated_dict['TTL'] = statsrate['all_ttl']
+            formated_dict['TB'], formated_dict['TB_e'] = StatsRate.tb_rate[0], StatsRate.tb_rate[1]
+            formated_dict['TL'], formated_dict['TL_e'] = StatsRate.tl_rate[0], StatsRate.tl_rate[1]
+            formated_dict['ALL'] = StatsRate.games_all
+            formated_dict['TTL'] = StatsRate.games_totals
 
-        
+            StatsRate.stats_clear()
+            
+        else:
+            sample_message: str = open('mcf_lib/tg_send_empty.txt', 'r', encoding='utf-8').read()
+
+        StatsRate.stats_clear()
+
         for i, name in enumerate(champions):
             formated_dict[f'p_{i}'] = name
 
@@ -64,10 +76,7 @@ class TGApi:
             **formated_dict
         )
 
-        requests.post(
-            url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
-            data={'chat_id': cls.CHAT_ID, 'text': full_message }, timeout=2
-        )
+        cls.post_request(message=full_message)
 
         # Validator.stats_register['W1_pr'] = 0 if formated_dict['W1_e'] == '🟥' else 1
         # Validator.stats_register['W2_pr'] = 0 if formated_dict['W2_e'] == '🟥' else 1
@@ -76,22 +85,17 @@ class TGApi:
 
     
     @classmethod
-    @switch_active
-    @timeout_handler
-    def send_simple_message(cls, message, predict = False):
+    def send_simple_message(cls, message, predict_ttl = False, predict_win = False):
         # Switches.predicted = True
-        if predict:
-            Switches.predicted = True
+        if predict_ttl:
+            Switches.predicted_total = True
+        if predict_win:
+            Switches.predicted_winner = True
 
-        requests.post(
-            url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
-            data={'chat_id': cls.CHAT_ID, 'text': message }, timeout=2
-        )
+        cls.post_request(message=message)
 
     
     @classmethod
-    @switch_active
-    @timeout_handler
     def display_gamestart(cls, timer):
         
         if timer is None:
@@ -99,15 +103,10 @@ class TGApi:
         else:
             message = '⚪️ Игра началась -- {timer}'.format(timer=timer)
     
-        requests.post(
-            url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
-            data={'chat_id': cls.CHAT_ID, 'text': message }, timeout=2
-        )
+        cls.post_request(message=message)
 
     
     @classmethod
-    @switch_active
-    @timeout_handler
     def winner_is(cls, team, kills, timestamp, opened):
         
         match team, opened:
@@ -124,8 +123,4 @@ class TGApi:
             case _:
                 pass
 
-
-        requests.post(
-            url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
-            data={'chat_id': cls.CHAT_ID, 'text': message}, timeout=2
-        )
+        cls.post_request(message=message)

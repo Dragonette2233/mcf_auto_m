@@ -6,7 +6,7 @@ import logging
 from mcf_data import Validator
 from PIL import Image
 from tg_api import TGApi
-from mcf_data import Switches
+from mcf_data import Switches, StatsRate
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -81,8 +81,33 @@ class Chrome:
             pass
             
         return False
-  
-    def generate_predict(self, score):
+    
+    def generate_predict_winner(self, score):
+
+        gametime = int(score["time"])
+        if StatsRate.is_stats_avaliable and gametime < 600:
+            blue_kills = score["blue_kills"] # "blue_kiils": 49,
+            red_kills = score["red_kills"] # "red_kills": 43,
+            blue_towers = score["blue_towers"] # "blue_towers": 3,
+            red_towers = score["red_towers"]
+
+            match StatsRate.blue_rate[1], StatsRate.red_rate[1]:
+                case StatsRate.WINNER, StatsRate.LOSER:
+                    if (blue_towers > 0 and red_towers == 0) and blue_kills > red_kills:
+                        TGApi.send_simple_message('🐳 Predict П1 🐳', predict_win=True)
+                    if gametime > 420 and blue_kills > red_kills and abs(blue_kills - red_kills) > 5:
+                        TGApi.send_simple_message('🐳 Predict П1 🐳', predict_win=True)
+                case StatsRate.LOSER, StatsRate.WINNER:
+                    if (blue_towers == 0 and red_towers > 0) and blue_kills < red_kills:
+                        TGApi.send_simple_message('🐙 Predict П2 🐙', predict_win=True)
+                    if gametime > 420 and blue_kills < red_kills and abs(blue_kills - red_kills) > 5:
+                        TGApi.send_simple_message('🐙 Predict П2 🐙', predict_win=True)
+                case StatsRate.LOSER, StatsRate.LOSER:
+                    pass
+
+
+
+    def generate_predict_total(self, score):
 
         # is_opened = self.check_if_opened()
         gametime = int(score["time"])
@@ -94,22 +119,22 @@ class Chrome:
             # gametime = int(score["time"]) # "time": 1034,
 
             if blue_kills + red_kills >= 60 and abs(blue_kills - red_kills) < 5 and (blue_towers == 0 and red_towers == 0):
-                TGApi.send_simple_message('⬆️ Predict 110Б ⬆️', predict=True)
+                TGApi.send_simple_message('⬆️ Predict 110Б ⬆️', predict_ttl=True)
 
             elif blue_kills + red_kills >= 80 and abs(blue_kills - red_kills) < 5 and (blue_towers == 1 and red_towers == 1):
-                TGApi.send_simple_message('⬆️ Predict 110Б ⬆️', predict=True)
+                TGApi.send_simple_message('⬆️ Predict 110Б ⬆️', predict_ttl=True)
 
             elif blue_kills + red_kills <= 35 and abs(blue_kills - red_kills) >= 6 and (blue_towers > 0 or red_towers > 0):
-                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
+                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict_ttl=True)
 
             elif gametime > 420 and blue_kills + red_kills < 25 and abs(blue_kills - red_kills) > 5:
-                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
+                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict_ttl=True)
         
             elif gametime > 500 and blue_kills + red_kills < 30 and abs(blue_kills - red_kills) > 5:
-                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
+                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict_ttl=True)
                 
             elif blue_kills + red_kills < 22 and (blue_towers > 0 or red_towers > 0):
-                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
+                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict_ttl=True)
             # else:
             #     app_blueprint.info_view.exception(f'PR: b{blue_kills} r{red_kills} twb {blue_towers} twr{red_towers}')
 

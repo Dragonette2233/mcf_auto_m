@@ -1,7 +1,9 @@
 import os
 import threading
 import getpass
-from modules import mcf_pillow
+from modules import (
+    mcf_pillow,
+)
 
 """
     Values for interacting with League of Legends data
@@ -201,7 +203,48 @@ class Switches:
     request = False
     timer = None
     bot_activity = False
-    predicted = False
+    predicted_total = False
+    predicted_winner = False
+
+class StatsRate:
+    blue_rate: tuple[str] = None
+    red_rate: tuple[str] = None
+    tb_rate: tuple[str] = None
+    tl_rate: tuple[str] = None
+    games_all: int = 0
+    games_totals: int = 0
+
+    WINNER = '🟩'
+    LOSER = '🟥'
+
+    @classmethod
+    def calculate(cls, team_blue, team_red):
+        from modules import stats_by_roles
+        stats_result = stats_by_roles.get_aram_statistic(
+                blue_entry=team_blue,
+                red_entry=team_red,
+            )
+        if stats_result is not None:
+            cls.blue_rate = stats_result['w1']
+            cls.red_rate = stats_result['w2']
+            cls.tb_rate = stats_result['tb']
+            cls.tl_rate = stats_result['tl']
+            cls.games_all = stats_result['all_m']
+            cls.games_totals = stats_result['all_ttl']
+    
+    @classmethod
+    def is_stats_avaliable(cls):
+        if cls.games_all != 0:
+            return True
+    
+    @classmethod
+    def stats_clear(cls):
+        cls.games_all = 0
+
+
+class TGsymbols:
+    blue_square: str = ''
+    green_square: str = ''
 
 
 cookies = {

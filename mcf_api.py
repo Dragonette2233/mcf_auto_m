@@ -12,6 +12,7 @@ from mcf_data import (
     SPECTATOR_MODE,
     SPECTATOR_FILE_PATH,
     Switches,
+    StatsRate,
 )
 import os
 import itertools
@@ -48,13 +49,13 @@ class MCFApi:
                 time.sleep(2)
                 continue
             else:
+                StatsRate.calculate(
+                    team_blue=team_blue.characters,
+                    team_red=team_red.characters
+                )
+
                 TGApi.gamestart_notification(
-                    # nickname=ActiveGame.nick_region,
                     champions=team_blue.characters + team_red.characters,
-                    statsrate=cls.get_aram_statistic(
-                        blue=team_blue.characters,
-                        red=team_red.characters
-                    )
                 )
                 # logger.info('Team BLUE: {team_blue}'.format(team_blue=' '.join(team_blue.characters)))
                 # logger.info('Team RED: {team_red}'.format(team_red=' '.join(team_red.characters)))
