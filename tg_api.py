@@ -19,7 +19,7 @@ class TGApi:
     # @classmethod
     def switch_active(func):
         def wrapper(*args, **kwargs):
-            if WINDOWS_USER == 'ARA-M': # REMOVE !
+            if WINDOWS_USER != 'ARA-M': # REMOVE !
                 func(*args, **kwargs)
     
         return wrapper
@@ -39,12 +39,12 @@ class TGApi:
 
     @switch_active
     @timeout_handler
-    @classmethod
-    def post_request(cls, message: str):
+    # @classmethod
+    def post_request(message: str):
 
         requests.post(
-            url=cls.tg_api_url.format(token=cls.token, method=cls.method_send),
-            data={'chat_id': cls.CHAT_ID, 'text': message }, timeout=2
+            url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_send),
+            data={'chat_id': TGApi.CHAT_ID, 'text': message }, timeout=2
         )
     
     @classmethod
