@@ -85,7 +85,7 @@ class Chrome:
     def generate_predict_winner(self, score):
 
         gametime = int(score["time"])
-        if StatsRate.is_stats_avaliable and gametime < 600:
+        if StatsRate.is_stats_avaliable() and gametime < 600:
             blue_kills = score["blue_kills"] # "blue_kiils": 49,
             red_kills = score["red_kills"] # "red_kills": 43,
             blue_towers = score["blue_towers"] # "blue_towers": 3,

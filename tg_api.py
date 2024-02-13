@@ -107,7 +107,7 @@ class TGApi:
 
     
     @classmethod
-    def winner_is(cls, team, kills, timestamp, opened):
+    def winner_is(cls, team, kills, timestamp, opened=False):
         
         match team, opened:
             case 'blue', True:
