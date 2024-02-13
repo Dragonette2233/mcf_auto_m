@@ -102,10 +102,13 @@ class Chrome:
             elif blue_kills + red_kills <= 35 and abs(blue_kills - red_kills) >= 6 and (blue_towers > 0 or red_towers > 0):
                 TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
 
-            elif gametime > 420 and blue_kills + red_kills < 25 and abs(blue_kills - red_kills) > 6:
+            elif gametime > 420 and blue_kills + red_kills < 25 and abs(blue_kills - red_kills) > 5:
+                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
+        
+            elif gametime > 500 and blue_kills + red_kills < 30 and abs(blue_kills - red_kills) > 5:
                 TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
                 
-            elif gametime > 500 and blue_kills + red_kills < 30 and abs(blue_kills - red_kills) > 5:
+            elif blue_kills + red_kills < 22 and (blue_towers > 0 or red_towers > 0):
                 TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict=True)
             # else:
             #     app_blueprint.info_view.exception(f'PR: b{blue_kills} r{red_kills} twb {blue_towers} twr{red_towers}')
@@ -126,8 +129,8 @@ class Chrome:
                     game_index = '_'.join(game_link.split('/')[7:])
                     # if self.game_index_ended == '':
                     #     self.game_index_ended = MCFStorage.get_gameid()
-                    logger.info(self.game_index_new)
-                    logger.info(self.game_index_ended)
+                    # logger.info(self.game_index_new)
+                    # logger.info(self.game_index_ended)
                     if game_index != self.game_index_ended:
                         logger.info('Gamelink changed, refreshing driver')
                         self.open_league_page()

@@ -15,6 +15,7 @@ arambot_lib/mcf_status.png
 arambot_lib/debug_stats.json
 mcf_lib/xbt.png
 mcf_lib/mirror_page.txt
+mcf_lib/previous_gameid.txt
 testrun.bat
 testfield.py
 telegram.bat
@@ -23,3 +24,4 @@ OTHERS.py
 testfield.py
 ARAM_BOT.bat
 x_full.png
+
