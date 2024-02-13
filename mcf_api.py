@@ -196,6 +196,8 @@ class MCFApi:
         
         champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
         timestamp = list(divmod(lastgame['info']['gameDuration'], 60))
+        if timestamp[1] < 10: 
+            timestamp[1] = f"0{timestamp[1]}"
         Validator.ended_blue_characters = champions_names[0:5].copy()
         Validator.ended_red_characters = champions_names[5:].copy()
         Validator.ended_kills = sum(lastgame['info']['participants'][k]['kills'] for k in range(10))
@@ -313,6 +315,11 @@ class MCFApi:
                         logger.info('Game ended! Restarting bot in 120s')
                         Validator.ended_blue_characters = None
                         Validator.finded_game_characerts = None
+                        TGApi.winner_is(
+                            team=Validator.ended_winner, 
+                            kills=Validator.ended_kills,
+                            timestamp=Validator.ended_time
+                        )
                         time.sleep(120)
                         return
                 

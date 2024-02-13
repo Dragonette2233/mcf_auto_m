@@ -19,7 +19,7 @@ class TGApi:
     # @classmethod
     def switch_active(func):
         def wrapper(*args, **kwargs):
-            if WINDOWS_USER != 'ARA-M': # REMOVE !
+            if WINDOWS_USER == 'ARA-M': # REMOVE !
                 func(*args, **kwargs)
     
         return wrapper

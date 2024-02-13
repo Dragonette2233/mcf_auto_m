@@ -180,6 +180,7 @@ class MCFThread(threading.Thread):
             self._args = args
 
 class Validator:
+    quick_end = False
     findgame = 0
     gametime = False
     recognition = 0
