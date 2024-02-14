@@ -2,7 +2,7 @@ import logging
 import time
 from PIL import ImageGrab
 import numpy as np
-from mcf_data import GREYSHADE_CLOCKS_CUT
+# from mcf_data import GREYSHADE_CLOCKS_CUT
 from modules import mcf_utils
 from skimage.metrics import structural_similarity as ssim
 logging.basicConfig(level=logging.INFO)

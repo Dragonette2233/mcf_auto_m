@@ -77,7 +77,7 @@ def main():
             MCFApi.delete_scoreboard()
             MCFApi.close_league_of_legends()
 
-            logger.info('Game {game_id} ended.')
+            logger.info('Game ended.')
             
             if Switches.coeff_opened is False:
                 for _ in range(120):
