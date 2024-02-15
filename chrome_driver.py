@@ -73,10 +73,13 @@ class Chrome:
             aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, 'span.caption__label').get_attribute('innerText')
               
             if aram_title_inner == 'All Random All Mid':
-                button = games[0].find_element(By.CSS_SELECTOR, 'button.ui-market.ui-market--nameless')
-                if not button.get_attribute('disabled'):
-                    Switches.coeff_opened = True
-                    return True
+                game_link = games[0].find_element(By.CSS_SELECTOR, 'a.dashboard-game-block__link.dashboard-game-block-link').get_attribute('href')
+                game_index = '_'.join(game_link.split('/')[7:])
+                if game_index == self.game_index_ended:
+                    button = games[0].find_element(By.CSS_SELECTOR, 'button.ui-market.ui-market--nameless')
+                    if not button.get_attribute('disabled'):
+                        Switches.coeff_opened = True
+                        return True
         except (NoSuchElementException, IndexError, Exception):
             pass
             
@@ -124,15 +127,18 @@ class Chrome:
             elif blue_kills + red_kills >= 80 and abs(blue_kills - red_kills) < 5 and (blue_towers == 1 and red_towers == 1):
                 TGApi.send_simple_message('⬆️ Predict 110Б ⬆️', predict_ttl=True)
 
-            elif blue_kills + red_kills <= 35 and abs(blue_kills - red_kills) >= 6 and (blue_towers > 0 or red_towers > 0):
+            elif blue_kills + red_kills <= 35 and abs(blue_kills - red_kills) >= 6 and (blue_towers != 0 or red_towers != 0):
                 TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict_ttl=True)
 
             elif gametime > 420 and blue_kills + red_kills < 25 and abs(blue_kills - red_kills) > 5:
                 TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict_ttl=True)
+
+            elif gametime > 480 and blue_kills + red_kills < 40 and (blue_towers != 0 or red_towers != 0):
+                TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict_ttl=True)
         
             elif gametime > 500 and blue_kills + red_kills < 30 and abs(blue_kills - red_kills) > 5:
                 TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict_ttl=True)
-                
+            
             elif blue_kills + red_kills < 22 and (blue_towers > 0 or red_towers > 0):
                 TGApi.send_simple_message('⬇️ Predict 110M ⬇️', predict_ttl=True)
             # else:
