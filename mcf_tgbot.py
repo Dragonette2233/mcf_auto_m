@@ -41,7 +41,7 @@ async def change_actual_mirror(update: Update, context: CallbackContext):
     league_alt_rout = '/ru/live/cyber-zone/league-of-legends'
     message = update.message.text
 
-    if not message.startswith('https://1xlite-') or not message.startswith('https://melb'):
+    if not message.startswith('https://1xlite-') and not message.startswith('https://melb'):
         await update.message.reply_text(f'Неверная ссылка для зеркала')
     else:
         link_parts = message.split('/')
