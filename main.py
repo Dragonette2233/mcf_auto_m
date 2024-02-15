@@ -92,7 +92,7 @@ def main():
             Switches.predicted_total = False
             Switches.predicted_winner = False
             ActiveGame.refresh()
-            time.sleep(300)
+            # time.sleep(300)
         else:
             mcf_autogui.close_league_stream()
             if Validator.quick_end:
@@ -100,7 +100,7 @@ def main():
                 Validator.quick_end = False
             else:
                 TGApi.send_simple_message('❌ Игра не найдена')
-            time.sleep(500)
+            # time.sleep(500)
 
         logger.info('Bot restarting')
         chrome.driver.quit()
