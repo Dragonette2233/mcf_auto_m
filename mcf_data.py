@@ -180,6 +180,7 @@ class MCFThread(threading.Thread):
             self._args = args
 
 class Validator:
+    active_mel_mirror = False
     quick_end = False
     findgame = 0
     gametime = False

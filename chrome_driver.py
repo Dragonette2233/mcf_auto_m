@@ -43,7 +43,12 @@ class Chrome:
 
     def open_league_page(self):
         with open('./mcf_lib/mirror_page.txt', 'r') as ex_url:
-            url = ex_url.read().strip()
+            url: str = ex_url.read().strip()
+        
+        if url.startswith('https://mel'):
+            Validator.active_mel_mirror = True
+        else:
+            Validator.active_mel_mirror = False
         self.driver.get(url=url)
         time.sleep(6)
 

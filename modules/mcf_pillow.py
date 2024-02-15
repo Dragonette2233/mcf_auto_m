@@ -3,6 +3,7 @@ import os
 import logging
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
+# from mcf_data import Validator
 
 logger = logging.getLogger(__name__)
 
@@ -12,6 +13,7 @@ def greyshade_array(image_path):
 
 def is_game_started():
     from mcf_data import (
+        Validator,
         GREYSHADE_CMP_BLUE,
         # GREYSHADE_CMP_MAP,
         GREYSHADE_CMP_RED,
@@ -19,11 +21,16 @@ def is_game_started():
     )
 
     image_ = ImageGrab.grab()
-
+    
     # cut_cmp_map = image_.crop((1855, 310, 1872, 320)).convert('L')
-    cut_cmp_riot = image_.crop((1645, 330, 1683, 344)).convert('L')
-    cut_cmp_blue = image_.crop((1689, 207, 1705, 214)).convert('L')
-    cut_cmp_red = image_.crop((1832, 207, 1847, 214)).convert('L')
+    if Validator.active_mel_mirror:
+        cut_cmp_riot = image_.crop((1645, 366, 1683, 380)).convert('L')
+        cut_cmp_blue = image_.crop((1689, 243, 1705, 250)).convert('L')
+        cut_cmp_red = image_.crop((1832, 243, 1847, 250)).convert('L')
+    else:
+        cut_cmp_riot = image_.crop((1645, 330, 1683, 344)).convert('L')
+        cut_cmp_blue = image_.crop((1689, 207, 1705, 214)).convert('L')
+        cut_cmp_red = image_.crop((1832, 207, 1847, 214)).convert('L')
     # np_cut_map = np.array(cut_cmp_map)
     np_cut_riot = np.array(cut_cmp_riot)
     np_cut_blue = np.array(cut_cmp_blue)
