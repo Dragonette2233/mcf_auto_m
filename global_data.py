@@ -24,6 +24,8 @@ class ActiveGame:
 
 
 class Validator:
+    active_mel_mirror = False
+    quick_end = False
     findgame = 0
     loop = False
     recognition = 0

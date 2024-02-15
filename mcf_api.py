@@ -320,12 +320,8 @@ class MCFApi:
                             kills=Validator.ended_kills,
                             timestamp=Validator.ended_time
                         )
-                        time.sleep(120)
-                        return
-                
+                        Validator.quick_end = True
 
-                # else:
-                #     logger.info('Game ended.....')
 
                 if ActiveGame.is_game_founded:
                     TGApi.send_simple_message('✅ Игра найдена: {nick}'.format(nick=nick))

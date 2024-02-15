@@ -8,6 +8,7 @@ from modules import mcf_pillow
 from modules import mcf_autogui
 from global_data import ActiveGame
 from chrome_driver import Chrome
+from global_data import Validator
 from mcf_data import (
     Switches,
     MCFThread,
@@ -94,7 +95,11 @@ def main():
             time.sleep(300)
         else:
             mcf_autogui.close_league_stream()
-            TGApi.send_simple_message('❌ Игра не найдена')
+            if Validator.quick_end:
+                TGApi.send_simple_message('❌ Игра окончена досрочно')
+                Validator.quick_end = False
+            else:
+                TGApi.send_simple_message('❌ Игра не найдена')
             time.sleep(500)
 
         logger.info('Bot restarting')

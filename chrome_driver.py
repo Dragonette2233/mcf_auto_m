@@ -3,8 +3,7 @@ import modules.mcf_autogui as mcf_autogui
 import modules.mcf_pillow as mcf_pillow
 from modules.mcf_storage import MCFStorage
 import logging
-from mcf_data import Validator
-from PIL import Image
+from global_data import Validator
 from tg_api import TGApi
 from mcf_data import Switches, StatsRate
 from selenium import webdriver
