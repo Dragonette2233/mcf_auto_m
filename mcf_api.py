@@ -252,6 +252,9 @@ class MCFApi:
             '''Запрос активной игры'''
 
             response = response_activegame.json()
+            if response['gameMode'] != 'ARAM':
+                return False
+            
             game_id = str(response['gameId']) # 1237890
             ActiveGame.match_id = ActiveGame.region.upper() + '_' + game_id # EUW_12378912
             champions_ids = [response['participants'][p]['championId'] for p in 

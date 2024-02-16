@@ -126,6 +126,9 @@ class Chrome:
             red_kills = score["red_kills"] # "red_kills": 43,
             blue_towers = score["blue_towers"] # "blue_towers": 3,
             red_towers = score["red_towers"] # "red_towers": 1,
+
+            all_kills = blue_kills + red_kills
+            module_kills = abs(blue_kills - red_kills)
             # gametime = int(score["time"]) # "time": 1034,
 
             if blue_kills + red_kills >= 60 and abs(blue_kills - red_kills) < 5 and (blue_towers == 0 and red_towers == 0):
