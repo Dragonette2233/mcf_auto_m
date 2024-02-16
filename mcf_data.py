@@ -161,6 +161,9 @@ RED_GREYSHADE_ARRAY = {
 GREYSHADE_CMP_RIOT = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_riot.png'))
 GREYSHADE_CMP_BLUE = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_blue.png'))
 GREYSHADE_CMP_RED = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_red.png'))
+GREYSHADE_mCMP_RIOT = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_riot.png'))
+GREYSHADE_mCMP_BLUE = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_blue.png'))
+GREYSHADE_mCMP_RED = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_red.png'))
 
 """
     Classes for finded game and switches for controling threads and activity 

@@ -15,9 +15,11 @@ def is_game_started():
     from mcf_data import (
         Validator,
         GREYSHADE_CMP_BLUE,
-        # GREYSHADE_CMP_MAP,
         GREYSHADE_CMP_RED,
         GREYSHADE_CMP_RIOT,
+        GREYSHADE_mCMP_BLUE,
+        GREYSHADE_mCMP_RED,
+        GREYSHADE_mCMP_RIOT
     )
 
     image_ = ImageGrab.grab()
@@ -37,11 +39,16 @@ def is_game_started():
     np_cut_red = np.array(cut_cmp_red)
 
     # diff_1 = ssim(np_cut_map, GREYSHADE_CMP_MAP)
-    diff_2 = ssim(np_cut_riot, GREYSHADE_CMP_RIOT)
-    diff_3 = ssim(np_cut_blue, GREYSHADE_CMP_BLUE)
-    diff_4 = ssim(np_cut_red, GREYSHADE_CMP_RED)
+    similarity = [
+        ssim(np_cut_riot, GREYSHADE_CMP_RIOT) > 0.93,
+        ssim(np_cut_blue, GREYSHADE_CMP_BLUE) > 0.93,
+        ssim(np_cut_red, GREYSHADE_CMP_RED) > 0.93,
+        ssim(np_cut_riot, GREYSHADE_mCMP_RIOT) > 0.93,
+        ssim(np_cut_blue, GREYSHADE_mCMP_BLUE) > 0.93,
+        ssim(np_cut_red, GREYSHADE_mCMP_RED) > 0.93,
+            ]
 
-    if diff_2 > 0.93 or diff_3 > 0.93 or diff_4 > 0.93:
+    if any(similarity):
         return True
 
 def is_league_stream_active(debug=False):
