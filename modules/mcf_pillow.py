@@ -40,14 +40,15 @@ def is_game_started():
 
     # diff_1 = ssim(np_cut_map, GREYSHADE_CMP_MAP)
     similarity = [
-        ssim(np_cut_riot, GREYSHADE_CMP_RIOT) > 0.93,
-        ssim(np_cut_blue, GREYSHADE_CMP_BLUE) > 0.93,
-        ssim(np_cut_red, GREYSHADE_CMP_RED) > 0.93,
-        ssim(np_cut_riot, GREYSHADE_mCMP_RIOT) > 0.93,
-        ssim(np_cut_blue, GREYSHADE_mCMP_BLUE) > 0.93,
-        ssim(np_cut_red, GREYSHADE_mCMP_RED) > 0.93,
+        ssim(np_cut_riot, GREYSHADE_CMP_RIOT) > 0.89,
+        ssim(np_cut_blue, GREYSHADE_CMP_BLUE) > 0.89,
+        ssim(np_cut_red, GREYSHADE_CMP_RED) > 0.89,
+        ssim(np_cut_riot, GREYSHADE_mCMP_RIOT) > 0.89,
+        ssim(np_cut_blue, GREYSHADE_mCMP_BLUE) > 0.89,
+        ssim(np_cut_red, GREYSHADE_mCMP_RED) > 0.89,
             ]
 
+    print(similarity)
     if any(similarity):
         return True
 
