@@ -12,8 +12,9 @@ def greyshade_array(image_path):
     return np.array(Image.open(image_path).convert('L'))
 
 def is_game_started():
+    from global_data import Validator
     from mcf_data import (
-        Validator,
+        # Validator,
         GREYSHADE_CMP_BLUE,
         GREYSHADE_CMP_RED,
         GREYSHADE_CMP_RIOT,
@@ -21,7 +22,7 @@ def is_game_started():
         GREYSHADE_mCMP_RED,
         GREYSHADE_mCMP_RIOT
     )
-
+    # print(bozya)
     image_ = ImageGrab.grab()
     
     # cut_cmp_map = image_.crop((1855, 310, 1872, 320)).convert('L')
@@ -40,12 +41,12 @@ def is_game_started():
 
     # diff_1 = ssim(np_cut_map, GREYSHADE_CMP_MAP)
     similarity = [
-        ssim(np_cut_riot, GREYSHADE_CMP_RIOT) > 0.89,
-        ssim(np_cut_blue, GREYSHADE_CMP_BLUE) > 0.89,
-        ssim(np_cut_red, GREYSHADE_CMP_RED) > 0.89,
-        ssim(np_cut_riot, GREYSHADE_mCMP_RIOT) > 0.89,
-        ssim(np_cut_blue, GREYSHADE_mCMP_BLUE) > 0.89,
-        ssim(np_cut_red, GREYSHADE_mCMP_RED) > 0.89,
+        ssim(np_cut_riot, GREYSHADE_CMP_RIOT) > 0.93,
+        ssim(np_cut_blue, GREYSHADE_CMP_BLUE) > 0.93,
+        ssim(np_cut_red, GREYSHADE_CMP_RED) > 0.93,
+        ssim(np_cut_riot, GREYSHADE_mCMP_RIOT) > 0.93,
+        ssim(np_cut_blue, GREYSHADE_mCMP_BLUE) > 0.93,
+        ssim(np_cut_red, GREYSHADE_mCMP_RED) > 0.93,
             ]
 
     print(similarity)

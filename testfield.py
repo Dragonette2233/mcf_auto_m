@@ -13,6 +13,14 @@ logger = logging.getLogger(__name__)
 command: str = input('Enter test command: ')
 
 match command:
+    case 'sim_start':
+        from modules.mcf_pillow import is_game_started
+        from global_data import Validator
+
+        if is_game_started():
+            
+            print('LEELEE')
+
     case 'cut':
         from selenium import webdriver
         from PIL import ImageGrab
