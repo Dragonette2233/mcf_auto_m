@@ -2,6 +2,7 @@
 __pycache__/
 APIKEY
 stats_field/
+untracking/
 images_lib/chars/blue/*
 images_lib/chars/red/*
 images_lib/chars/testfield/red/
@@ -12,11 +13,7 @@ images_lib/build_compare.png
 images_lib/scorecrop.png
 images_lib/screenshot_PIL.png
 arambot_lib/mcf_status.png
-arambot_lib/debug_stats.json
 mcf_lib/xbt.png
-mcf_lib/mirror_page.txt
-mcf_lib/previous_gameid.txt
-testrun.bat
 telegram.bat
 botrun.bat
 OTHERS.py
