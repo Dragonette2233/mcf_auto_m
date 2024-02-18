@@ -9,6 +9,7 @@ from arambot_lib.bot_reload import (
 import json
 import os
 import logging
+from mcf_data import ACTIVE_GAMESCORE_PATH
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -54,7 +55,7 @@ async def change_actual_mirror(update: Update, context: CallbackContext):
 
 async def echo_score(update: Update, context: CallbackContext) -> None:
     
-    with open(os.path.join('.', 'arambot_lib', 'activegame_score.json'), 'r') as file:
+    with open(ACTIVE_GAMESCORE_PATH, 'r') as file:
         score_data = json.load(file)
 
     if score_data['is_active']:
