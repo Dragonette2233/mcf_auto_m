@@ -106,10 +106,20 @@ REGIONS_TUPLE = (
 """
 
 MCF_BOT_PATH = os.environ.get('MCF_BOT')
-JSON_GAMEDATA_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'GameData.json')
+JSON_GAMEDATA_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'GameData.json')
 SCREEN_GAMESCORE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'gamescore_PIL.png')
 SPECTATOR_FILE_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'spectate.bat')
 STATISTICS_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'stats_27.txt')
+
+"""
+    Untracking pathes
+
+"""
+JSON_GAMEDATA_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'GameData.json')
+MIRROR_PAGE = os.path.join(MCF_BOT_PATH, 'untracking', 'mirror_page.txt')
+PREVIOUS_GAMEID_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'previous_gameid.txt')
+ACTIVE_GAMESCORE_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'activegame_score.json')
+
 
 # SCREENSHOT_FILE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'screenshot_PIL.png')
 

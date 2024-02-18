@@ -5,7 +5,7 @@ from modules.mcf_storage import MCFStorage
 import logging
 from global_data import Validator
 from tg_api import TGApi
-from mcf_data import Switches, StatsRate
+from mcf_data import Switches, StatsRate, MIRROR_PAGE
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -41,7 +41,7 @@ class Chrome:
         time.sleep(3)
 
     def open_league_page(self):
-        with open('./mcf_lib/mirror_page.txt', 'r') as ex_url:
+        with open(MIRROR_PAGE, 'r') as ex_url:
             url: str = ex_url.read().strip()
         
         if url.startswith('https://mel'):
@@ -114,7 +114,7 @@ class Chrome:
                         TGApi.send_simple_message('🐙 Predict П2 🐙', predict_win=True)
                     if gametime > 420 and blue_kills < red_kills and abs(blue_kills - red_kills) > 5:
                         TGApi.send_simple_message('🐙 Predict П2 🐙', predict_win=True)
-                    if red_kills > blue_kills and abs(blue_kills - red_kills) > 9:
+                    if red_kills > blue_kills and abs(blue_kills - red_kills) > 7:
                         TGApi.send_simple_message('🐙 Predict П2 🐙', predict_win=True)
                 case StatsRate.LOSER, StatsRate.LOSER:
                     pass

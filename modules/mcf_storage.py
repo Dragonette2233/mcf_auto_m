@@ -3,27 +3,29 @@ import os
 from mcf_data import (
     DEBUG_STATS_PATH,
     JSON_GAMEDATA_PATH,
-    MCF_BOT_PATH,
+    # MCF_BOT_PATH,
+    PREVIOUS_GAMEID_PATH,
+    ACTIVE_GAMESCORE_PATH
 )
 
 class MCFStorage:
 
     @classmethod
     def get_gameid(cls):
-        with open(os.path.join(MCF_BOT_PATH, 'mcf_lib', 'previous_gameid.txt'), 'r') as file:
+        with open(PREVIOUS_GAMEID_PATH, 'r') as file:
             gameid = file.read()
             return gameid
 
     @classmethod
     def save_gameid(cls, game_id: str):
 
-        with open(os.path.join(MCF_BOT_PATH, 'mcf_lib', 'previous_gameid.txt'), 'w+') as file:
+        with open(PREVIOUS_GAMEID_PATH, 'w+') as file:
             file.write(game_id)
         # open()
     @classmethod
     def save_score(cls, score: dict = None, stop_tracking=False):
 
-        with open(os.path.join(MCF_BOT_PATH, 'arambot_lib', 'activegame_score.json'), 'r') as file:
+        with open(ACTIVE_GAMESCORE_PATH, 'r') as file:
             data = json.load(file)
 
         if stop_tracking:
@@ -31,7 +33,7 @@ class MCFStorage:
         else:
             data = score
         
-        with open(os.path.join(MCF_BOT_PATH, 'arambot_lib', 'activegame_score.json'), 'w+') as file:
+        with open(ACTIVE_GAMESCORE_PATH, 'w+') as file:
             json.dump(data, file, indent=4)
 
     @classmethod
