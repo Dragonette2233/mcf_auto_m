@@ -107,10 +107,14 @@ class Chrome:
                         TGApi.send_simple_message('🐳 Predict П1 🐳', predict_win=True)
                     if gametime > 420 and blue_kills > red_kills and abs(blue_kills - red_kills) > 5:
                         TGApi.send_simple_message('🐳 Predict П1 🐳', predict_win=True)
+                    if blue_kills > red_kills and abs(blue_kills - red_kills) > 7:
+                        TGApi.send_simple_message('🐳 Predict П1 🐳', predict_win=True)
                 case StatsRate.LOSER, StatsRate.WINNER:
                     if (blue_towers == 0 and red_towers > 0) and blue_kills < red_kills:
                         TGApi.send_simple_message('🐙 Predict П2 🐙', predict_win=True)
                     if gametime > 420 and blue_kills < red_kills and abs(blue_kills - red_kills) > 5:
+                        TGApi.send_simple_message('🐙 Predict П2 🐙', predict_win=True)
+                    if red_kills > blue_kills and abs(blue_kills - red_kills) > 9:
                         TGApi.send_simple_message('🐙 Predict П2 🐙', predict_win=True)
                 case StatsRate.LOSER, StatsRate.LOSER:
                     pass
