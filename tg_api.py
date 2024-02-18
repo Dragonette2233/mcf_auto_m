@@ -31,7 +31,8 @@ class TGApi:
                     func(*args, **kwargs)
                     break
                 except (requests.exceptions.ConnectTimeout,
-                        requests.exceptions.ConnectionError):
+                        requests.exceptions.ConnectionError,
+                        requests.exceptions.ReadTimeout):
                     
                     pass
     

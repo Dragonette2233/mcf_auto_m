@@ -340,7 +340,7 @@ class MCFApi:
         Switches.request = True
         while Switches.request:
             
-            while True and Switches.request:
+            while True:
                 try:
                     finished_game = RiotAPI.get_match_by_gameid(area=ActiveGame.area, 
                                                         gameid=ActiveGame.match_id, 
