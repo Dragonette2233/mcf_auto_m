@@ -172,10 +172,7 @@ class Chrome:
                 if aram_title_inner == 'All Random All Mid':
                     game_link = games[0].find_element(By.CSS_SELECTOR, 'a.dashboard-game-block__link.dashboard-game-block-link').get_attribute('href')
                     game_index = '_'.join(game_link.split('/')[7:])
-                    # if self.game_index_ended == '':
-                    #     self.game_index_ended = MCFStorage.get_gameid()
-                    # logger.info(self.game_index_new)
-                    # logger.info(self.game_index_ended)
+
                     if game_index != self.game_index_ended:
                         logger.info('Gamelink changed, refreshing driver')
                         self.open_league_page()

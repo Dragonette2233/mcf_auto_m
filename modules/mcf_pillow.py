@@ -49,7 +49,6 @@ def is_game_started():
         ssim(np_cut_red, GREYSHADE_mCMP_RED) > 0.93,
             ]
 
-    print(similarity)
     if any(similarity):
         return True
 
