@@ -2,7 +2,9 @@ import time
 import modules.mcf_autogui as mcf_autogui
 import modules.mcf_pillow as mcf_pillow
 from modules.mcf_storage import MCFStorage
+# from modules.mcf_tracing import Trace
 import logging
+from modules.mcf_tracing import Trace
 from global_data import Validator
 from tg_api import TGApi
 from mcf_data import Switches, StatsRate, MIRROR_PAGE
@@ -125,6 +127,13 @@ class Chrome:
 
         # is_opened = self.check_if_opened()
         gametime = int(score["time"])
+
+        if 295 < gametime < 310:
+            Trace.add_tracing(timestamp='300s', score=score)
+        elif 415 < gametime < 422:
+            Trace.add_tracing(timestamp='420s', score=score)
+
+
         if gametime < 600:
             blue_kills = score["blue_kills"] # "blue_kiils": 49,
             red_kills = score["red_kills"] # "red_kills": 43,
@@ -133,28 +142,35 @@ class Chrome:
 
             all_kills = blue_kills + red_kills
             module_kills = abs(blue_kills - red_kills)
+            no_towers_destroyed = blue_towers == 0 and red_towers == 0
+            some_tower_destroyed = blue_towers != 0 or red_towers != 0
+            t1_towers_destroyed = blue_towers == 1 and red_towers == 1
             # gametime = int(score["time"]) # "time": 1034,
 
-            if blue_kills + red_kills >= 60 and abs(blue_kills - red_kills) < 5 and (blue_towers == 0 and red_towers == 0):
+            if all_kills >= 60 and module_kills < 5 and no_towers_destroyed:
                 TGApi.send_simple_message('⬆️ Predict 110Б (FL 1) ⬆️', predict_ttl=True)
 
-            elif blue_kills + red_kills >= 80 and abs(blue_kills - red_kills) < 5 and (blue_towers == 1 and red_towers == 1):
+            elif all_kills >= 80 and module_kills < 5 and t1_towers_destroyed:
                 TGApi.send_simple_message('⬆️ Predict 110Б (FL 0.75) ⬆️', predict_ttl=True)
 
-            elif blue_kills + red_kills <= 35 and abs(blue_kills - red_kills) >= 6 and (blue_towers != 0 or red_towers != 0):
+            elif all_kills <= 35 and module_kills >= 6 and some_tower_destroyed:
                 TGApi.send_simple_message('⬇️ Predict 110M (FL 0.75) ⬇️', predict_ttl=True)
+            
+            elif gametime > 300 and module_kills > 11:
+                TGApi.send_simple_message('⬇️ Predict 110M (FL 0.5) ⬇️', predict_ttl=True)
 
-            elif gametime > 420 and blue_kills + red_kills < 25 and abs(blue_kills - red_kills) > 5:
+            elif gametime > 420 and all_kills < 25 and module_kills > 5:
                 TGApi.send_simple_message('⬇️ Predict 110M (FL 1) ⬇️', predict_ttl=True)
 
-            elif gametime > 480 and blue_kills + red_kills < 40 and (blue_towers != 0 or red_towers != 0):
+            elif gametime > 480 and all_kills < 40 and some_tower_destroyed:
                 TGApi.send_simple_message('⬇️ Predict 110M (FL 0.5) ⬇️', predict_ttl=True)
         
-            elif gametime > 500 and blue_kills + red_kills < 30 and abs(blue_kills - red_kills) > 5:
+            elif gametime > 500 and all_kills < 30 and module_kills > 5:
                 TGApi.send_simple_message('⬇️ Predict 110M (FL 1) ⬇️', predict_ttl=True)
             
-            elif blue_kills + red_kills < 22 and (blue_towers > 0 or red_towers > 0):
+            elif all_kills < 22 and (blue_towers > 0 or red_towers > 0):
                 TGApi.send_simple_message('⬇️ Predict 110M (FL 1) ⬇️', predict_ttl=True)
+
             # else:
             #     app_blueprint.info_view.exception(f'PR: b{blue_kills} r{red_kills} twb {blue_towers} twr{red_towers}')
 
@@ -191,6 +207,7 @@ class Chrome:
                             # self.game_index_ended = game_index
                             self.game_index_new = ''
                             MCFStorage.save_gameid(self.game_index_ended)
+                            # Trace.create_new_trace()
                             try:
                                 gametime_element = games[0].find_element(By.CSS_SELECTOR, 'span.dashboard-game-info__item.dashboard-game-info__time')
                                 gametime = str(gametime_element.get_attribute('innerText'))

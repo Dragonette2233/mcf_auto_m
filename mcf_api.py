@@ -20,6 +20,7 @@ import modules.mcf_autogui as mcf_autogui
 from chrome_driver import Chrome
 from modules.ssim_recognition import RecognizedCharacters as SsimReco
 from modules.mcf_storage import MCFStorage
+from modules.mcf_tracing import Trace
 from modules import mcf_utils
 logger = logging.getLogger(__name__)
 
@@ -328,6 +329,7 @@ class MCFApi:
 
                 if ActiveGame.is_game_founded:
                     TGApi.send_simple_message('✅ Игра найдена: {nick}'.format(nick=nick))
+                    Trace.create_new_trace(gameid=ActiveGame.match_id)
                     # mcf_autogui.close_league_stream()
                     return True
                     
@@ -359,6 +361,7 @@ class MCFApi:
                 if time_stamp[1] < 10: 
                     time_stamp[1] = f"0{time_stamp[1]}"
                 
+            
                 if chrome is not None:
                     is_opened = chrome.check_if_opened()
                 else:
@@ -367,14 +370,17 @@ class MCFApi:
                 # if is_opened:
                 #     Switches.coeff_opened = True
 
-                if response['info']['teams'][0]['win']: 
-                    TGApi.winner_is(team='blue', kills=kills, timestamp=f"[{time_stamp[0]}:{time_stamp[1]}]", opened=is_opened)
+                if response['info']['teams'][0]['win']:
+                    winner = 'blue'
                 else:
-                    TGApi.winner_is(team='red', kills=kills, timestamp=f"[{time_stamp[0]}:{time_stamp[1]}]", opened=is_opened)
-
+                    winner = 'red'
                 
+                timestamp = f"[{time_stamp[0]}:{time_stamp[1]}]"
+                TGApi.winner_is(team=winner, kills=kills, timestamp=timestamp, opened=is_opened)
+                Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
                 ActiveGame.is_game_founded = False
                 Switches.request = False
+                # Trace.complete_trace(winner=)
                 finished_game.close()
                 break
             
