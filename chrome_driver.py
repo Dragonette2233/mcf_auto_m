@@ -20,8 +20,10 @@ logger = logging.getLogger(__name__)
 class Chrome:
 
     def __init__(self) -> None:
-        self.XPATH_BTN_GAME = '//*[@id="app"]/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li/ul/li/div[1]/span[2]/span[2]/span/button'
-                            # /html/body/div[1]/div/div/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[2]/ul/li/div[1]/span[2]/span[2]/span/button
+        self.CSS_BTN_GAME = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
+                            #  /html/body/div[1]/div/div/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[2]/ul/li/div[1]/span[2]/span[2]/span/button
+                            #  /html/body/div[1]/div/div/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[1]/ul/li/div[1]/span[2]/span[2]/span/button
+                            #  /html/body/div[1]/div/div/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[2]/ul/li/div[1]/span[2]/span[2]/span/button
                             #  //*[@id="app"]/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[2]/ul/li/div[1]/span[2]/span[2]/span/button
         self.CSS_BTN_REJECT_LIVE = 'button.ui-button.dashboard-redirect-message-timer__btn.ui-button--size-m.ui-button--theme-gray.ui-button--rounded'
         self.CSS_BTN_FOR_BET = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
@@ -200,7 +202,7 @@ class Chrome:
                     # logger.info('HERE IS')
                     if game_index == self.game_index_new:
                         # self.game_index_ended = self.game_index_new
-                        stream_btn = aram_title_outer.find_element(By.XPATH, self.XPATH_BTN_GAME)
+                        stream_btn = aram_title_outer.find_element(By.XPATH, self.CSS_BTN_GAME)
                         stream_btn.click()
                         time.sleep(2)
 
