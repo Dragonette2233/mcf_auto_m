@@ -9,7 +9,7 @@ from arambot_lib.bot_reload import (
 import json
 import os
 import logging
-from mcf_data import ACTIVE_GAMESCORE_PATH
+from mcf_data import ACTIVE_GAMESCORE_PATH, MIRROR_PAGE
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -33,12 +33,12 @@ async def devkit(update: Update, context: CallbackContext):
     await update.message.reply_text('Dev mode', reply_markup=reply_markup)
 
 async def actual_mirror(update: Update, context: CallbackContext):
-    with open('./untracking/mirror_page.txt', 'r') as ex_url:
+    with open(MIRROR_PAGE, 'r') as ex_url:
         await update.message.reply_text(f'Актуальное зеркало: {ex_url.read()}')
 
 async def change_actual_mirror(update: Update, context: CallbackContext):
-    logger.info('here')
-    league_route = '/live/cyber-zone/league-of-legends'
+    # logger.info('here')
+    # league_route = '/live/cyber-zone/league-of-legends'
     league_alt_rout = '/ru/live/cyber-zone/league-of-legends'
     message = update.message.text
 
