@@ -81,7 +81,8 @@ class RecognizedCharacters:
                     best_similarity = similarity_index
                     best_character = char
 
-
+            if best_character == 'Kayn_b':
+                best_character = 'Kayn'
             self.characters.append(best_character)
 
             best_similarity = 0 
