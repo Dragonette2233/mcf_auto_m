@@ -33,7 +33,7 @@ async def devkit(update: Update, context: CallbackContext):
     await update.message.reply_text('Dev mode', reply_markup=reply_markup)
 
 async def actual_mirror(update: Update, context: CallbackContext):
-    with open('./mcf_lib/mirror_page.txt', 'r') as ex_url:
+    with open('./untracking/mirror_page.txt', 'r') as ex_url:
         await update.message.reply_text(f'Актуальное зеркало: {ex_url.read()}')
 
 async def change_actual_mirror(update: Update, context: CallbackContext):

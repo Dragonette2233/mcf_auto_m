@@ -29,7 +29,7 @@ class Chrome:
         self.URL_MAIN = 'https://lite.1xbet-new.com/ru/live/cyber-zone/league-of-legends'
         self.options = Options()
         self.options.add_argument("--disable-blink-features=AutomationControlled")
-        self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
+        self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
         self.driver = None
         self.game_index_new = ''
         self.game_index_ended = MCFStorage.get_gameid()
@@ -192,10 +192,12 @@ class Chrome:
                     if game_index != self.game_index_ended:
                         logger.info('Gamelink changed, refreshing driver')
                         self.open_league_page()
+                        # input('HERE WAITING')
                         time.sleep(6)
                         self.game_index_new = game_index
                         self.game_index_ended = game_index
-          
+
+                    # logger.info('HERE IS')
                     if game_index == self.game_index_new:
                         # self.game_index_ended = self.game_index_new
                         stream_btn = aram_title_outer.find_element(By.XPATH, self.XPATH_BTN_GAME)
@@ -228,11 +230,14 @@ class Chrome:
                     else:
                         self.remove_cancel()
                         time.sleep(1)
-            except AttributeError:
+            except AttributeError as ex_:
+                # logger.warning(ex_)
                 time.sleep(1)
-            except IndexError:
+            except IndexError as ex_:
+                # logger.warning(ex_)
                 time.sleep(1)
-            except (NoSuchElementException, StaleElementReferenceException):
+            except (NoSuchElementException, StaleElementReferenceException) as ex_:
+                # logger.warning(ex_)
                 time.sleep(1)
             except Exception as ex_:
                 logger.info(self.game_index_new)
