@@ -203,8 +203,8 @@ class Chrome:
                     # logger.info('HERE IS')
                     if game_index == self.game_index_new:
                         # self.game_index_ended = self.game_index_new
-                        stream_btn = aram_title_outer.find_element(By.XPATH, self.XPATH_BTN_GAME)
-                        stream_btn.click()
+                        stream_btn = games[0].find_element(By.CSS_SELECTOR, 'span.dashboard-game-action-bar__group')
+                        stream_btn.find_element(By.CSS_SELECTOR, 'button.ui-dashboard-game-button.dashboard-game-action-bar__item').click()
                         time.sleep(2)
 
                         if mcf_pillow.is_game_started():
