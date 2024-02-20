@@ -135,8 +135,6 @@ class Chrome:
             Trace.add_tracing(timestamp='300s', score=score)
         elif not Validator.tracer["420s"] and 415 < gametime < 422:
             Trace.add_tracing(timestamp='420s', score=score)
-        # commit test
-
 
         if gametime < 600:
             blue_kills = score["blue_kills"] # "blue_kiils": 49,
@@ -146,8 +144,8 @@ class Chrome:
 
             all_kills = blue_kills + red_kills
             module_kills = abs(blue_kills - red_kills)
-            blue_leader = blue_kills > red_kills and (blue_towers > 0 and red_towers == 0)
-            red_leader = red_kills > blue_kills and (red_towers > 0 and blue_towers == 0)
+            blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0)
+            red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0)
             no_towers_destroyed = blue_towers == 0 and red_towers == 0
             some_tower_destroyed = blue_towers != 0 or red_towers != 0
             t1_towers_destroyed = blue_towers == 1 and red_towers == 1
