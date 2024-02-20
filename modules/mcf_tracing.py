@@ -1,6 +1,7 @@
 import json
 import os
 from mcf_data import SCORE_TRACE_PATH
+from global_data import Validator
 
 class Trace:
 
@@ -38,6 +39,7 @@ class Trace:
             score["red_towers"]
         ]
         cls.put_to_json(data=data)
+        Validator.tracer[timestamp] = True
 
     @classmethod
     def complete_trace(cls, team, kills, timestamp):
@@ -45,3 +47,5 @@ class Trace:
         data[cls.tracing_game]["result"] = [team, kills, timestamp]
         cls.put_to_json(data)
         cls.tracing_game = ''
+        Validator.tracer["300s"] = False
+        Validator.tracer["420s"] = False

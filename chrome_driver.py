@@ -130,10 +130,10 @@ class Chrome:
 
         # is_opened = self.check_if_opened()
         gametime = int(score["time"])
-
-        if 295 < gametime < 310:
+        
+        if not Validator.tracer["300s"] and 295 < gametime < 310:
             Trace.add_tracing(timestamp='300s', score=score)
-        elif 415 < gametime < 422:
+        elif not Validator.tracer["420s"] and 415 < gametime < 422:
             Trace.add_tracing(timestamp='420s', score=score)
 
 
@@ -175,7 +175,7 @@ class Chrome:
             elif gametime > 500 and all_kills < 30 and module_kills > 5:
                 TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
             
-            elif all_kills < 22 and (blue_towers > 0 or red_towers > 0):
+            elif all_kills < 22 and (blue_leader or red_leader):
                 TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
 
             # else:
