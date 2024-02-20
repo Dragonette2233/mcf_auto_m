@@ -169,7 +169,8 @@ class Chrome:
                 TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
 
             elif gametime > 480 and all_kills < 36 and some_tower_destroyed:
-                TGApi.send_simple_message('⬇️ Predict 110М (FL 0.5) ⬇️', predict_ttl=True)
+                if blue_leader or red_leader:
+                    TGApi.send_simple_message('⬇️ Predict 110М (FL 0.5) ⬇️', predict_ttl=True)
         
             elif gametime > 500 and all_kills < 30 and module_kills > 5:
                 TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
