@@ -24,6 +24,7 @@ class ActiveGame:
 
 
 class Validator:
+    predict_value_flet = None
     active_mel_mirror = False
     quick_end = False
     findgame = 0

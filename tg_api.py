@@ -1,11 +1,15 @@
 import requests
 import os
+import logging
+from global_data import Validator
 from mcf_data import (
     Switches,
     WINDOWS_USER,
     StatsRate
 
 )
+
+logger = logging.getLogger(__name__)
 
 class TGApi:
 
@@ -85,10 +89,17 @@ class TGApi:
 
     
     @classmethod
-    def send_simple_message(cls, message, predict_ttl = False, predict_win = False):
+    def send_simple_message(cls, message: str, predict_ttl = False, predict_win = False):
         # Switches.predicted = True
         if predict_ttl:
             Switches.predicted_total = True
+            try:
+                _tmp = message.split()
+                value = _tmp[2]
+                flet = _tmp[4][:-1]
+                Validator.predict_value_flet = (value, flet)
+            except Exception as ex_:
+                logger.warning(ex_)
         if predict_win:
             Switches.predicted_winner = True
 

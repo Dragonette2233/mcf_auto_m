@@ -378,9 +378,13 @@ class MCFApi:
                 timestamp = f"[{time_stamp[0]}:{time_stamp[1]}]"
                 TGApi.winner_is(team=winner, kills=kills, timestamp=timestamp, opened=is_opened)
                 Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
+                MCFStorage.predicts_monitor(kills=kills)
                 ActiveGame.is_game_founded = False
                 Switches.request = False
-                # Trace.complete_trace(winner=)
+
+                # if Validator.predict_value_flet is not None:
+                #     ...
+
                 finished_game.close()
                 break
             

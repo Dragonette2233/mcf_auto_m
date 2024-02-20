@@ -1,11 +1,11 @@
 import json
-import os
+from global_data import Validator
 from mcf_data import (
     DEBUG_STATS_PATH,
     JSON_GAMEDATA_PATH,
-    # MCF_BOT_PATH,
     PREVIOUS_GAMEID_PATH,
-    ACTIVE_GAMESCORE_PATH
+    ACTIVE_GAMESCORE_PATH,
+    PREDICTS_TRACE_PATH
 )
 
 class MCFStorage:
@@ -63,8 +63,38 @@ class MCFStorage:
                 data[route[0]] = value
             json.dump(data, open(JSON_GAMEDATA_PATH, 'w+'), indent=4)
         else:
-            raise TypeError('Provide touple for executing MCFData')
+            raise TypeError('Provide tuple for executing MCFData')
     
+    @classmethod
+    def predicts_monitor(cls, kills: int):
+        
+        if Validator.predict_value_flet is None:
+            return
+
+        with open(PREDICTS_TRACE_PATH, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+
+        print(data)
+        match Validator.predict_value_flet:
+            case ("110Б", fl):
+                if kills >= 115:
+                    data[f"110Б (FL {fl})"][0] += 1
+                else:
+                    data[f"110Б (FL {fl})"][1] += 1
+            case ("110М", fl):
+                if kills <= 105:
+                    data[f"110М (FL {fl})"][0] += 1
+                else:
+                    data[f"110М (FL {fl})"][1] += 1
+            case _:
+                ...
+        
+        Validator.predict_value_flet = None
+
+    
+        with open(PREDICTS_TRACE_PATH, 'w+', encoding='utf-8') as file:
+            json.dump(data, file, indent=4)
+
     @classmethod
     def stats_monitor(cls, validor):
 

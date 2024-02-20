@@ -120,6 +120,7 @@ MIRROR_PAGE = os.path.join(MCF_BOT_PATH, 'untracking', 'mirror_page.txt')
 PREVIOUS_GAMEID_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'previous_gameid.txt')
 ACTIVE_GAMESCORE_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'activegame_score.json')
 SCORE_TRACE_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'score_trace.json')
+PREDICTS_TRACE_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'predicts_trace.json')
 # SCORE_ANSWER_PATH = os.path.join(MCF_BOT_PATH, 'untracking', '')
 
 

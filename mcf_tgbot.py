@@ -20,13 +20,13 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 async def start(update: Update, context: CallbackContext):
-    keyboard = [ [KeyboardButton('game'), KeyboardButton('build')] ]
+    keyboard = [ [KeyboardButton('/game'), KeyboardButton('/build')], [KeyboardButton('/predicts_result')] ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
     await update.message.reply_text('Здарова, тварына', reply_markup=reply_markup)
 
 async def devkit(update: Update, context: CallbackContext):
-    keyboard = [ [KeyboardButton('game'), KeyboardButton('build')], [KeyboardButton('stats_result')],
+    keyboard = [ [KeyboardButton('/game'), KeyboardButton('/build')], [KeyboardButton('/predicts_result')],
                 [KeyboardButton('/mcf_reload'), KeyboardButton('/mcf_stop'), KeyboardButton('/mcf_status')] ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
@@ -108,20 +108,27 @@ async def mcf_status(update: Update, context: CallbackContext) -> None:
         await update.message.reply_photo(photo=photo_file)
 
     # await update.message.reply_text('Бот перезагружен')
-async def stats_check(update: Update, context: CallbackContext) -> None:
+async def predicts_check(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
-    with open(os.path.join('.', 'arambot_lib', 'debug_stats.json'), 'r', encoding='utf-8') as js_stats:
-        stats_register = json.load(js_stats)
-        message = f"Результат по стате | + ({stats_register['PLUS']}) - ({stats_register['minus']})"
+    with open(os.path.join('.', 'untracking', 'predicts_trace.json'), 'r', encoding='utf-8') as js_stats:
+        predicts: dict = json.load(js_stats)
+        itms = list(predicts.items())
+        message = f"""
+{itms[0][0]}   ✅ {itms[0][1][0]}   ❌ {itms[0][1][1]}
+{itms[1][0]}        ✅ {itms[1][1][0]}   ❌ {itms[1][1][1]}
+{itms[2][0]}    ✅ {itms[2][1][0]}   ❌ {itms[2][1][1]}
+{itms[3][0]}  ✅ {itms[3][1][0]}   ❌ {itms[3][1][1]}
+{itms[4][0]}       ✅ {itms[4][1][0]}   ❌ {itms[4][1][1]}
+"""
         await update.message.reply_text(message)
        
 def main() -> None:
     """Start the bot."""
     application = Application.builder().token(os.getenv('BOT_TOKEN')).build()
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bgame\b'), echo_score))
-    application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bbuild\b'), echo_build))
-    # application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bstats_result\b'), stats_check))
+    application.add_handler(CommandHandler("game", echo_score))
+    application.add_handler(CommandHandler("build", echo_build))
+    application.add_handler(CommandHandler("predicts_result", predicts_check))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'https\S+'), change_actual_mirror))
     application.add_handler(CommandHandler('mcf_reload', mcf_reload))
     application.add_handler(CommandHandler('mcf_stop', mcf_stop))
