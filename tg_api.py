@@ -96,15 +96,15 @@ class TGApi:
         cls.post_request(message=message)
 
     
-    @classmethod
-    def display_gamestart(cls, timer):
+    # @classmethod
+    # def display_gamestart(cls, timer):
         
-        if timer is None:
-            message = '⚪️ Игра началась'
-        else:
-            message = '⚪️ Игра началась -- {timer}'.format(timer=timer)
+    #     if timer is None:
+    #         message = '⚪️ Игра началась'
+    #     else:
+    #         message = '⚪️ Игра началась -- {timer}'.format(timer=timer)
     
-        cls.post_request(message=message)
+    #     cls.post_request(message=message)
 
     
     @classmethod

@@ -212,20 +212,20 @@ class Chrome:
                             # self.game_index_ended = game_index
                             self.game_index_new = ''
                             MCFStorage.save_gameid(self.game_index_ended)
-                            # Trace.create_new_trace()
-                            try:
-                                gametime_element = games[0].find_element(By.CSS_SELECTOR, 'span.dashboard-game-info__item.dashboard-game-info__time')
-                                gametime = str(gametime_element.get_attribute('innerText'))
-                                minutes = gametime.split(':')[0]
-                                if minutes in ('00', '01', '02', '03', '04', '05', '06'):
+                            Trace.create_new_trace()
+                            # try:
+                            #     gametime_element = games[0].find_element(By.CSS_SELECTOR, 'span.dashboard-game-info__item.dashboard-game-info__time')
+                            #     gametime = str(gametime_element.get_attribute('innerText'))
+                            #     minutes = gametime.split(':')[0]
+                            #     if minutes in ('00', '01', '02', '03', '04', '05', '06'):
                             
-                                    logger.info('Game started: {gametime}'.format(gametime=gametime))
-                                    TGApi.display_gamestart(timer=gametime)
-                                else:
-                                    TGApi.display_gamestart(timer=None)
-                            except:
-                                TGApi.display_gamestart(timer=None)
-                                pass
+                            #         logger.info('Game started: {gametime}'.format(gametime=gametime))
+                            #         TGApi.display_gamestart(timer=gametime)
+                            #     else:
+                            #         TGApi.display_gamestart(timer=None)
+                            # except:
+                            #     TGApi.display_gamestart(timer=None)
+                            #     pass
                             return
                         else:
                             stream_btn.click()

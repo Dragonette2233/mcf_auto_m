@@ -35,14 +35,14 @@ def close_league_of_legends(self):
 
     list_task = os.popen('tasklist /FI "IMAGENAME eq League of Legends*"').readlines()
     if len(list_task) == 1:
-        self.info_view.exception('Game not launched')
+        # self.info_view.exception('Game not launched')
         return
     
     list_task[3] = list_task[3].replace(' ', '')
     process_pid = list_task[3].split('exe')[1].split('Console')[0]
     os.popen(f'taskkill /PID {process_pid} /F')
     # app_blueprint.delete_screenscore()
-    self.info_view.success('League of Legends closed')
+    # self.info_view.success('League of Legends closed')
 
 def advance_poro_search():
     ...
