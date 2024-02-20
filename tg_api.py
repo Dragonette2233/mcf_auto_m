@@ -2,7 +2,6 @@ import requests
 import os
 from mcf_data import (
     Switches,
-    Validator,
     WINDOWS_USER,
     StatsRate
 
@@ -94,18 +93,6 @@ class TGApi:
             Switches.predicted_winner = True
 
         cls.post_request(message=message)
-
-    
-    # @classmethod
-    # def display_gamestart(cls, timer):
-        
-    #     if timer is None:
-    #         message = '⚪️ Игра началась'
-    #     else:
-    #         message = '⚪️ Игра началась -- {timer}'.format(timer=timer)
-    
-    #     cls.post_request(message=message)
-
     
     @classmethod
     def winner_is(cls, team, kills, timestamp, opened=False):

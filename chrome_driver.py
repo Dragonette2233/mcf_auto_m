@@ -145,6 +145,8 @@ class Chrome:
 
             all_kills = blue_kills + red_kills
             module_kills = abs(blue_kills - red_kills)
+            blue_leader = blue_kills > red_kills and (blue_towers == 0 and red_towers > 0)
+            red_leader = red_kills > blue_kills and (red_towers == 0 and blue_towers > 0)
             no_towers_destroyed = blue_towers == 0 and red_towers == 0
             some_tower_destroyed = blue_towers != 0 or red_towers != 0
             t1_towers_destroyed = blue_towers == 1 and red_towers == 1
@@ -157,7 +159,8 @@ class Chrome:
                 TGApi.send_simple_message('⬆️ Predict 110Б (FL 0.75) ⬆️', predict_ttl=True)
 
             elif all_kills <= 35 and module_kills >= 6 and some_tower_destroyed:
-                TGApi.send_simple_message('⬇️ Predict 110M (FL 0.75) ⬇️', predict_ttl=True)
+                if blue_leader or red_leader:
+                    TGApi.send_simple_message('⬇️ Predict 110M (FL 0.75) ⬇️', predict_ttl=True)
             
             elif gametime > 300 and all_kills < 27 and module_kills > 11:
                 TGApi.send_simple_message('⬇️ Predict 110M (FL 0.5) ⬇️', predict_ttl=True)
@@ -212,20 +215,7 @@ class Chrome:
                             # self.game_index_ended = game_index
                             self.game_index_new = ''
                             MCFStorage.save_gameid(self.game_index_ended)
-                            # Trace.create_new_trace()
-                            # try:
-                            #     gametime_element = games[0].find_element(By.CSS_SELECTOR, 'span.dashboard-game-info__item.dashboard-game-info__time')
-                            #     gametime = str(gametime_element.get_attribute('innerText'))
-                            #     minutes = gametime.split(':')[0]
-                            #     if minutes in ('00', '01', '02', '03', '04', '05', '06'):
-                            
-                            #         logger.info('Game started: {gametime}'.format(gametime=gametime))
-                            #         TGApi.display_gamestart(timer=gametime)
-                            #     else:
-                            #         TGApi.display_gamestart(timer=None)
-                            # except:
-                            #     TGApi.display_gamestart(timer=None)
-                            #     pass
+                           
                             return
                         else:
                             stream_btn.click()

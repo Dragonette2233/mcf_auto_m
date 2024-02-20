@@ -16,16 +16,6 @@ from mcf_data import (
 from mcf_api import MCFApi
 from tg_api import TGApi
 
-# game = ActiveGame()
-
-# Примеры использования логгера
-# logger.debug('Это сообщение уровня DEBUG')
-# logger.info('Это сообщение уровня INFO')
-# logger.warning('Это сообщение уровня WARNING')
-# logger.error('Это сообщение уровня ERROR')
-# logger.critical('Это сообщение уровня CRITICAL')
-
-
 def main():
 
     MCFApi.delete_scoreboard()
