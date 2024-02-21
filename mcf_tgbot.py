@@ -47,7 +47,7 @@ async def change_actual_mirror(update: Update, context: CallbackContext):
     else:
         link_parts = message.split('/')
         new_link = '/'.join(link_parts[0:3]) + league_alt_rout
-        with open('./mcf_lib/mirror_page.txt', 'w+') as ex_url:
+        with open('./untracking/mirror_page.txt', 'w+') as ex_url:
             ex_url.write(new_link)
 
         await update.message.reply_text(f'Зеркало добавлено: {new_link}')
