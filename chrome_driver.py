@@ -124,8 +124,6 @@ class Chrome:
                 case StatsRate.LOSER, StatsRate.LOSER:
                     pass
 
-
-
     def generate_predict_total(self, score):
 
         # is_opened = self.check_if_opened()
@@ -136,7 +134,7 @@ class Chrome:
         elif not Validator.tracer["420s"] and 415 < gametime < 422:
             Trace.add_tracing(timestamp='420s', score=score)
 
-        if gametime < 600:
+        if not Switches.predicted_total and gametime < 600:
             blue_kills = score["blue_kills"] # "blue_kiils": 49,
             red_kills = score["red_kills"] # "red_kills": 43,
             blue_towers = score["blue_towers"] # "blue_towers": 3,
@@ -146,36 +144,55 @@ class Chrome:
             module_kills = abs(blue_kills - red_kills)
             blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0)
             red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0)
+            straight_leader = blue_leader or red_leader
             no_towers_destroyed = blue_towers == 0 and red_towers == 0
-            some_tower_destroyed = blue_towers != 0 or red_towers != 0
+            # some_tower_destroyed = blue_towers != 0 or red_towers != 0
             t1_towers_destroyed = blue_towers == 1 and red_towers == 1
-            # gametime = int(score["time"]) # "time": 1034,
 
-            if all_kills >= 60 and module_kills < 5 and no_towers_destroyed:
-                TGApi.send_simple_message('⬆️ Predict 110Б (FL 1) ⬆️', predict_ttl=True)
+            predictions = {
+                        (all_kills >= 60 and module_kills < 5 and no_towers_destroyed): '⬆️ Predict 110Б (FL 1) ⬆️',
+                        (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime > 420): '⬆️ Predict 110Б (FL 0.5) ⬆️',
+                        (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed): '⬆️ Predict 110Б (FL 0.75) ⬆️',
+                        # (all_kills <= 22 and straight_leader): '⬇️ Predict 110М (FL 1) ⬇️',
+                        (all_kills <= 30 and module_kills >= 6 and straight_leader): '⬇️ Predict 110М (FL 0.5) ⬇️',
+                        (all_kills <= 30 and module_kills >= 9 and gametime > 300): '⬇️ Predict 110М (FL 0.5) ⬇️',
+                        (all_kills <= 25 and module_kills >= 5 and gametime > 420): '⬇️ Predict 110М (FL 1) ⬇️',
+                        (all_kills < 36 and straight_leader and gametime > 480): '⬇️ Predict 110М (FL 0.5) ⬇️',
+                        (all_kills < 30 and module_kills > 5 and gametime > 500): '⬇️ Predict 110М (FL 1) ⬇️',
+                        
+                    }
 
-            elif all_kills >= 80 and module_kills < 5 and t1_towers_destroyed:
-                TGApi.send_simple_message('⬆️ Predict 110Б (FL 0.75) ⬆️', predict_ttl=True)
+            for condition, message in predictions.items():
+                if condition:
+                    TGApi.send_simple_message(message, predict_ttl=True)
+                    break
 
-            elif all_kills <= 30 and module_kills >= 6 and some_tower_destroyed:
-                if blue_leader or red_leader:
-                    TGApi.send_simple_message('⬇️ Predict 110М (FL 0.5) ⬇️', predict_ttl=True)
+            # if all_kills >= 60 and module_kills < 5 and no_towers_destroyed:
+            #     TGApi.send_simple_message('⬆️ Predict 110Б (FL 1) ⬆️', predict_ttl=True)
+
+            # elif all_kills >= 80 and module_kills < 5 and t1_towers_destroyed:
+            #     TGApi.send_simple_message('⬆️ Predict 110Б (FL 0.75) ⬆️', predict_ttl=True)
+
+            # elif all_kills <= 30 and module_kills >= 6 and some_tower_destroyed:
+            #     if blue_leader or red_leader:
+            #         TGApi.send_simple_message('⬇️ Predict 110М (FL 0.5) ⬇️', predict_ttl=True)
             
-            elif gametime > 300 and all_kills < 27 and module_kills >= 11:
-                TGApi.send_simple_message('⬇️ Predict 110М (FL 0.5) ⬇️', predict_ttl=True)
+            
+            # elif gametime > 300 and all_kills < 30 and module_kills >= 9:
+            #     TGApi.send_simple_message('⬇️ Predict 110М (FL 0.5) ⬇️', predict_ttl=True)
 
-            elif gametime > 420 and all_kills < 25 and module_kills >= 5:
-                TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
+            # elif gametime > 420 and all_kills < 25 and module_kills >= 5:
+            #     TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
 
-            elif gametime > 480 and all_kills < 36 and some_tower_destroyed:
-                if blue_leader or red_leader:
-                    TGApi.send_simple_message('⬇️ Predict 110М (FL 0.5) ⬇️', predict_ttl=True)
+            # elif gametime > 480 and all_kills < 36 and some_tower_destroyed:
+            #     if blue_leader or red_leader:
+            #         TGApi.send_simple_message('⬇️ Predict 110М (FL 0.5) ⬇️', predict_ttl=True)
         
-            elif gametime > 500 and all_kills < 30 and module_kills > 5:
-                TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
+            # elif gametime > 500 and all_kills < 30 and module_kills > 5:
+            #     TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
             
-            elif all_kills < 22 and (blue_leader or red_leader) and module_kills > 2:
-                TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
+            # elif all_kills < 22 and (blue_leader or red_leader) and module_kills > 2:
+            #     TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
 
             # else:
             #     app_blueprint.info_view.exception(f'PR: b{blue_kills} r{red_kills} twb {blue_towers} twr{red_towers}')
