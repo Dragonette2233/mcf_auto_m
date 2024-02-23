@@ -108,7 +108,7 @@ class Chrome:
 
             match StatsRate.blue_rate[1], StatsRate.red_rate[1]:
                 case StatsRate.WINNER, StatsRate.LOSER:
-                    if (blue_towers > 0 and red_towers == 0) and blue_kills > red_kills:
+                    if (blue_towers > 0 and red_towers == 0):
                         TGApi.send_simple_message('🐳 Predict П1 🐳', predict_win=True)
                     if gametime > 420 and blue_kills > red_kills and abs(blue_kills - red_kills) > 5:
                         TGApi.send_simple_message('🐳 Predict П1 🐳', predict_win=True)

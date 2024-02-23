@@ -15,26 +15,21 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
         out_value = income_value / divider * 100
 
         match out_value, divider:
-            case 100.0, div if div > 4:
+            case 100.0, div:
                 return ['100%', '🟩']
-            case 100.0, div if div <= 4:
-                return ['0', '🟥']
             case 0, div:
                 return ['0%', '🟥']
-            case out, div if div < 9:
-                return [f"{'%.1f' % out}%", '🟥']
-            case out, div if div in range(9, 12):
-                if out >= 80: return [f"{'%.1f' % out}%", '🟩']
+            case out, div if div < 10:
+                if out >= 80: return [f"{'%.1f' % out}%", '🟩'] 
                 if out < 80: return [f"{'%.1f' % out}%", '🟥']
-            case out, div if div in range(12, 15):
-                if out >= 74: return [f"{'%.1f' % out}%", '🟩']
-                if out < 74: return [f"{'%.1f' % out}%", '🟥']
-            case out, div if out >= 70:
-                return [f"{'%.1f' % out}%", '🟩']
-            case out, div if out < 70:
-                return [f"{'%.1f' % out}%", '🟥']
+            case out, div if div in range(10, 15):
+                if out >= 75: return [f"{'%.1f' % out}%", '🟩']
+                if out < 75: return [f"{'%.1f' % out}%", '🟥']
+            case out, div:
+                if out >= 70: return [f"{'%.1f' % out}%", '🟩']
+                if out < 70: return [f"{'%.1f' % out}%", '🟥']
             case _:
-                return [f"{'%.1f' % out}%", 'white']
+                return [f"{'%.1f' % out}%", '?']
 
     def _find_games_from_stats(teams: dict[str, int]):
 
@@ -100,6 +95,9 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
     ten_roles_rate = _find_games_from_stats(teams_by_ten_roles)
     
     if ten_roles_rate is None:
+        return None
+    
+    elif ten_roles_rate['all_m'] < 7:
         return None
 
     else:
