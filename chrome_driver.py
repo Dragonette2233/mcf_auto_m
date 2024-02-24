@@ -1,9 +1,8 @@
 import time
+import logging
 import modules.mcf_autogui as mcf_autogui
 import modules.mcf_pillow as mcf_pillow
 from modules.mcf_storage import MCFStorage
-# from modules.mcf_tracing import Trace
-import logging
 from modules.mcf_tracing import Trace
 from global_data import Validator
 from tg_api import TGApi
@@ -11,21 +10,19 @@ from mcf_data import Switches, StatsRate, MIRROR_PAGE
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import (
+    TimeoutException, 
+    NoSuchElementException, 
+    StaleElementReferenceException
+    )
 
 logger = logging.getLogger(__name__)
 
 class Chrome:
 
     def __init__(self) -> None:
-        self.XPATH_BTN_GAME = '//*[@id="app"]/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li/ul/li/div[1]/span[2]/span[2]/span/button'
-        self.CSS_BTN_GAME = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
-                            #  /html/body/div[1]/div/div/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[2]/ul/li/div[1]/span[2]/span[2]/span/button
-                            #  /html/body/div[1]/div/div/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[1]/ul/li/div[1]/span[2]/span[2]/span/button
-                            #  /html/body/div[1]/div/div/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[2]/ul/li/div[1]/span[2]/span[2]/span/button
-                            #  //*[@id="app"]/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[2]/ul/li/div[1]/span[2]/span[2]/span/button
+        # self.XPATH_BTN_GAME = '//*[@id="app"]/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li/ul/li/div[1]/span[2]/span[2]/span/button'
+        self.CSS_BTN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
         self.CSS_BTN_REJECT_LIVE = 'button.ui-button.dashboard-redirect-message-timer__btn.ui-button--size-m.ui-button--theme-gray.ui-button--rounded'
         self.CSS_BTN_FOR_BET = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
         self.CSS_TABLE_GAMES = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
@@ -129,9 +126,9 @@ class Chrome:
         # is_opened = self.check_if_opened()
         gametime = int(score["time"])
         
-        if not Validator.tracer["300s"] and 295 < gametime < 310:
+        if not Validator.tracer["300s"] and gametime in range(295, 310):
             Trace.add_tracing(timestamp='300s', score=score)
-        elif not Validator.tracer["420s"] and 415 < gametime < 422:
+        if not Validator.tracer["420s"] and gametime in range(417, 425):
             Trace.add_tracing(timestamp='420s', score=score)
 
         if not Switches.predicted_total and gametime < 600:
@@ -151,15 +148,15 @@ class Chrome:
 
             predictions = {
                         (all_kills >= 60 and module_kills < 5 and no_towers_destroyed): '⬆️ Predict 110Б (FL 1) ⬆️',
-                        (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime > 240): '⬆️ Predict 110Б (FL 0.75) ⬆️',
+                        (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime < 300): '⬆️ Predict 110Б (FL 0.75) ⬆️',
                         (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed): '⬆️ Predict 110Б (FL 0.75) ⬆️',
-                        (all_kills <= 22 and straight_leader): '⬇️ Predict 110М (FL 1) ⬇️',
-                        (all_kills <= 22 and some_tower_destroyed): '⬇️ Predict 110М (FL 0.5) ⬇️',
+                        (all_kills <= 22 and straight_leader and gametime > 240): '⬇️ Predict 110М (FL 1) ⬇️',
+                        (all_kills <= 22 and some_tower_destroyed and gametime > 300): '⬇️ Predict 110М (FL 0.75) ⬇️',
                         (all_kills < 24 and gametime > 480): '⬇️ Predict 110М (FL 0.5) ⬇️',
-                        (all_kills <= 30 and module_kills >= 5 and straight_leader and gametime > 300): '⬇️ Predict 110М (FL 0.5) ⬇️',
-                        (all_kills <= 30 and module_kills >= 9 and gametime > 360): '⬇️ Predict 110М (FL 0.5) ⬇️',
-                        (all_kills <= 25 and module_kills >= 5 and gametime > 420): '⬇️ Predict 110М (FL 1) ⬇️',
-                        (all_kills < 36 and straight_leader and gametime > 480): '⬇️ Predict 110М (FL 0.5) ⬇️',
+                        (all_kills <= 30 and module_kills >= 5 and straight_leader and gametime > 370): '⬇️ Predict 110М (FL 1) ⬇️',
+                        (all_kills <= 30 and module_kills >= 9 and gametime > 420): '⬇️ Predict 110М (FL 0.5) ⬇️',
+                        (all_kills <= 25 and module_kills >= 5 and gametime > 480): '⬇️ Predict 110М (FL 1) ⬇️',
+                        (all_kills < 36 and straight_leader and gametime > 480): '⬇️ Predict 110М (FL 0.75) ⬇️',
                         (all_kills < 30 and module_kills >= 5 and gametime > 540): '⬇️ Predict 110М (FL 1) ⬇️',
                         
                     }
@@ -168,36 +165,6 @@ class Chrome:
                 if condition:
                     TGApi.send_simple_message(message, predict_ttl=True)
                     break
-
-            # if all_kills >= 60 and module_kills < 5 and no_towers_destroyed:
-            #     TGApi.send_simple_message('⬆️ Predict 110Б (FL 1) ⬆️', predict_ttl=True)
-
-            # elif all_kills >= 80 and module_kills < 5 and t1_towers_destroyed:
-            #     TGApi.send_simple_message('⬆️ Predict 110Б (FL 0.75) ⬆️', predict_ttl=True)
-
-            # elif all_kills <= 30 and module_kills >= 6 and some_tower_destroyed:
-            #     if blue_leader or red_leader:
-            #         TGApi.send_simple_message('⬇️ Predict 110М (FL 0.5) ⬇️', predict_ttl=True)
-            
-            
-            # elif gametime > 300 and all_kills < 30 and module_kills >= 9:
-            #     TGApi.send_simple_message('⬇️ Predict 110М (FL 0.5) ⬇️', predict_ttl=True)
-
-            # elif gametime > 420 and all_kills < 25 and module_kills >= 5:
-            #     TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
-
-            # elif gametime > 480 and all_kills < 36 and some_tower_destroyed:
-            #     if blue_leader or red_leader:
-            #         TGApi.send_simple_message('⬇️ Predict 110М (FL 0.5) ⬇️', predict_ttl=True)
-        
-            # elif gametime > 500 and all_kills < 30 and module_kills > 5:
-            #     TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
-            
-            # elif all_kills < 22 and (blue_leader or red_leader) and module_kills > 2:
-            #     TGApi.send_simple_message('⬇️ Predict 110М (FL 1) ⬇️', predict_ttl=True)
-
-            # else:
-            #     app_blueprint.info_view.exception(f'PR: b{blue_kills} r{red_kills} twb {blue_towers} twr{red_towers}')
 
     def notify_when_starts(self):
 
@@ -226,15 +193,13 @@ class Chrome:
                     if game_index == self.game_index_new:
                         # self.game_index_ended = self.game_index_new
                         stream_btn = games[0].find_element(By.CSS_SELECTOR, 'span.dashboard-game-action-bar__group')
-                        stream_btn.find_element(By.CSS_SELECTOR, 'button.ui-dashboard-game-button.dashboard-game-action-bar__item').click()
+                        stream_btn.find_element(By.CSS_SELECTOR, self.CSS_BTN_STREAM).click()
                         time.sleep(2)
 
                         if mcf_pillow.is_game_started():
                             logger.info('Game started: (from comparing stream)')
-                            # self.game_index_ended = game_index
                             self.game_index_new = ''
                             MCFStorage.save_gameid(self.game_index_ended)
-                           
                             return
                         else:
                             stream_btn.click()
