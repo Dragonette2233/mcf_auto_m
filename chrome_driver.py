@@ -145,7 +145,7 @@ class Chrome:
             no_towers_destroyed = blue_towers == 0 and red_towers == 0
             some_tower_destroyed = blue_towers != 0 or red_towers != 0
             t1_towers_destroyed = blue_towers == 1 and red_towers == 1
-
+            
             predictions = {
                         (all_kills >= 60 and module_kills < 5 and no_towers_destroyed): '⬆️ Predict 110Б (FL 1) ⬆️',
                         (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime < 300): '⬆️ Predict 110Б (FL 0.75) ⬆️',
@@ -158,7 +158,6 @@ class Chrome:
                         (all_kills <= 25 and module_kills >= 5 and gametime > 480): '⬇️ Predict 110М (FL 1) ⬇️',
                         (all_kills < 36 and straight_leader and gametime > 480): '⬇️ Predict 110М (FL 0.75) ⬇️',
                         (all_kills < 30 and module_kills >= 5 and gametime > 540): '⬇️ Predict 110М (FL 1) ⬇️',
-                        
                     }
 
             for condition, message in predictions.items():
