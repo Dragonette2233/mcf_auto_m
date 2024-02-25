@@ -147,21 +147,34 @@ class Chrome:
             t1_towers_destroyed = blue_towers == 1 and red_towers == 1
             
             predictions = {
-                        (all_kills >= 60 and module_kills < 5 and no_towers_destroyed): '⬆️ Predict 110Б (FL 1) ⬆️',
-                        (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime < 300): '⬆️ Predict 110Б (FL 0.75) ⬆️',
-                        (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed): '⬆️ Predict 110Б (FL 0.75) ⬆️',
-                        (all_kills <= 22 and straight_leader and gametime > 240): '⬇️ Predict 110М (FL 1) ⬇️',
-                        (all_kills <= 22 and some_tower_destroyed and gametime > 300): '⬇️ Predict 110М (FL 0.75) ⬇️',
-                        (all_kills < 24 and gametime > 480): '⬇️ Predict 110М (FL 0.5) ⬇️',
-                        (all_kills <= 30 and module_kills >= 5 and straight_leader and gametime > 370): '⬇️ Predict 110М (FL 1) ⬇️',
-                        (all_kills <= 30 and module_kills >= 9 and gametime > 420): '⬇️ Predict 110М (FL 0.5) ⬇️',
-                        (all_kills <= 25 and module_kills >= 5 and gametime > 480): '⬇️ Predict 110М (FL 1) ⬇️',
-                        (all_kills < 36 and straight_leader and gametime > 480): '⬇️ Predict 110М (FL 0.75) ⬇️',
-                        (all_kills < 30 and module_kills >= 5 and gametime > 540): '⬇️ Predict 110М (FL 1) ⬇️',
-                    }
+                '⬆️ Predict 110Б (FL 1) ⬆️': [
+                    (all_kills >= 60 and module_kills < 5 and no_towers_destroyed and gametime < 420),
 
-            for condition, message in predictions.items():
-                if condition:
+                ],
+                '⬆️ Predict 110Б (FL 0.75) ⬆️': [
+                    (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime < 300),
+                    (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed),
+
+                ],
+                '⬇️ Predict 110М (FL 1) ⬇️': [
+                    (all_kills <= 22 and straight_leader and gametime > 240),
+                    (all_kills <= 30 and module_kills >= 5 and straight_leader and gametime > 370),
+                    (all_kills <= 25 and module_kills >= 5 and gametime > 480),
+                    (all_kills < 30 and module_kills >= 5 and gametime > 540)
+                ],
+                '⬇️ Predict 110М (FL 0.75) ⬇️': [
+                    (all_kills <= 22 and some_tower_destroyed and gametime > 300),
+                    (all_kills < 36 and straight_leader and gametime > 480)
+                ],
+                '⬇️ Predict 110М (FL 0.5) ⬇️': [
+                    (all_kills < 24 and gametime > 480),
+                    (all_kills <= 30 and module_kills >= 9 and gametime > 420),
+                ]
+
+            }
+
+            for message, conditions in predictions.items():
+                if any(conditions):
                     TGApi.send_simple_message(message, predict_ttl=True)
                     break
 
