@@ -154,8 +154,11 @@ class Chrome:
                 '⬆️ Predict 110Б (FL 0.75) ⬆️': [
                     (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime < 300),
                     (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed),
-
                 ],
+                '⬆️ Predict 110Б (FL 0.5) ⬆️': [
+                    (all_kills >= 55 and module_kills < 6 and no_towers_destroyed and (gametime in range(421, 540))),
+                ],
+
                 '⬇️ Predict 110М (FL 1) ⬇️': [
                     (all_kills <= 22 and straight_leader and gametime > 240),
                     (all_kills <= 30 and module_kills >= 5 and straight_leader and gametime > 370),
