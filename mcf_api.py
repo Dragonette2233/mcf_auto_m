@@ -342,17 +342,17 @@ class MCFApi:
         Switches.request = True
         while Switches.request:
             
-            while True:
-                try:
-                    finished_game = RiotAPI.get_match_by_gameid(area=ActiveGame.area, 
-                                                        gameid=ActiveGame.match_id, 
-                                                        status=True)
-                    break
-                except Exception:
-                    logger.warning('Connection lose, reconnection..')
-                    time.sleep(2.5)
+            # while True:
+            try:
+                finished_game = RiotAPI.get_match_by_gameid(area=ActiveGame.area, 
+                                                    gameid=ActiveGame.match_id, 
+                                                    status=True)
+                # break
+            except Exception:
+                logger.warning('Connection lose, reconnection..')
+                time.sleep(1.5)
             
-            if finished_game.status_code == 200:
+            if finished_game and finished_game.status_code == 200:
 
                 response = finished_game.json()
                 kills = sum(response['info']['participants'][k]['kills'] for k in range(10))
