@@ -26,7 +26,8 @@ class ActiveGame:
 class Validator:
     tracer = {
         "300s": False,
-        "420s": False
+        "420s": False,
+        "540s": False
     }
     predict_value_flet = None
     active_mel_mirror = False

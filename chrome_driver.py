@@ -130,6 +130,8 @@ class Chrome:
             Trace.add_tracing(timestamp='300s', score=score)
         if not Validator.tracer["420s"] and gametime in range(417, 425):
             Trace.add_tracing(timestamp='420s', score=score)
+        if not Validator.tracer["540s"] and gametime in range(540, 550):
+            Trace.add_tracing(timestamp='540s', score=score)
 
         if not Switches.predicted_total and gametime < 600:
             blue_kills = score["blue_kills"] # "blue_kiils": 49,

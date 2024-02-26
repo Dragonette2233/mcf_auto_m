@@ -22,6 +22,7 @@ class Trace:
         data[gameid] = {
                             "300s": [0, 0, 0, 0],
                             "420s": [0, 0, 0, 0],
+                            "540s": [0, 0, 0, 0],
                             "result": ["", 0, "00:00"]
                         }
                     
@@ -49,3 +50,4 @@ class Trace:
         cls.tracing_game = ''
         Validator.tracer["300s"] = False
         Validator.tracer["420s"] = False
+        Validator.tracer["540s"] = False
