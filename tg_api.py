@@ -74,7 +74,15 @@ class TGApi:
             formated_dict['ALL'] = StatsRate.games_all
             formated_dict['TTL'] = StatsRate.games_totals
 
-            StatsRate.stats_clear()
+            match StatsRate.tb_rate[1], StatsRate.tl_rate[1]:
+                case StatsRate.WINNER, StatsRate.LOSER:
+                    cls.post_request('⬆️ Stats 110Б (FL 0.5) ⬆️', predicts_chat=True)
+                case StatsRate.LOSER, StatsRate.WINNER:
+                    cls.post_request('⬇️ Stats 110М (FL 0.5) ⬇️', predicts_chat=True)
+                case _:
+                    pass
+
+            # StatsRate.stats_clear()
             
         else:
             sample_message: str = open('mcf_lib/tg_send_empty.txt', 'r', encoding='utf-8').read()
@@ -89,12 +97,6 @@ class TGApi:
         )
 
         cls.post_request(message=full_message)
-
-        match StatsRate.tb_rate[1], StatsRate.tl_rate[1]:
-            case StatsRate.WINNER, StatsRate.LOSER:
-                cls.post_request('⬆️ Stats 110Б (FL 0.5) ⬆️', predicts_chat=True)
-            case StatsRate.LOSER, StatsRate.WINNER:
-                cls.post_request('⬇️ Stats 110М (FL 0.5) ⬇️', predicts_chat=True)
 
         # Validator.stats_register['W1_pr'] = 0 if formated_dict['W1_e'] == '🟥' else 1
         # Validator.stats_register['W2_pr'] = 0 if formated_dict['W2_e'] == '🟥' else 1
@@ -112,30 +114,14 @@ class TGApi:
                 value = _tmp[2]
                 flet = _tmp[4][:-1]
                 Validator.predict_value_flet = (value, flet)
+                cls.post_request(message=message, predicts_chat=True)
             except Exception as ex_:
                 logger.warning(ex_)
         if predict_win:
             Switches.predicted_winner = True
 
-        cls.post_request(message=message, predicts_chat=True)
+        
         cls.post_request(message=message)
-
-    # @classmethod
-    # def send_to_hidden_chat(cls, message: str, predict_ttl = False, predict_win = False):
-    #     # Switches.predicted = True
-    #     if predict_ttl:
-    #         Switches.predicted_total = True
-    #         try:
-    #             _tmp = message.split()
-    #             value = _tmp[2]
-    #             flet = _tmp[4][:-1]
-    #             Validator.predict_value_flet = (value, flet)
-    #         except Exception as ex_:
-    #             logger.warning(ex_)
-    #     if predict_win:
-    #         Switches.predicted_winner = True
-
-    #     cls.post_request(message=message, predicts_chat=True)
     
     @classmethod
     def winner_is(cls, team, kills, timestamp, opened=False):
