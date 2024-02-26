@@ -18,11 +18,12 @@ class TGApi:
     method_updates = 'getUpdates'
     tg_api_url = 'https://api.telegram.org/bot{token}/{method}'
     CHAT_ID = os.getenv('CHAT_ID')
+    CHAT_PREDICTS = os.getenv('CHAT_PREDICTS')
 
     # @classmethod
     def switch_active(func):
         def wrapper(*args, **kwargs):
-            if WINDOWS_USER == 'ARA-M': # REMOVE !
+            if WINDOWS_USER != 'ARA-M': # REMOVE !
                 func(*args, **kwargs)
     
         return wrapper
@@ -44,12 +45,19 @@ class TGApi:
     @switch_active
     @timeout_handler
     # @classmethod
-    def post_request(message: str):
+    def post_request(message: str, predicts_chat = False):
+
+        if predicts_chat:
+            chat_id = TGApi.CHAT_PREDICTS
+        else:
+            chat_id = TGApi.CHAT_ID
 
         requests.post(
             url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_send),
-            data={'chat_id': TGApi.CHAT_ID, 'text': message }, timeout=2
+            data={'chat_id': chat_id, 'text': message }, timeout=2
         )
+
+        # print(chat_id)
     
     @classmethod
     def gamestart_notification(cls, champions: list):
@@ -82,6 +90,12 @@ class TGApi:
 
         cls.post_request(message=full_message)
 
+        match StatsRate.tb_rate[1], StatsRate.tl_rate[1]:
+            case StatsRate.WINNER, StatsRate.LOSER:
+                cls.post_request('⬆️ Stats 110Б (FL 0.5) ⬆️', predicts_chat=True)
+            case StatsRate.LOSER, StatsRate.WINNER:
+                cls.post_request('⬇️ Stats 110М (FL 0.5) ⬇️', predicts_chat=True)
+
         # Validator.stats_register['W1_pr'] = 0 if formated_dict['W1_e'] == '🟥' else 1
         # Validator.stats_register['W2_pr'] = 0 if formated_dict['W2_e'] == '🟥' else 1
         # Validator.total_register['W1_pr'] = 0 if formated_dict['TB_e'] == '🟥' else 1
@@ -103,7 +117,25 @@ class TGApi:
         if predict_win:
             Switches.predicted_winner = True
 
+        cls.post_request(message=message, predicts_chat=True)
         cls.post_request(message=message)
+
+    # @classmethod
+    # def send_to_hidden_chat(cls, message: str, predict_ttl = False, predict_win = False):
+    #     # Switches.predicted = True
+    #     if predict_ttl:
+    #         Switches.predicted_total = True
+    #         try:
+    #             _tmp = message.split()
+    #             value = _tmp[2]
+    #             flet = _tmp[4][:-1]
+    #             Validator.predict_value_flet = (value, flet)
+    #         except Exception as ex_:
+    #             logger.warning(ex_)
+    #     if predict_win:
+    #         Switches.predicted_winner = True
+
+    #     cls.post_request(message=message, predicts_chat=True)
     
     @classmethod
     def winner_is(cls, team, kills, timestamp, opened=False):

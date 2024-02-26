@@ -13,6 +13,12 @@ logger = logging.getLogger(__name__)
 command: str = input('Enter test command: ')
 
 match command:
+    case 'bot':
+        from tg_api import TGApi
+
+        # message = input('message?: ')
+        TGApi.post_request(message='kak nehui delat', predicts_chat=True)
+
     case 'sim_start':
         from modules.mcf_pillow import is_game_started
         from global_data import Validator
