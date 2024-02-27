@@ -110,13 +110,13 @@ class TGApi:
             case 'blue', True:
                 # Switches.coeff_opened = True
                 message = f'🟢🔵 П1 -- {kills} -- {timestamp}'
-                № cls.RES_FOR_PREDICT = True
+                #  cls.RES_FOR_PREDICT = True
             case 'blue', False:
                 message = f'🔵 П1 -- {kills} -- {timestamp}'
             case 'red', True:
                 # Switches.coeff_opened = True
                 message = f'🟢🔴 П2 -- {kills} -- {timestamp}'
-                № cls.RES_FOR_PREDICT = True
+                #  cls.RES_FOR_PREDICT = True
                 # if not cls.RES_FOR_PREDICT:
                 #     cls.post_request(message=message, predicts_chat=True)
             case 'red', False:
