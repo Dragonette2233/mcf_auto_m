@@ -268,7 +268,7 @@ class MCFApi:
             ActiveGame.blue_team = champions_names[0:5]
             ActiveGame.red_team = champions_names[5:]
             ActiveGame.is_game_founded = True
-            ActiveGame.nick_region = summoner_name[0]
+            ActiveGame.nick_region = nick_region
 
             common_check = cls.count_of_common(
                 sequence_1=ActiveGame.blue_team,

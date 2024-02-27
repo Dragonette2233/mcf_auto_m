@@ -87,7 +87,7 @@ def main():
             if Validator.quick_end:
                 status = '❌ Remake'
             else:
-                status = '❌ Не найдена'
+                status = '❌ Игра не найдена'
             
             TGApi.gamestart_notification(
                 team_blue=' '.join(teams['blue']),

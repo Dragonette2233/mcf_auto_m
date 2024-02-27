@@ -124,16 +124,16 @@ class Chrome:
         if not Switches.predicted_winner:
 
             wpredictions = {
-                '🐳 S_Predict П1 🐳': [
+                '🐳 S_Predict П1 (FL 0.5) 🐳': [
                     (StatsRate.win_blue_accepted(), blue_towers > 0 and red_towers == 0),
                     (StatsRate.win_blue_accepted(), gametime > 420 and blue_kills > red_kills and module_kills > 5),
-                    (StatsRate.win_blue_accepted(), blue_kills > red_kills and module_kills > 7)
+                    (StatsRate.win_blue_accepted(), gametime > 240 and blue_kills > red_kills and module_kills > 8)
 
                 ],
-                '🐙 S_Predict П2 🐙': [
+                '🐙 S_Predict П2 (FL 0.5) 🐙': [
                     (StatsRate.win_red_accepted(), red_towers > 0 and blue_towers == 0),
                     (StatsRate.win_red_accepted(), gametime > 420 and red_kills > blue_kills and module_kills > 5),
-                    (StatsRate.win_red_accepted(), red_kills and module_kills > 7),
+                    (StatsRate.win_red_accepted(), gametime > 240 and red_kills > blue_kills and module_kills > 8),
                 ]
             }
 
