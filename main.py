@@ -46,7 +46,7 @@ def main():
                 team_red=' '.join(teams['red']),
                 status_message=f'✅ {ActiveGame.nick_region}'
             )
-            
+
             MCFThread(func=MCFApi.awaiting_game_end, args=(chrome, )).start()
             MCFApi.spectate_active_game()
 
@@ -84,12 +84,27 @@ def main():
             ActiveGame.refresh()
             # time.sleep(300)
         else:
+            if Validator.quick_end:
+                status = '❌ Remake'
+            else:
+                status = '❌ Не найдена'
+            
             TGApi.gamestart_notification(
                 team_blue=' '.join(teams['blue']),
                 team_red=' '.join(teams['red']),
-                status_message=f'❌ Не найдена'
+                status_message=status
             )
 
+            if Validator.quick_end:
+                TGApi.winner_is(
+                            team=Validator.ended_winner, 
+                            kills=Validator.ended_kills,
+                            timestamp=Validator.ended_time
+                        )
+                Validator.quick_end = False
+
+
+            
         logger.info('Bot restarting')
         chrome.driver.quit()
         del chrome

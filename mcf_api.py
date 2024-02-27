@@ -317,15 +317,12 @@ class MCFApi:
                     )
                     
                     if common_elements == 5:
-                        logger.info('Game ended! Restarting bot in 120s')
+                        # logger.info('Game ended! Restarting bot in 120s')
                         Validator.ended_blue_characters = None
                         Validator.finded_game_characerts = None
-                        TGApi.winner_is(
-                            team=Validator.ended_winner, 
-                            kills=Validator.ended_kills,
-                            timestamp=Validator.ended_time
-                        )
                         Validator.quick_end = True
+
+                        return False
 
 
                 if ActiveGame.is_game_founded:
