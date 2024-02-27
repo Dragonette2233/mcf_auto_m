@@ -78,8 +78,10 @@ class TGApi:
             match StatsRate.tb_rate[1], StatsRate.tl_rate[1]:
                 case StatsRate.WINNER, StatsRate.LOSER:
                     cls.post_request('⬆️ Stats 110Б (FL 0.5) ⬆️', predicts_chat=True)
+                    cls.RES_FOR_PREDICT = True
                 case StatsRate.LOSER, StatsRate.WINNER:
                     cls.post_request('⬇️ Stats 110М (FL 0.5) ⬇️', predicts_chat=True)
+                    cls.RES_FOR_PREDICT = True
                 case _:
                     pass
 
