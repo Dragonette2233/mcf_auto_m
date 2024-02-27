@@ -73,7 +73,6 @@ class TGApi:
 
         sample_message: str = open('mcf_lib/tg_send_empty.txt', 'r', encoding='utf-8').read()
 
-        
         for i, name in enumerate(champions):
             formated_dict[f'p_{i}'] = name
 

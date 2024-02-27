@@ -94,33 +94,6 @@ class Chrome:
             
         return False
     
-    def generate_predict_winner(self, score):
-
-        gametime = int(score["time"])
-        if StatsRate.is_stats_avaliable() and gametime < 600:
-            blue_kills = score["blue_kills"] # "blue_kiils": 49,
-            red_kills = score["red_kills"] # "red_kills": 43,
-            blue_towers = score["blue_towers"] # "blue_towers": 3,
-            red_towers = score["red_towers"]
-
-            match StatsRate.blue_rate[1], StatsRate.red_rate[1]:
-                case StatsRate.WINNER, StatsRate.LOSER:
-                    if (blue_towers > 0 and red_towers == 0):
-                        TGApi.send_simple_message('🐳 Predict П1 🐳', predict_win=True)
-                    if gametime > 420 and blue_kills > red_kills and abs(blue_kills - red_kills) > 5:
-                        TGApi.send_simple_message('🐳 Predict П1 🐳', predict_win=True)
-                    if blue_kills > red_kills and abs(blue_kills - red_kills) > 7:
-                        TGApi.send_simple_message('🐳 Predict П1 🐳', predict_win=True)
-                case StatsRate.LOSER, StatsRate.WINNER:
-                    if (blue_towers == 0 and red_towers > 0) and blue_kills < red_kills:
-                        TGApi.send_simple_message('🐙 Predict П2 🐙', predict_win=True)
-                    if gametime > 420 and blue_kills < red_kills and abs(blue_kills - red_kills) > 5:
-                        TGApi.send_simple_message('🐙 Predict П2 🐙', predict_win=True)
-                    if red_kills > blue_kills and abs(blue_kills - red_kills) > 7:
-                        TGApi.send_simple_message('🐙 Predict П2 🐙', predict_win=True)
-                case StatsRate.LOSER, StatsRate.LOSER:
-                    pass
-
     def generate_predict(self, score):
 
         # is_opened = self.check_if_opened()
@@ -148,16 +121,26 @@ class Chrome:
         some_tower_destroyed = blue_towers != 0 or red_towers != 0
         t1_towers_destroyed = blue_towers == 1 and red_towers == 1
         
-        # if not Switches.predicted_winner:
+        if not Switches.predicted_winner:
 
-        #     wpredictions = {
-        #         '🐳 S_Predict П1 🐳': [
+            wpredictions = {
+                '🐳 S_Predict П1 🐳': [
+                    (StatsRate.win_blue_accepted(), blue_towers > 0 and red_towers == 0),
+                    (StatsRate.win_blue_accepted(), gametime > 420 and blue_kills > red_kills and module_kills > 5),
+                    (StatsRate.win_blue_accepted(), blue_kills > red_kills and module_kills > 7)
 
-        #         ],
-        #         '🐙 S_Predict П2 🐙': [
+                ],
+                '🐙 S_Predict П2 🐙': [
+                    (StatsRate.win_red_accepted(), red_towers > 0 and blue_towers == 0),
+                    (StatsRate.win_red_accepted(), gametime > 420 and red_kills > blue_kills and module_kills > 5),
+                    (StatsRate.win_red_accepted(), red_kills and module_kills > 7),
+                ]
+            }
 
-        #         ]
-        #     }
+            for message, conditions in wpredictions.items():
+                if any(conditions):
+                    TGApi.send_simple_message(message, predict_win=True)
+                    break
 
         if not Switches.spredicted:
             spredictions = {
