@@ -171,7 +171,7 @@ class ScoreRecognition:
             blue_score.remove(0)
         
         gamedata = {
-            'time': total_seconds,
+            'time': int(total_seconds),
             'blue_kills': int(blue_kills) if blue_kills !='' else 0,
             'red_kills': int(red_kills) if red_kills !='' else 0,
             'blue_towers': int(blue_towers) if blue_towers != '' else 0,

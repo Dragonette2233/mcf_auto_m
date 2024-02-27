@@ -12,6 +12,7 @@ from global_data import Validator
 from mcf_data import (
     Switches,
     MCFThread,
+    StatsRate
 )
 from mcf_api import MCFApi
 from tg_api import TGApi
@@ -19,6 +20,7 @@ from tg_api import TGApi
 def main():
 
     MCFApi.delete_scoreboard()
+    StatsRate.stats_clear()
     # chrome = Chrome()
     # chrome.start()
     logger.info('BOT started')
@@ -55,13 +57,8 @@ def main():
             while Switches.request:
                 mcf_autogui.doubleClick(x=658, y=828)
                 score = mcf_pillow.generate_scoreboard()
-                
-                if not Switches.predicted_total:
-                    chrome.generate_predict_total(score)
-
-                if not Switches.predicted_winner:
-                    chrome.generate_predict_winner(score)
-                
+                if score["time"] < 600:
+                    chrome.generate_predict(score)
                 chrome.remove_cancel()
                 time.sleep(2)
 
@@ -81,6 +78,8 @@ def main():
             Switches.coeff_opened = False
             Switches.predicted_total = False
             Switches.predicted_winner = False
+            Switches.spredicted = False
+            StatsRate.stats_clear()
             ActiveGame.refresh()
             # time.sleep(300)
         else:

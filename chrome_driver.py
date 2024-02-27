@@ -68,7 +68,7 @@ class Chrome:
 
     def stream_fullscreen(self):
         if Validator.active_mel_mirror:
-            mcf_autogui.click(x=1882, y=374)
+            mcf_autogui.click(x=1871, y=361)
         else:
             mcf_autogui.click(x=1871, y=325)
         time.sleep(3.5)
@@ -121,10 +121,10 @@ class Chrome:
                 case StatsRate.LOSER, StatsRate.LOSER:
                     pass
 
-    def generate_predict_total(self, score):
+    def generate_predict(self, score):
 
         # is_opened = self.check_if_opened()
-        gametime = int(score["time"])
+        gametime = score["time"]
         
         if not Validator.tracer["300s"] and gametime in range(295, 310):
             Trace.add_tracing(timestamp='300s', score=score)
@@ -133,22 +133,48 @@ class Chrome:
         if not Validator.tracer["540s"] and gametime in range(540, 550):
             Trace.add_tracing(timestamp='540s', score=score)
 
-        if not Switches.predicted_total and gametime < 600:
-            blue_kills = score["blue_kills"] # "blue_kiils": 49,
-            red_kills = score["red_kills"] # "red_kills": 43,
-            blue_towers = score["blue_towers"] # "blue_towers": 3,
-            red_towers = score["red_towers"] # "red_towers": 1,
+        blue_kills = score["blue_kills"] # "blue_kiils": 49,
+        red_kills = score["red_kills"] # "red_kills": 43,
+        blue_towers = score["blue_towers"] # "blue_towers": 3,
+        red_towers = score["red_towers"] # "red_towers": 1,
 
-            all_kills = blue_kills + red_kills
-            module_kills = abs(blue_kills - red_kills)
-            blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0)
-            red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0)
-            straight_leader = blue_leader or red_leader
-            two_towers_destroyed = blue_towers > 1 or red_towers > 1
-            no_towers_destroyed = blue_towers == 0 and red_towers == 0
-            some_tower_destroyed = blue_towers != 0 or red_towers != 0
-            t1_towers_destroyed = blue_towers == 1 and red_towers == 1
-            
+        all_kills = blue_kills + red_kills
+        module_kills = abs(blue_kills - red_kills)
+        blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0)
+        red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0)
+        straight_leader = blue_leader or red_leader
+        two_towers_destroyed = blue_towers > 1 or red_towers > 1
+        no_towers_destroyed = blue_towers == 0 and red_towers == 0
+        some_tower_destroyed = blue_towers != 0 or red_towers != 0
+        t1_towers_destroyed = blue_towers == 1 and red_towers == 1
+        
+        # if not Switches.predicted_winner:
+
+        #     wpredictions = {
+        #         '🐳 S_Predict П1 🐳': [
+
+        #         ],
+        #         '🐙 S_Predict П2 🐙': [
+
+        #         ]
+        #     }
+
+        if not Switches.spredicted:
+            spredictions = {
+                '⬇️ S_Predict 110М (FL 0.5) ⬇️': [
+                    (StatsRate.tl_accepted() and all_kills < 30 and gametime > 300)
+                ],
+                '⬆️ S_Predict 110Б (FL 0.5) ⬆️': [
+                    (StatsRate.tb_accepted() and all_kills > 45 and module_kills < 7 and gametime < 360)
+                ]
+            }
+
+            for message, conditions in spredictions.items():
+                if any(conditions):
+                    TGApi.send_simple_message(message, spredict=True)
+                    break
+
+        if not Switches.predicted_total:
             predictions = {
                 '⬆️ Predict 110Б (FL 1) ⬆️': [
                     (all_kills >= 60 and module_kills < 5 and no_towers_destroyed and gametime < 420),

@@ -224,12 +224,13 @@ class Switches:
     bot_activity = False
     predicted_total = False
     predicted_winner = False
+    spredicted = False
 
 class StatsRate:
-    blue_rate: tuple[str] = None
-    red_rate: tuple[str] = None
-    tb_rate: tuple[str] = None
-    tl_rate: tuple[str] = None
+    blue_rate: list[str] = [0, '']
+    red_rate: list[str] = [0, '']
+    tb_rate: list[str] = [0, '']
+    tl_rate: list[str] = [0, '']
     games_all: int = 0
     games_totals: int = 0
 
@@ -259,6 +260,26 @@ class StatsRate:
     @classmethod
     def stats_clear(cls):
         cls.games_all = 0
+
+    @classmethod
+    def win_blue_accepted(cls):
+        if (cls.games_all != 0) and (cls.blue_rate[1] == cls.WINNER):
+            return True
+        
+    @classmethod
+    def win_red_accepted(cls):
+        if (cls.games_all != 0) and (cls.red_rate[1] == cls.WINNER):
+            return True
+
+    @classmethod
+    def tb_accepted(cls):
+        if (cls.games_all != 0) and (cls.tb_rate[1] == cls.WINNER):
+            return True
+                    
+    @classmethod
+    def tl_accepted(cls):
+        if (cls.games_all != 0) and (cls.tl_rate[1] == cls.WINNER):
+            return True
 
 
 class TGsymbols:

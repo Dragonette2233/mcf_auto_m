@@ -57,41 +57,23 @@ class TGApi:
             url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_send),
             data={'chat_id': chat_id, 'text': message }, timeout=2
         )
-
-        # print(chat_id)
     
     @classmethod
     def gamestart_notification(cls, champions: list):
 
         formated_dict = {}
 
-        if StatsRate.is_stats_avaliable():
-            sample_message: str = open('mcf_lib/tg_send_statistics.txt', 'r', encoding='utf-8').read()
+        # if StatsRate.is_stats_avaliable():
+        #     formated_dict['W1'], formated_dict['W1_e'] = StatsRate.blue_rate[0], StatsRate.blue_rate[1]
+        #     formated_dict['W2'], formated_dict['W2_e'] = StatsRate.red_rate[0], StatsRate.red_rate[1]
+        #     formated_dict['TB'], formated_dict['TB_e'] = StatsRate.tb_rate[0], StatsRate.tb_rate[1]
+        #     formated_dict['TL'], formated_dict['TL_e'] = StatsRate.tl_rate[0], StatsRate.tl_rate[1]
+        #     formated_dict['ALL'] = StatsRate.games_all
+        #     formated_dict['TTL'] = StatsRate.games_totals
 
-            # formated_dict['W1'], formated_dict['W1_e'] = statsrate['w1'][0], statsrate['w1'][1]
-            # formated_dict['W2'], formated_dict['W2_e'] = statsrate['w2'][0], statsrate['w2'][1]
-            formated_dict['TB'], formated_dict['TB_e'] = StatsRate.tb_rate[0], StatsRate.tb_rate[1]
-            formated_dict['TL'], formated_dict['TL_e'] = StatsRate.tl_rate[0], StatsRate.tl_rate[1]
-            formated_dict['ALL'] = StatsRate.games_all
-            formated_dict['TTL'] = StatsRate.games_totals
+        sample_message: str = open('mcf_lib/tg_send_empty.txt', 'r', encoding='utf-8').read()
 
-            match StatsRate.tb_rate[1], StatsRate.tl_rate[1]:
-                case StatsRate.WINNER, StatsRate.LOSER:
-                    cls.post_request('⬆️ Stats 110Б (FL 0.5) ⬆️', predicts_chat=True)
-                    cls.RES_FOR_PREDICT = True
-                case StatsRate.LOSER, StatsRate.WINNER:
-                    cls.post_request('⬇️ Stats 110М (FL 0.5) ⬇️', predicts_chat=True)
-                    cls.RES_FOR_PREDICT = True
-                case _:
-                    pass
-
-            # StatsRate.stats_clear()
-            
-        else:
-            sample_message: str = open('mcf_lib/tg_send_empty.txt', 'r', encoding='utf-8').read()
-
-        StatsRate.stats_clear()
-
+        
         for i, name in enumerate(champions):
             formated_dict[f'p_{i}'] = name
 
@@ -108,7 +90,7 @@ class TGApi:
 
     
     @classmethod
-    def send_simple_message(cls, message: str, predict_ttl = False, predict_win = False):
+    def send_simple_message(cls, message: str, predict_ttl = False, predict_win = False, spredict = False):
         # Switches.predicted = True
         if predict_ttl:
             Switches.predicted_total = True
@@ -123,6 +105,12 @@ class TGApi:
                 logger.warning(ex_)
         if predict_win:
             Switches.predicted_winner = True
+            cls.post_request(message=message, predicts_chat=True)
+            cls.RES_FOR_PREDICT = True
+        if spredict:
+            Switches.spredicted = True
+            cls.post_request(message=message, predicts_chat=True)
+            cls.RES_FOR_PREDICT = True
 
         
         cls.post_request(message=message)
