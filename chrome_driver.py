@@ -144,6 +144,7 @@ class Chrome:
             blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0)
             red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0)
             straight_leader = blue_leader or red_leader
+            two_towers_destroyed = blue_towers > 1 or red_towers > 1
             no_towers_destroyed = blue_towers == 0 and red_towers == 0
             some_tower_destroyed = blue_towers != 0 or red_towers != 0
             t1_towers_destroyed = blue_towers == 1 and red_towers == 1
@@ -168,6 +169,7 @@ class Chrome:
                     (all_kills < 30 and module_kills >= 5 and gametime > 540)
                 ],
                 '⬇️ Predict 110М (FL 0.75) ⬇️': [
+                    (all_kills < 40 and two_towers_destroyed and gametime > 420),
                     (all_kills <= 22 and some_tower_destroyed and gametime > 300),
                     (all_kills < 36 and straight_leader and gametime > 480)
                 ],
