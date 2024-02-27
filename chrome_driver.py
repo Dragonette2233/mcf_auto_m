@@ -120,7 +120,7 @@ class Chrome:
         some_tower_destroyed = blue_towers != 0 or red_towers != 0
         t1_towers_destroyed = blue_towers == 1 and red_towers == 1
         
-        if StatsRate.is_stats_avaliable() and (not Switches.predicted_winner):
+        if not Switches.predicted_winner:
 
             wpredictions = {
                 '🐳 S_Predict П1 (FL 0.5) 🐳': [
@@ -142,7 +142,7 @@ class Chrome:
                     Switches.predicted_winner = True
                     break
 
-        if StatsRate.is_stats_avaliable() and not Switches.spredicted:
+        if not Switches.spredicted:
 
             spredictions = {
                 '⬇️ S_Predict 110М (FL 0.5) ⬇️': [
