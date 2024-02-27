@@ -34,17 +34,18 @@ def main():
         chrome.notify_when_starts()
         chrome.stream_fullscreen()
         teams = MCFApi.get_characters()
+        chrome.stream_close()
+        nicknames = MCFApi.finded_game(teams=teams)
 
-        if not teams:
-            TGApi.send_simple_message('Распрознавание неудачно. Ждем следующую игру')
-            logger.warning('Recognizing failed!')
-            nicknames = False
-        else:
-            chrome.stream_close()
-            nicknames = MCFApi.finded_game(teams=teams)
-            logger.info(nicknames)
+        logger.info(nicknames)
     
         if nicknames and MCFApi.get_activegame_parametres(nicknames=nicknames):
+            
+            TGApi.gamestart_notification(
+                team_blue=' '.join(teams['blue']),
+                team_red=' '.join(teams['red']),
+                status_message=f'✅ {ActiveGame.nick_region}'
+            )
             
             MCFThread(func=MCFApi.awaiting_game_end, args=(chrome, )).start()
             MCFApi.spectate_active_game()
@@ -83,13 +84,11 @@ def main():
             ActiveGame.refresh()
             # time.sleep(300)
         else:
-            mcf_autogui.close_league_stream()
-            if Validator.quick_end:
-                TGApi.send_simple_message('❌ Игра окончена досрочно')
-                Validator.quick_end = False
-            else:
-                TGApi.send_simple_message('❌ Игра не найдена')
-            # time.sleep(500)
+            TGApi.gamestart_notification(
+                team_blue=' '.join(teams['blue']),
+                team_red=' '.join(teams['red']),
+                status_message=f'❌ Не найдена'
+            )
 
         logger.info('Bot restarting')
         chrome.driver.quit()

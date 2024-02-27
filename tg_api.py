@@ -59,25 +59,14 @@ class TGApi:
         )
     
     @classmethod
-    def gamestart_notification(cls, champions: list):
+    def gamestart_notification(cls, team_blue: list, team_red: list, status_message=''):
 
-        formated_dict = {}
-
-        # if StatsRate.is_stats_avaliable():
-        #     formated_dict['W1'], formated_dict['W1_e'] = StatsRate.blue_rate[0], StatsRate.blue_rate[1]
-        #     formated_dict['W2'], formated_dict['W2_e'] = StatsRate.red_rate[0], StatsRate.red_rate[1]
-        #     formated_dict['TB'], formated_dict['TB_e'] = StatsRate.tb_rate[0], StatsRate.tb_rate[1]
-        #     formated_dict['TL'], formated_dict['TL_e'] = StatsRate.tl_rate[0], StatsRate.tl_rate[1]
-        #     formated_dict['ALL'] = StatsRate.games_all
-        #     formated_dict['TTL'] = StatsRate.games_totals
-
-        sample_message: str = open('mcf_lib/tg_send_empty.txt', 'r', encoding='utf-8').read()
-
-        for i, name in enumerate(champions):
-            formated_dict[f'p_{i}'] = name
-
+        sample_message: str = open('mcf_lib/tg_start_notification.txt', 'r', encoding='utf-8').read()
+        
         full_message = sample_message.format(
-            **formated_dict
+            team_blue=team_blue,
+            team_red=team_red,
+            status_message=status_message
         )
 
         cls.post_request(message=full_message)

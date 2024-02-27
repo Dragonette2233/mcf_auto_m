@@ -55,9 +55,10 @@ class MCFApi:
                     team_red=team_red.characters
                 )
 
-                TGApi.gamestart_notification(
-                    champions=team_blue.characters + team_red.characters,
-                )
+                # TGApi.gamestart_notification(
+                #     team_blue=' '.join(team_blue.characters),
+                #     team_red=' '.join(team_red.characters)
+                # )
                 # logger.info('Team BLUE: {team_blue}'.format(team_blue=' '.join(team_blue.characters)))
                 # logger.info('Team RED: {team_red}'.format(team_red=' '.join(team_red.characters)))
                 return {
@@ -328,7 +329,7 @@ class MCFApi:
 
 
                 if ActiveGame.is_game_founded:
-                    TGApi.send_simple_message('✅ Игра найдена: {nick}'.format(nick=nick))
+                    # TGApi.send_simple_message('✅ Игра найдена: {nick}'.format(nick=nick))
                     Trace.create_new_trace(gameid=ActiveGame.match_id)
                     # mcf_autogui.close_league_stream()
                     return True
