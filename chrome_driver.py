@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 class Chrome:
 
     def __init__(self) -> None:
-        # self.XPATH_BTN_GAME = '//*[@id="app"]/div[3]/div/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li/ul/li/div[1]/span[2]/span[2]/span/button'
         self.CSS_BTN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
         self.CSS_BTN_REJECT_LIVE = 'button.ui-button.dashboard-redirect-message-timer__btn.ui-button--size-m.ui-button--theme-gray.ui-button--rounded'
         self.CSS_BTN_FOR_BET = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
@@ -121,13 +120,13 @@ class Chrome:
         some_tower_destroyed = blue_towers != 0 or red_towers != 0
         t1_towers_destroyed = blue_towers == 1 and red_towers == 1
         
-        if not Switches.predicted_winner:
+        if StatsRate.is_stats_avaliable() and (not Switches.predicted_winner):
 
             wpredictions = {
                 '🐳 S_Predict П1 (FL 0.5) 🐳': [
                     (StatsRate.win_blue_accepted() and blue_towers > 0 and red_towers == 0),
                     (StatsRate.win_blue_accepted() and gametime > 420 and blue_kills > red_kills and module_kills > 5),
-                    (StatsRate.win_blue_accepted() and  gametime > 240 and blue_kills > red_kills and module_kills > 8)
+                    (StatsRate.win_blue_accepted() and gametime > 240 and blue_kills > red_kills and module_kills > 8)
 
                 ],
                 '🐙 S_Predict П2 (FL 0.5) 🐙': [
@@ -139,10 +138,11 @@ class Chrome:
 
             for message, conditions in wpredictions.items():
                 if any(conditions):
-                    TGApi.send_simple_message(message, predict_win=True)
+                    TGApi.send_simple_message(message)
+                    Switches.predicted_winner = True
                     break
 
-        if not Switches.spredicted:
+        if StatsRate.is_stats_avaliable() and not Switches.spredicted:
 
             spredictions = {
                 '⬇️ S_Predict 110М (FL 0.5) ⬇️': [
@@ -155,7 +155,8 @@ class Chrome:
 
             for message, conditions in spredictions.items():
                 if any(conditions):
-                    TGApi.send_simple_message(message, spredict=True)
+                    TGApi.send_simple_message(message)
+                    Switches.spredicted = True
                     break
 
         if not Switches.predicted_total:
@@ -193,7 +194,15 @@ class Chrome:
 
             for message, conditions in predictions.items():
                 if any(conditions):
-                    TGApi.send_simple_message(message, predict_ttl=True)
+                    Switches.predicted_total = True
+                    try:
+                        _tmp = message.split()
+                        value = _tmp[2]
+                        flet = _tmp[4][:-1]
+                        Validator.predict_value_flet = (value, flet)
+                    except Exception as ex_:
+                        logger.warning(ex_)
+                    TGApi.send_simple_message(message)
                     break
 
     def notify_when_starts(self):

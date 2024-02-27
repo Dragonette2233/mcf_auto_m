@@ -51,3 +51,7 @@ class Trace:
         Validator.tracer["300s"] = False
         Validator.tracer["420s"] = False
         Validator.tracer["540s"] = False
+
+    @classmethod
+    def trace_predicts(cls):
+        ...

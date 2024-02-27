@@ -55,12 +55,6 @@ class MCFApi:
                     team_red=team_red.characters
                 )
 
-                # TGApi.gamestart_notification(
-                #     team_blue=' '.join(team_blue.characters),
-                #     team_red=' '.join(team_red.characters)
-                # )
-                # logger.info('Team BLUE: {team_blue}'.format(team_blue=' '.join(team_blue.characters)))
-                # logger.info('Team RED: {team_red}'.format(team_red=' '.join(team_red.characters)))
                 return {
                     'blue': team_blue.characters,
                     'red': team_red.characters
@@ -326,9 +320,7 @@ class MCFApi:
 
 
                 if ActiveGame.is_game_founded:
-                    # TGApi.send_simple_message('✅ Игра найдена: {nick}'.format(nick=nick))
                     Trace.create_new_trace(gameid=ActiveGame.match_id)
-                    # mcf_autogui.close_league_stream()
                     return True
                     
             except Exception as ex:
@@ -336,16 +328,14 @@ class MCFApi:
     
     @classmethod
     def awaiting_game_end(cls, chrome: Chrome = None):
-        # from mcf_data import Switches
         Switches.request = True
         while Switches.request:
             
-            # while True:
+
             try:
                 finished_game = RiotAPI.get_match_by_gameid(area=ActiveGame.area, 
                                                     gameid=ActiveGame.match_id, 
                                                     status=True)
-                # break
             except Exception:
                 logger.warning('Connection lose, reconnection..')
                 time.sleep(1.5)
@@ -365,9 +355,6 @@ class MCFApi:
                 else:
                     is_opened = False
 
-                # if is_opened:
-                #     Switches.coeff_opened = True
-
                 if response['info']['teams'][0]['win']:
                     winner = 'blue'
                 else:
@@ -379,9 +366,6 @@ class MCFApi:
                 MCFStorage.predicts_monitor(kills=kills)
                 ActiveGame.is_game_founded = False
                 Switches.request = False
-
-                # if Validator.predict_value_flet is not None:
-                #     ...
 
                 finished_game.close()
                 break

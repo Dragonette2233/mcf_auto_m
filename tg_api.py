@@ -5,8 +5,6 @@ from global_data import Validator
 from mcf_data import (
     Switches,
     WINDOWS_USER,
-    StatsRate
-
 )
 
 logger = logging.getLogger(__name__)
@@ -45,7 +43,6 @@ class TGApi:
 
     @switch_active
     @timeout_handler
-    # @classmethod
     def post_request(message: str, predicts_chat=False):
 
         if predicts_chat:
@@ -78,29 +75,7 @@ class TGApi:
 
     
     @classmethod
-    def send_simple_message(cls, message: str, predict_ttl = False, predict_win = False, spredict = False):
-        # Switches.predicted = True
-        if predict_ttl:
-            Switches.predicted_total = True
-            try:
-                _tmp = message.split()
-                value = _tmp[2]
-                flet = _tmp[4][:-1]
-                Validator.predict_value_flet = (value, flet)
-                # cls.post_request(message=message, predicts_chat=True)
-                # cls.RES_FOR_PREDICT = True
-            except Exception as ex_:
-                logger.warning(ex_)
-        if predict_win:
-            Switches.predicted_winner = True
-            # cls.post_request(message=message, predicts_chat=True)
-            # cls.RES_FOR_PREDICT = True
-        if spredict:
-            Switches.spredicted = True
-            # cls.post_request(message=message, predicts_chat=True)
-            # cls.RES_FOR_PREDICT = True
-
-        
+    def send_simple_message(cls, message: str):        
         cls.post_request(message=message)
     
     @classmethod
@@ -108,23 +83,14 @@ class TGApi:
         
         match team, opened:
             case 'blue', True:
-                # Switches.coeff_opened = True
                 message = f'🟢🔵 П1 -- {kills} -- {timestamp}'
-                #  cls.RES_FOR_PREDICT = True
             case 'blue', False:
                 message = f'🔵 П1 -- {kills} -- {timestamp}'
             case 'red', True:
-                # Switches.coeff_opened = True
                 message = f'🟢🔴 П2 -- {kills} -- {timestamp}'
-                #  cls.RES_FOR_PREDICT = True
-                # if not cls.RES_FOR_PREDICT:
-                #     cls.post_request(message=message, predicts_chat=True)
             case 'red', False:
                 message = f'🔴 П2 -- {kills} -- {timestamp}'
             case _:
                 pass
 
         cls.post_request(message=message)
-        # if cls.RES_FOR_PREDICT:
-        #     cls.post_request(message=message, predicts_chat=True)
-        #     cls.RES_FOR_PREDICT = False
