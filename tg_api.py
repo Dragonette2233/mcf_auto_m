@@ -17,13 +17,14 @@ class TGApi:
     method_send = 'sendMessage'
     method_updates = 'getUpdates'
     tg_api_url = 'https://api.telegram.org/bot{token}/{method}'
+    RES_FOR_PREDICT = False
     CHAT_ID = os.getenv('CHAT_ID')
     CHAT_PREDICTS = os.getenv('CHAT_PREDICTS')
 
     # @classmethod
     def switch_active(func):
         def wrapper(*args, **kwargs):
-            if WINDOWS_USER != 'ARA-M': # REMOVE !
+            if WINDOWS_USER == 'ARA-M': # REMOVE !
                 func(*args, **kwargs)
     
         return wrapper
@@ -45,7 +46,7 @@ class TGApi:
     @switch_active
     @timeout_handler
     # @classmethod
-    def post_request(message: str, predicts_chat = False):
+    def post_request(message: str, predicts_chat=False):
 
         if predicts_chat:
             chat_id = TGApi.CHAT_PREDICTS
@@ -115,6 +116,7 @@ class TGApi:
                 flet = _tmp[4][:-1]
                 Validator.predict_value_flet = (value, flet)
                 cls.post_request(message=message, predicts_chat=True)
+                cls.RES_FOR_PREDICT = True
             except Exception as ex_:
                 logger.warning(ex_)
         if predict_win:
@@ -141,3 +143,6 @@ class TGApi:
                 pass
 
         cls.post_request(message=message)
+        if cls.RES_FOR_PREDICT:
+            cls.post_request(message=message, predicts_chat=True)
+            cls.RES_FOR_PREDICT = False
