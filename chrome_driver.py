@@ -171,25 +171,29 @@ class Chrome:
 
                 ],
                 '⬆️ Predict 110Б (FL 0.75) ⬆️': [
-                    (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime < 300 and gold_equals),
+                    (all_kills >= 50 and module_kills < 3 and no_towers_destroyed and gametime < 420 and gold_equals),
                     (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed and gold_equals),
                 ],
                 '⬆️ Predict 110Б (FL 0.5) ⬆️': [
                     (all_kills >= 55 and module_kills < 6 and no_towers_destroyed and (gametime in range(421, 540)) and gold_equals),
+                    (all_kills > 30 and module_kills < 2 and no_towers_destroyed and gametime > 240)
                 ],
 
                 '⬇️ Predict 110М (FL 1) ⬇️': [
                     (all_kills <= 22 and straight_leader and gametime > 240),
-                    (all_kills <= 30 and module_kills >= 5 and straight_leader and gametime > 370),
-                    (all_kills <= 25 and module_kills >= 5 and gametime > 480),
-                    (all_kills < 30 and module_kills >= 5 and gametime > 540)
+                    (all_kills <= 30 and straight_leader and gametime > 370),
+                    (all_kills <= 35 and straight_leader and gametime > 440),
+                    (all_kills < 40 and straight_leader and gametime > 540)
+                    (all_kills < 50 and straight_leader and module_kills > 9 and gametime > 540)
                 ],
                 '⬇️ Predict 110М (FL 0.75) ⬇️': [
-                    (all_kills < 40 and two_towers_destroyed and gametime > 420),
-                    (all_kills <= 22 and some_tower_destroyed and gametime > 300),
-                    (all_kills < 36 and straight_leader and gametime > 480)
+                    (all_kills <= 22 and some_tower_destroyed and gametime > 250),
+                    (all_kills < 40 and two_towers_destroyed),
+                    (all_kills < 36 and some_tower_destroyed and gametime > 480)
                 ],
                 '⬇️ Predict 110М (FL 0.5) ⬇️': [
+                    (all_kills < 15 and gametime > 300)
+                    (all_kills < 28 and some_tower_destroyed and gametime > 420)
                     (all_kills < 24 and gametime > 480),
                     (all_kills <= 30 and module_kills >= 9 and gametime > 420),
                 ]
