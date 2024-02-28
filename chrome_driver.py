@@ -109,11 +109,15 @@ class Chrome:
         red_kills = score["red_kills"] # "red_kills": 43,
         blue_towers = score["blue_towers"] # "blue_towers": 3,
         red_towers = score["red_towers"] # "red_towers": 1,
+        blue_gold = score["blue_gold"]
+        red_gold = score["red_gold"]
 
         all_kills = blue_kills + red_kills
         module_kills = abs(blue_kills - red_kills)
-        blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0)
-        red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0)
+        module_gold = abs(blue_gold - red_gold)
+        gold_equals = module_gold < 1.3
+        blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0) and blue_gold > red_gold
+        red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0) and red_gold > blue_gold
         straight_leader = blue_leader or red_leader
         two_towers_destroyed = blue_towers > 1 or red_towers > 1
         no_towers_destroyed = blue_towers == 0 and red_towers == 0
@@ -124,15 +128,15 @@ class Chrome:
 
             wpredictions = {
                 '🐳 S_Predict П1 (FL 0.5) 🐳': [
-                    (StatsRate.win_blue_accepted() and blue_towers > 0 and red_towers == 0),
-                    (StatsRate.win_blue_accepted() and gametime > 420 and blue_kills > red_kills and module_kills > 5),
-                    (StatsRate.win_blue_accepted() and gametime > 240 and blue_kills > red_kills and module_kills > 8)
+                    (StatsRate.win_blue_accepted() and blue_towers > 0 and red_towers == 0 and (blue_gold > red_gold)),
+                    (StatsRate.win_blue_accepted() and gametime > 420 and blue_kills > red_kills and module_kills > 2 and (blue_gold > red_gold)),
+                    (StatsRate.win_blue_accepted() and gametime > 240 and blue_kills > red_kills and module_kills > 4 and (blue_gold > red_gold))
 
                 ],
                 '🐙 S_Predict П2 (FL 0.5) 🐙': [
-                    (StatsRate.win_red_accepted() and red_towers > 0 and blue_towers == 0),
-                    (StatsRate.win_red_accepted() and gametime > 420 and red_kills > blue_kills and module_kills > 5),
-                    (StatsRate.win_red_accepted() and gametime > 240 and red_kills > blue_kills and module_kills > 8),
+                    (StatsRate.win_red_accepted() and red_towers > 0 and blue_towers == 0 and (red_gold > blue_gold)),
+                    (StatsRate.win_red_accepted() and gametime > 420 and red_kills > blue_kills and module_kills > 2 and (red_gold > blue_gold)),
+                    (StatsRate.win_red_accepted() and gametime > 240 and red_kills > blue_kills and module_kills > 4 and (red_gold > blue_gold)),
                 ]
             }
 
@@ -163,15 +167,15 @@ class Chrome:
 
             predictions = {
                 '⬆️ Predict 110Б (FL 1) ⬆️': [
-                    (all_kills >= 60 and module_kills < 5 and no_towers_destroyed and gametime < 420),
+                    (all_kills >= 60 and module_kills < 5 and no_towers_destroyed and gametime < 420 and gold_equals),
 
                 ],
                 '⬆️ Predict 110Б (FL 0.75) ⬆️': [
-                    (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime < 300),
-                    (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed),
+                    (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime < 300 and gold_equals),
+                    (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed and gold_equals),
                 ],
                 '⬆️ Predict 110Б (FL 0.5) ⬆️': [
-                    (all_kills >= 55 and module_kills < 6 and no_towers_destroyed and (gametime in range(421, 540))),
+                    (all_kills >= 55 and module_kills < 6 and no_towers_destroyed and (gametime in range(421, 540)) and gold_equals),
                 ],
 
                 '⬇️ Predict 110М (FL 1) ⬇️': [

@@ -1,4 +1,4 @@
-🐳 Киллы: {blue_kills} | Башни: {blue_towers}
-🐙 Киллы: {red_kills} | Башни: {red_towers}
+🐳 K: {blue_kills} | TW: {blue_towers} | GOLD: {blue_gold}
+🐙 K: {red_kills} | TW: {red_towers} | GOLD :{red_gold}
 
 Время: {time}

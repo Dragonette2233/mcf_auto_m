@@ -9,6 +9,7 @@ from modules import (
     Values for interacting with League of Legends data
 
 """
+
 ALL_CHAMPIONS_IDs = {
     1: 'Annie', 2: 'Olaf', 3: 'Galio', 4: 'TwistedFate',
     5: 'XinZhao', 6: 'Urgot', 7: 'LeBlanc', 8: 'Vladimir',
@@ -280,11 +281,6 @@ class StatsRate:
     def tl_accepted(cls):
         if (cls.games_all != 0) and (cls.tl_rate[1] == cls.WINNER):
             return True
-
-
-class TGsymbols:
-    blue_square: str = ''
-    green_square: str = ''
 
 
 cookies = {

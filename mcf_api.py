@@ -5,7 +5,6 @@ from global_data import (
     Validator,
 )
 from tg_api import TGApi
-from mcf_riot_api import RiotAPI
 from mcf_data import (
     REGIONS_TUPLE,
     ALL_CHAMPIONS_IDs,
@@ -21,6 +20,7 @@ from chrome_driver import Chrome
 from modules.ssim_recognition import RecognizedCharacters as SsimReco
 from modules.mcf_storage import MCFStorage
 from modules.mcf_tracing import Trace
+from modules.mcf_riot_api import RiotAPI
 from modules import mcf_utils
 logger = logging.getLogger(__name__)
 

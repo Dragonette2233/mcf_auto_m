@@ -72,6 +72,8 @@ async def echo_score(update: Update, context: CallbackContext) -> None:
             blue_towers = score_data['blue_towers'],
             red_kills = score_data['red_kills'],
             red_towers = score_data['red_towers'],
+            blue_gold = score_data['blue_gold'],
+            red_gold = score_data['red_gold'],
             time = ':'.join([str(minutes), str(seconds)]),
         )
         await update.message.reply_text(message_for_reply)

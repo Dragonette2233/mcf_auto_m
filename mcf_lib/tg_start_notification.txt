@@ -1,4 +1,4 @@
+{status_message}
+
 🐳 {team_blue}
 🐙 {team_red}
-
-{status_message}

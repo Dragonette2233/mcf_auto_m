@@ -98,6 +98,9 @@ class ScoreRecognition:
     def get_compare(cls, cut_image, type, position, team=None):
 
         match type, position, team:
+            case 'gold', pos, None:
+                main_images = [Image.open(os.path.join('.', 'ssim_score_data', 'gold', f'{i}.png')) for i in range(10)]
+                # print(cut_image.width)
             case 'gtime', 0, None:
                 main_images = [Image.open(os.path.join(GTIME_DATA_PATH, f'{position}', f'{i}.png')) for i in range(4)]
             case 'gtime', 1 | 3, None:
@@ -156,8 +159,22 @@ class ScoreRecognition:
             cls.get_compare(np.array(image.crop((329, 18, 347, 41)).convert('L')), 'score', 1, 'red')
         ]
 
+        blue_gold = [
+            cls.get_compare(np.array(image.crop((126, 12, 134, 28)).convert('L')), 'gold', 0),
+            cls.get_compare(np.array(image.crop((136, 12, 144, 28)).convert('L')), 'gold', 1),
+            cls.get_compare(np.array(image.crop((151, 12, 159, 28)).convert('L')), 'gold', 2),
+        ]
+        red_gold = [
+            cls.get_compare(np.array(image.crop((430, 12, 438, 28)).convert('L')), 'gold', 0),
+            cls.get_compare(np.array(image.crop((440, 12, 448, 28)).convert('L')), 'gold', 1),
+            cls.get_compare(np.array(image.crop((455, 12, 463, 28)).convert('L')), 'gold', 2),
+        ]
+
         blue_towers = cls.get_compare(np.array(image.crop((60, 13, 75, 29)).convert('L')), 'towers', 0, 'blue')
         red_towers = cls.get_compare(np.array(image.crop((498, 13, 514, 29)).convert('L')), 'towers', 0, 'red')
+
+        blue_golds = ''.join([str(i) for i in blue_gold[0:2]]) + '.' + str(blue_gold[2]) if '' not in blue_gold else "10.0"
+        red_golds = ''.join([str(i) for i in red_gold[0:2]]) + '.' + str(red_gold[2]) if '' not in red_gold else "10.0"
 
         str_final_time = f'{final_time[0]}{final_time[1]}:{final_time[2]}{final_time[3]}' # XX:XX
         minutes, seconds = map(int, str_final_time.split(':'))
@@ -176,6 +193,8 @@ class ScoreRecognition:
             'red_kills': int(red_kills) if red_kills !='' else 0,
             'blue_towers': int(blue_towers) if blue_towers != '' else 0,
             'red_towers': int(red_towers) if red_towers != '' else 0,
+            'blue_gold': float(blue_golds),
+            'red_gold': float(red_golds),
             'is_active': True
         }
 
