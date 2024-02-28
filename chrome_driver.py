@@ -116,6 +116,8 @@ class Chrome:
         module_kills = abs(blue_kills - red_kills)
         module_gold = abs(blue_gold - red_gold)
         gold_equals = module_gold < 1.3
+        blue_gold_leader = blue_gold > red_gold and module_gold > 2.8
+        red_gold_leader = red_gold > blue_gold and module_gold > 2.8
         blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0) and blue_gold > red_gold
         red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0) and red_gold > blue_gold
         straight_leader = blue_leader or red_leader
@@ -128,14 +130,12 @@ class Chrome:
 
             wpredictions = {
                 '🐳 S_Predict П1 (FL 0.5) 🐳': [
-                    (StatsRate.win_blue_accepted() and blue_towers > 0 and red_towers == 0 and (blue_gold > red_gold)),
-                    (StatsRate.win_blue_accepted() and gametime > 420 and blue_kills > red_kills and module_kills > 2 and (blue_gold > red_gold)),
+                    (StatsRate.win_blue_accepted() and blue_gold_leader),
                     (StatsRate.win_blue_accepted() and gametime > 240 and blue_kills > red_kills and module_kills > 4 and (blue_gold > red_gold))
 
                 ],
                 '🐙 S_Predict П2 (FL 0.5) 🐙': [
-                    (StatsRate.win_red_accepted() and red_towers > 0 and blue_towers == 0 and (red_gold > blue_gold)),
-                    (StatsRate.win_red_accepted() and gametime > 420 and red_kills > blue_kills and module_kills > 2 and (red_gold > blue_gold)),
+                    (StatsRate.win_red_accepted() and red_gold_leader),
                     (StatsRate.win_red_accepted() and gametime > 240 and red_kills > blue_kills and module_kills > 4 and (red_gold > blue_gold)),
                 ]
             }
