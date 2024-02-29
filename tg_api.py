@@ -43,16 +43,12 @@ class TGApi:
 
     @switch_active
     @timeout_handler
-    def post_request(message: str, predicts_chat=False):
+    def post_request(message: str):
 
-        if predicts_chat:
-            chat_id = TGApi.CHAT_PREDICTS
-        else:
-            chat_id = TGApi.CHAT_ID
 
         requests.post(
             url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_send),
-            data={'chat_id': chat_id, 'text': message }, timeout=2
+            data={'chat_id': TGApi.CHAT_ID, 'text': message }, timeout=2
         )
     
     @classmethod
