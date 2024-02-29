@@ -175,8 +175,7 @@ class Chrome:
                     (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed and gold_equals),
                 ],
                 '⬆️ Predict 110Б (FL 0.5) ⬆️': [
-                    (all_kills >= 55 and module_kills < 6 and no_towers_destroyed and (gametime in range(421, 540)) and gold_equals),
-                    (all_kills > 30 and module_kills < 2 and no_towers_destroyed and gametime > 240)
+                    (all_kills >= 55 and module_kills < 6 and no_towers_destroyed and (gametime in range(421, 540)) and gold_equals)
                 ],
 
                 '⬇️ Predict 110М (FL 1) ⬇️': [
@@ -193,8 +192,8 @@ class Chrome:
                 ],
                 '⬇️ Predict 110М (FL 0.5) ⬇️': [
                     (all_kills < 15 and gametime > 300),
-                    (all_kills < 28 and some_tower_destroyed and gametime > 420),
-                    (all_kills < 24 and gametime > 480),
+                    (all_kills < 24 and gametime > 420),
+                    (all_kills < 28 and gametime > 480),
                     (all_kills <= 35 and module_kills >= 9 and gametime > 420),
                 ]
 
