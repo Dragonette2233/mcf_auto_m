@@ -164,7 +164,7 @@ class Chrome:
                     break
 
         if not Switches.predicted_total:
-            #
+            
             predictions = {
                 '⬆️ Predict 110Б (FL 1) ⬆️': [
                     (all_kills >= 60 and module_kills < 5 and no_towers_destroyed and gametime < 420 and gold_equals),
