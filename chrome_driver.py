@@ -192,7 +192,6 @@ class Chrome:
                     (all_kills < 50 and towers_leader),
                     (all_kills < 40 and two_towers_destroyed),
                     
-                    
                 ],
                 '⬇️ Predict 110М (FL 0.5) ⬇️': [
                     (all_kills < 15 and gametime > 300),
