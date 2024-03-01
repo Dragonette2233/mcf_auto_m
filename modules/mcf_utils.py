@@ -17,7 +17,8 @@ from bs4 import BeautifulSoup as bs
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import (
     ClientProxyConnectionError,
-    ClientConnectionError
+    ClientConnectionError,
+    ContentTypeError
     )
 import os
 
@@ -256,7 +257,7 @@ def async_poro_parsing(champion_name, bronze=False):
         for task in tasks:
             try: 
                 await asyncio.gather(task)
-            except asyncio.exceptions.TimeoutError:
+            except (asyncio.exceptions.TimeoutError, ContentTypeError):
                 missing_regions += 1
             except (ClientConnectionError, ClientProxyConnectionError):
                 missing_regions = 20
