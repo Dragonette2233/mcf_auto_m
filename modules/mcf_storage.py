@@ -8,6 +8,10 @@ from mcf_data import (
     PREDICTS_TRACE_PATH
 )
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class MCFStorage:
 
     @classmethod
@@ -66,30 +70,42 @@ class MCFStorage:
             raise TypeError('Provide tuple for executing MCFData')
     
     @classmethod
-    def predicts_monitor(cls, kills: int):
+    def rgs_predicts_monitor(cls, message: str, key: str):
+        try:
+            _tmp = message.split()
+            value = _tmp[2]
+            flet = _tmp[4][:-1]
+            Validator.predict_value_flet[key] = (value, flet)
+        except Exception as ex_:
+            logger.warning(ex_)
+
+
+
+    @classmethod
+    def predicts_monitor(cls, kills: int, key: str):
         
-        if Validator.predict_value_flet is None:
+        if Validator.predict_value_flet[key] is None:
             return
 
         with open(PREDICTS_TRACE_PATH, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
         print(data)
-        match Validator.predict_value_flet:
-            case ("110Б", fl):
+        match Validator.predict_value_flet[key]:
+            case ("110Б" | "S_110Б" as ttl, fl):
                 if kills >= 115:
-                    data[f"110Б (FL {fl})"][0] += 1
+                    data[f"{ttl} (FL {fl})"][0] += 1
                 else:
-                    data[f"110Б (FL {fl})"][1] += 1
-            case ("110М", fl):
+                    data[f"{ttl} (FL {fl})"][1] += 1
+            case ("110М" | "S_110М" as ttl, fl):
                 if kills <= 105:
-                    data[f"110М (FL {fl})"][0] += 1
+                    data[f"{ttl} (FL {fl})"][0] += 1
                 else:
-                    data[f"110М (FL {fl})"][1] += 1
+                    data[f"{ttl} (FL {fl})"][1] += 1
             case _:
                 ...
         
-        Validator.predict_value_flet = None
+        Validator.predict_value_flet[key] = None
 
     
         with open(PREDICTS_TRACE_PATH, 'w+', encoding='utf-8') as file:

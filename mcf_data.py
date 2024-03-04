@@ -221,11 +221,11 @@ class Validator:
 class Switches:
     coeff_opened = False
     request = False
-    timer = None
-    bot_activity = False
-    predicted_total = False
-    predicted_winner = False
-    spredicted = False
+    # timer = None
+    # bot_activity = False
+    # predicted_total = False
+    # predicted_winner = False
+    # spredicted = False
 
 class StatsRate:
     blue_rate: list[str] = [0, '']

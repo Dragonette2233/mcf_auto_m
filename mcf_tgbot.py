@@ -117,13 +117,13 @@ async def predicts_check(update: Update, context: CallbackContext) -> None:
         itms = list(predicts.items())
         message = f"""
 {itms[0][0]}     ✅ {itms[0][1][0]}   ❌ {itms[0][1][1]}
-{itms[1][0]}   ✅ {itms[1][1][0]}   ❌ {itms[1][1][1]}
-{itms[2][0]}        ✅ {itms[2][1][0]}   ❌ {itms[2][1][1]}
-{itms[3][0]}    ✅ {itms[3][1][0]}   ❌ {itms[3][1][1]}
-{itms[4][0]}  ✅ {itms[4][1][0]}   ❌ {itms[4][1][1]}
-{itms[5][0]}       ✅ {itms[5][1][0]}   ❌ {itms[5][1][1]}
-{itms[6][0]}       ✅ {itms[6][1][0]}   ❌ {itms[6][1][1]}
-{itms[7][0]}       ✅ {itms[7][1][0]}   ❌ {itms[7][1][1]}
+{itms[1][0]}      ✅ {itms[1][1][0]}   ❌ {itms[1][1][1]}
+{itms[2][0]}           ✅ {itms[2][1][0]}   ❌ {itms[2][1][1]}
+{itms[3][0]}         ✅ {itms[3][1][0]}   ❌ {itms[3][1][1]}
+{itms[4][0]}              ✅ {itms[4][1][0]}   ❌ {itms[4][1][1]}
+{itms[5][0]}          ✅ {itms[5][1][0]}   ❌ {itms[5][1][1]}
+{itms[6][0]}        ✅ {itms[6][1][0]}   ❌ {itms[6][1][1]}
+{itms[7][0]}             ✅ {itms[7][1][0]}   ❌ {itms[7][1][1]}
 """
         await update.message.reply_text(message)
        

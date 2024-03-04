@@ -363,7 +363,8 @@ class MCFApi:
                 timestamp = f"[{time_stamp[0]}:{time_stamp[1]}]"
                 TGApi.winner_is(team=winner, kills=kills, timestamp=timestamp, opened=is_opened)
                 Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
-                MCFStorage.predicts_monitor(kills=kills)
+                MCFStorage.predicts_monitor(kills=kills, key='main')
+                MCFStorage.predicts_monitor(kills=kills, key='stats')
                 ActiveGame.is_game_founded = False
                 Switches.request = False
 

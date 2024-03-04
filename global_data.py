@@ -29,7 +29,10 @@ class Validator:
         "420s": False,
         "540s": False
     }
-    predict_value_flet = None
+    predict_value_flet = {
+        'main': None,
+        'stats': None,
+    }
     active_mel_mirror = False
     quick_end = False
     findgame = 0

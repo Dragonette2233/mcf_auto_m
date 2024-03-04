@@ -130,7 +130,7 @@ class Chrome:
         some_tower_destroyed = blue_towers != 0 or red_towers != 0
         t1_towers_destroyed = blue_towers == 1 and red_towers == 1
         
-        if not Switches.spredicted:
+        if not Validator.predict_value_flet['stats']:
 
             spredictions = {
                 '⬇️ S_Predict 110М (FL 0.5) ⬇️': [
@@ -143,11 +143,13 @@ class Chrome:
 
             for message, conditions in spredictions.items():
                 if any(conditions):
+                    MCFStorage.rgs_predicts_monitor(message=message,
+                                                    key='stats')
                     TGApi.send_simple_message(message)
                     Switches.spredicted = True
                     break
 
-        if not Switches.predicted_total:
+        if not Validator.predict_value_flet['main']:
             
             predictions = {
                 '⬆️ Predict 110Б (FL 1) ⬆️': [
@@ -188,13 +190,8 @@ class Chrome:
             for message, conditions in predictions.items():
                 if any(conditions):
                     Switches.predicted_total = True
-                    try:
-                        _tmp = message.split()
-                        value = _tmp[2]
-                        flet = _tmp[4][:-1]
-                        Validator.predict_value_flet = (value, flet)
-                    except Exception as ex_:
-                        logger.warning(ex_)
+                    MCFStorage.rgs_predicts_monitor(message=message,
+                                                    key='main')
                     TGApi.send_simple_message(message)
                     break
 
