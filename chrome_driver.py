@@ -116,10 +116,13 @@ class Chrome:
         module_kills = abs(blue_kills - red_kills)
         module_gold = abs(blue_gold - red_gold)
         gold_equals = module_gold < 1.3
-        blue_gold_leader = blue_gold > red_gold and module_gold > 2.8
-        red_gold_leader = red_gold > blue_gold and module_gold > 2.8
-        blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0) and blue_gold > red_gold
-        red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0) and red_gold > blue_gold
+        blue_gold_leader = blue_gold > red_gold and module_gold > 1.2
+        red_gold_leader = red_gold > blue_gold and module_gold > 1.2
+        # blue_gold_winner = blue_gold > red_gold and module_gold > 2.8
+        # red_gold_winner = red_gold > blue_gold and module_gold > 2.8
+        # blue_gold_winner = blu
+        blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0) and blue_gold_leader
+        red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0) and red_gold_leader
         straight_leader = blue_leader or red_leader
         two_towers_destroyed = blue_towers + red_towers > 1
         towers_leader = blue_towers > 1 or red_towers > 1
@@ -127,26 +130,6 @@ class Chrome:
         some_tower_destroyed = blue_towers != 0 or red_towers != 0
         t1_towers_destroyed = blue_towers == 1 and red_towers == 1
         
-        if not Switches.predicted_winner:
-
-            wpredictions = {
-                '🐳 S_Predict П1 (FL 0.5) 🐳': [
-                    (StatsRate.win_blue_accepted() and blue_gold_leader),
-                    (StatsRate.win_blue_accepted() and gametime > 240 and blue_kills > red_kills and module_kills > 4 and (blue_gold > red_gold))
-
-                ],
-                '🐙 S_Predict П2 (FL 0.5) 🐙': [
-                    (StatsRate.win_red_accepted() and red_gold_leader),
-                    (StatsRate.win_red_accepted() and gametime > 240 and red_kills > blue_kills and module_kills > 4 and (red_gold > blue_gold)),
-                ]
-            }
-
-            for message, conditions in wpredictions.items():
-                if any(conditions):
-                    TGApi.send_simple_message(message)
-                    Switches.predicted_winner = True
-                    break
-
         if not Switches.spredicted:
 
             spredictions = {
@@ -172,7 +155,7 @@ class Chrome:
 
                 ],
                 '⬆️ Predict 110Б (FL 0.75) ⬆️': [
-                    (all_kills >= 50 and module_kills < 3 and no_towers_destroyed and gametime < 420 and gold_equals),
+                    # (all_kills >= 50 and module_kills < 3 and no_towers_destroyed and gametime < 360 and gold_equals),
                     (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed and gold_equals),
                 ],
                 '⬆️ Predict 110Б (FL 0.5) ⬆️': [
