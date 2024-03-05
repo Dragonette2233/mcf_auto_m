@@ -116,6 +116,9 @@ async def predicts_check(update: Update, context: CallbackContext) -> None:
         predicts: dict = json.load(js_stats)
         itms = list(predicts.items())
         message = f"""
+Плюс для 110М: итоговый тотал <= 105
+Плюс для 110Б: итоговый тотал >= 115
+
 {itms[0][0]}     ✅ {itms[0][1][0]}   ❌ {itms[0][1][1]}
 {itms[1][0]}      ✅ {itms[1][1][0]}   ❌ {itms[1][1][1]}
 {itms[2][0]}           ✅ {itms[2][1][0]}   ❌ {itms[2][1][1]}
