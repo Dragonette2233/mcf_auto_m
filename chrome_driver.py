@@ -116,8 +116,8 @@ class Chrome:
         module_kills = abs(blue_kills - red_kills)
         module_gold = abs(blue_gold - red_gold)
         gold_equals = module_gold < 1.3
-        blue_gold_leader = blue_gold > red_gold and module_gold > 1.2
-        red_gold_leader = red_gold > blue_gold and module_gold > 1.2
+        blue_gold_leader = blue_gold > red_gold and module_gold > 1.5
+        red_gold_leader = red_gold > blue_gold and module_gold > 1.5
         # blue_gold_winner = blue_gold > red_gold and module_gold > 2.8
         # red_gold_winner = red_gold > blue_gold and module_gold > 2.8
         # blue_gold_winner = blu
@@ -135,7 +135,7 @@ class Chrome:
 
             spredictions = {
                 '⬇️ S_Predict 110М (FL 0.5) ⬇️': [
-                    (StatsRate.tl_accepted() and all_kills < 40 and some_tower_destroyed and gametime > 360)
+                    (StatsRate.tl_accepted() and all_kills < 40 and some_tower_destroyed and gametime > 360),
                     (StatsRate.tl_accepted() and all_kills < 35 and gametime > 420)
                 ],
                 '⬆️ S_Predict 110Б (FL 0.5) ⬆️': [
