@@ -121,6 +121,7 @@ class Chrome:
         # blue_gold_winner = blue_gold > red_gold and module_gold > 2.8
         # red_gold_winner = red_gold > blue_gold and module_gold > 2.8
         # blue_gold_winner = blu
+        hard_towers_leader = (red_towers == 0 and blue_towers > 1) or (blue_towers == 0 and red_towers > 1)
         blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0) and blue_gold_leader
         red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0) and red_gold_leader
         straight_leader = blue_leader or red_leader
@@ -135,6 +136,7 @@ class Chrome:
             spredictions = {
                 '⬇️ S_Predict 110М (FL 0.5) ⬇️': [
                     (StatsRate.tl_accepted() and all_kills < 30 and gametime > 300)
+                    (StatsRate.tl_accepted() and all_kills < 40 and some_tower_destroyed and gametime > 300)
                 ],
                 '⬆️ S_Predict 110Б (FL 0.5) ⬆️': [
                     (StatsRate.tb_accepted() and all_kills > 45 and module_kills < 7 and gametime < 360)
@@ -165,20 +167,22 @@ class Chrome:
                 ],
 
                 '⬇️ Predict 110М (FL 1) ⬇️': [
-                    (all_kills <= 22 and straight_leader and gametime > 240),
-                    (all_kills <= 30 and straight_leader and gametime > 370),
-                    (all_kills <= 35 and straight_leader and gametime > 440),
-                    (all_kills < 40 and straight_leader and gametime > 540),
-                    (all_kills < 50 and straight_leader and module_kills > 9 and gametime > 540)
+                    (all_kills < 26 and straight_leader and gametime > 240),
+                    (all_kills < 31 and straight_leader and gametime > 300),
+                    (all_kills < 36 and straight_leader and gametime > 360),
+                    (all_kills < 41 and straight_leader and gametime > 540),
+                    (all_kills < 51 and straight_leader and module_kills > 9 and gametime > 540)
                 ],
                 '⬇️ Predict 110М (FL 0.75) ⬇️': [
                     (all_kills <= 22 and some_tower_destroyed and gametime > 250),
                     (all_kills < 36 and some_tower_destroyed and gametime > 480),
+                    (all_kills < 45 and two_towers_destroyed and gametime > 480),
                     (all_kills < 50 and towers_leader),
-                    (all_kills < 40 and two_towers_destroyed),
+                    
                     
                 ],
                 '⬇️ Predict 110М (FL 0.5) ⬇️': [
+                    (all_kills < 60 and gametime > 420 and hard_towers_leader),
                     (all_kills < 15 and gametime > 300),
                     (all_kills < 24 and gametime > 420),
                     (all_kills < 28 and gametime > 480),

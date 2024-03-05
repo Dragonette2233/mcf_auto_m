@@ -73,8 +73,11 @@ class MCFStorage:
     def rgs_predicts_monitor(cls, message: str, key: str):
         try:
             _tmp = message.split()
+            predict_type = _tmp[1]
             value = _tmp[2]
             flet = _tmp[4][:-1]
+            if predict_type.split('_')[0] == 'S':
+                value = '_'.join(['S', value])
             Validator.predict_value_flet[key] = (value, flet)
         except Exception as ex_:
             logger.warning(ex_)
