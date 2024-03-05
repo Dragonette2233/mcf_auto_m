@@ -135,8 +135,8 @@ class Chrome:
 
             spredictions = {
                 '⬇️ S_Predict 110М (FL 0.5) ⬇️': [
-                    (StatsRate.tl_accepted() and all_kills < 30 and gametime > 300)
-                    (StatsRate.tl_accepted() and all_kills < 40 and some_tower_destroyed and gametime > 300)
+                    (StatsRate.tl_accepted() and all_kills < 40 and some_tower_destroyed and gametime > 360)
+                    (StatsRate.tl_accepted() and all_kills < 35 and gametime > 420)
                 ],
                 '⬆️ S_Predict 110Б (FL 0.5) ⬆️': [
                     (StatsRate.tb_accepted() and all_kills > 45 and module_kills < 7 and gametime < 360)
