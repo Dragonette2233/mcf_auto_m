@@ -114,7 +114,8 @@ class MCFApi:
             try:
                 logger.info('Parsing from RiotAPI and Poro...')
                 mcf_utils.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
-                mcf_utils.async_poro_parsing(champion_name=char_r, bronze=True) # Parse for Bronze+
+                mcf_utils.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
+                mcf_utils.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
                 mcf_utils.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
                 mcf_utils.async_riot_parsing() # Parse featured games from Riot API
                 logger.info('Games parsed succesfully.')

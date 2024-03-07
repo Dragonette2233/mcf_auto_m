@@ -88,7 +88,7 @@ WINDOWS_USER = getpass.getuser()
 SPECTATOR_MODE = 'spectator.{reg}.lol.pvp.net:8080'
 FEATURED_GAMES_URL = "https://{region}.api.riotgames.com/lol/spectator/v4/featured-games"
 URL_PORO_BY_REGIONS = "https://porofessor.gg/current-games/{champion}/{region}/queue-450"
-URL_PORO_ADVANCE = "https://porofessor.gg/current-games/{champion}/{region}/bronze/queue-450"
+URL_PORO_ADVANCE = "https://porofessor.gg/current-games/{champion}/{region}/{elo}/queue-450"
 
 REGIONS_TUPLE = (
     ('br', 'br1', 'americas'), ('lan', 'la1', 'americas'),

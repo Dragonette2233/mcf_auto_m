@@ -115,18 +115,19 @@ class Chrome:
         all_kills = blue_kills + red_kills
         module_kills = abs(blue_kills - red_kills)
         module_gold = abs(blue_gold - red_gold)
-        gold_equals = module_gold < 1.3
-        blue_gold_leader = blue_gold > red_gold and module_gold > 1.5
-        red_gold_leader = red_gold > blue_gold and module_gold > 1.5
+        gold_equals = module_gold < 1.1
+        blue_gold_leader = blue_gold > red_gold and module_gold > 1.7
+        red_gold_leader = red_gold > blue_gold and module_gold > 1.7
         # blue_gold_winner = blue_gold > red_gold and module_gold > 2.8
         # red_gold_winner = red_gold > blue_gold and module_gold > 2.8
         # blue_gold_winner = blu
-        hard_towers_leader = (red_towers == 0 and blue_towers > 1) or (blue_towers == 0 and red_towers > 1)
+        
         blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0) and blue_gold_leader
         red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0) and red_gold_leader
         straight_leader = blue_leader or red_leader
         two_towers_destroyed = blue_towers + red_towers > 1
         towers_leader = blue_towers > 1 or red_towers > 1
+        hard_towers_leader = (red_towers == 0 and blue_towers > 1) or (blue_towers == 0 and red_towers > 1)
         no_towers_destroyed = blue_towers == 0 and red_towers == 0
         some_tower_destroyed = blue_towers != 0 or red_towers != 0
         t1_towers_destroyed = blue_towers == 1 and red_towers == 1
