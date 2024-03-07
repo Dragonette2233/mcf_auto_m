@@ -93,10 +93,12 @@ class MCFApi:
         matches_by_regions_api = MCFStorage.get_selective_data(route=('MatchesAPI', ))
         matches_by_regions_poro = MCFStorage.get_selective_data(route=('MatchesPoroRegions', ))
         matches_by_regions_poro_bronze = MCFStorage.get_selective_data(route=('MatchesPoroBronze', ))
+        matches_by_regions_poro_silver = MCFStorage.get_selective_data(route=('MatchesPoroSilver', ))
 
         all_matches += [item for sublist in matches_by_regions_api.values() for item in sublist]
         all_matches += [item for sublist in matches_by_regions_poro.values() for item in sublist]
         all_matches += [item for sublist in matches_by_regions_poro_bronze.values() for item in sublist]
+        all_matches += [item for sublist in matches_by_regions_poro_silver.values() for item in sublist]
         all_matches += MCFStorage.get_selective_data(route=('MatchesPoroGlobal', ))
             
         finded_games = set()
