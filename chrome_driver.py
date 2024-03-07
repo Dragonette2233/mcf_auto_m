@@ -167,9 +167,9 @@ class Chrome:
                 ],
 
                 '⬇️ Predict 110М (FL 1) ⬇️': [
-                    (all_kills < 26 and straight_leader and gametime > 240),
-                    (all_kills < 31 and straight_leader and gametime > 300),
-                    (all_kills < 36 and straight_leader and gametime > 360),
+                    (all_kills < 24 and straight_leader and gametime > 240),
+                    (all_kills < 28 and straight_leader and gametime > 300),
+                    (all_kills < 32 and straight_leader and gametime > 360),
                     (all_kills < 41 and straight_leader and gametime > 540),
                     (all_kills < 51 and straight_leader and module_kills > 9 and gametime > 540)
                 ],
