@@ -32,6 +32,11 @@ def main():
         chrome.open_league_page()
         chrome.remove_cancel()
         chrome.notify_when_starts()
+
+        if chrome.RESTART_REQUIRED:
+            del chrome
+            break
+
         chrome.stream_fullscreen()
         teams = MCFApi.get_characters()
         chrome.stream_close()
@@ -110,4 +115,5 @@ def main():
         del chrome
 
 if __name__ == "__main__":
-    main()
+    while True:
+        main()

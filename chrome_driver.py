@@ -32,6 +32,9 @@ class Chrome:
         self.driver = None
         self.game_index_new = ''
         self.game_index_ended = MCFStorage.get_gameid()
+
+        self.PASSAGES = 0
+        self.RESTART_REQUIRED = False
         
     
     def start(self):
@@ -202,7 +205,7 @@ class Chrome:
 
     def notify_when_starts(self):
 
-        passages = 0
+        # passages = 0
 
         while True:
 
@@ -260,9 +263,12 @@ class Chrome:
             self.remove_cancel()
 
 
-            if passages == 40:
-                passages = 0
+            if self.PASSAGES in (40, 80, 120):
                 self.open_league_page()
+            elif self.PASSAGES == 160:
+                self.driver.quit()
+                self.RESTART_REQUIRED = True
+                return
             else:
                 time.sleep(0.5)
                 passages += 1
