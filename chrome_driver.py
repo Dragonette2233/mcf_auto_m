@@ -271,5 +271,5 @@ class Chrome:
                 return
             else:
                 time.sleep(0.5)
-                passages += 1
+                self.PASSAGES += 1
             
