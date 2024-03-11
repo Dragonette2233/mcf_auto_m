@@ -136,8 +136,8 @@ class Chrome:
 
             spredictions = {
                 '⬇️ S_Predict 110М (FL 0.5) ⬇️': [
-                    (StatsRate.tl_accepted() and all_kills < 40 and some_tower_destroyed and gametime > 360),
-                    (StatsRate.tl_accepted() and all_kills < 35 and gametime > 420)
+                    (StatsRate.tl_accepted() and all_kills < 40 and some_tower_destroyed and gametime > 400),
+                    (StatsRate.tl_accepted() and all_kills < 30 and gametime > 400)
                 ],
                 '⬆️ S_Predict 110Б (FL 0.5) ⬆️': [
                     (StatsRate.tb_accepted() and all_kills > 45 and module_kills < 7 and gametime < 360)
@@ -168,9 +168,9 @@ class Chrome:
                 ],
 
                 '⬇️ Predict 110М (FL 1) ⬇️': [
-                    (all_kills < 24 and straight_leader and gametime > 240),
-                    (all_kills < 28 and straight_leader and gametime > 300),
-                    (all_kills < 32 and straight_leader and gametime > 360),
+                    (all_kills < 24 and straight_leader and gametime > 300),
+                    (all_kills < 28 and straight_leader and gametime > 360),
+                    (all_kills < 32 and straight_leader and gametime > 420),
                     (all_kills < 41 and straight_leader and gametime > 540),
                     (all_kills < 51 and straight_leader and module_kills > 9 and gametime > 540)
                 ],
@@ -184,7 +184,7 @@ class Chrome:
                 ],
                 '⬇️ Predict 110М (FL 0.5) ⬇️': [
                     (all_kills < 60 and gametime > 420 and hard_towers_leader),
-                    (all_kills < 15 and gametime > 300),
+                    (all_kills < 15 and gametime > 320),
                     (all_kills < 24 and gametime > 420),
                     (all_kills < 28 and gametime > 480),
                     (all_kills <= 35 and module_kills >= 9 and gametime > 420),
