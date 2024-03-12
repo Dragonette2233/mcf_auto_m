@@ -59,7 +59,7 @@ class Chrome:
         try:
             element = self.driver.find_element(By.CSS_SELECTOR, self.CSS_BTN_REJECT_LIVE)
             element.click()
-        except (NoSuchElementException, TimeoutException):
+        except (NoSuchElementException, TimeoutException, StaleElementReferenceException):
             pass
 
     def delay(self, second: int):
@@ -270,6 +270,6 @@ class Chrome:
                 self.RESTART_REQUIRED = True
                 return
             else:
-                time.sleep(0.5)
+                time.sleep(0.75)
                 self.PASSAGES += 1
             
