@@ -44,6 +44,14 @@ class Chrome:
         mcf_autogui.click(x=1896, y=99) #disable infobar
         time.sleep(3)
 
+    def force_quit(self):
+        try:
+            self.driver.quit()
+        except:
+            ...
+            
+        self.RESTART_REQUIRED = True
+
     def open_league_page(self):
         with open(MIRROR_PAGE, 'r') as ex_url:
             url: str = ex_url.read().strip()
@@ -271,12 +279,10 @@ class Chrome:
 
             if self.PASSAGES in (40, 80, 120):
                 if not self.open_league_page():
-                    self.driver.quit()
-                    self.RESTART_REQUIRED = True
+                    self.force_quit()
                     return
             elif self.PASSAGES == 160:
-                self.driver.quit()
-                self.RESTART_REQUIRED = True
+                self.force_quit()
                 return
             else:
                 time.sleep(0.75)
