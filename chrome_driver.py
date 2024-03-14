@@ -13,7 +13,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import (
     TimeoutException, 
     NoSuchElementException, 
-    StaleElementReferenceException
+    StaleElementReferenceException,
     )
 
 logger = logging.getLogger(__name__)
@@ -52,8 +52,13 @@ class Chrome:
             Validator.active_mel_mirror = True
         else:
             Validator.active_mel_mirror = False
-        self.driver.get(url=url)
-        time.sleep(6)
+        try:
+            self.driver.get(url=url)
+            time.sleep(6)
+            return True
+        except TimeoutException:
+            return False
+        # time.sleep(6)
 
     def remove_cancel(self):
         try:
@@ -191,6 +196,7 @@ class Chrome:
                     (all_kills < 24 and gametime > 420),
                     (all_kills < 28 and gametime > 480),
                     (all_kills <= 35 and module_kills >= 9 and gametime > 420),
+                    (all_kills <= 50 and module_kills >= 15 and gametime > 420)
                 ]
 
             }
@@ -264,7 +270,10 @@ class Chrome:
 
 
             if self.PASSAGES in (40, 80, 120):
-                self.open_league_page()
+                if not self.open_league_page():
+                    self.driver.quit()
+                    self.RESTART_REQUIRED = True
+                    return
             elif self.PASSAGES == 160:
                 self.driver.quit()
                 self.RESTART_REQUIRED = True
