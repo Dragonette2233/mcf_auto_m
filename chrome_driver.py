@@ -140,6 +140,11 @@ class Chrome:
         
         blue_leader = blue_kills > red_kills and (blue_towers != 0 and red_towers == 0) and blue_gold_leader
         red_leader = red_kills > blue_kills and (red_towers != 0 and blue_towers == 0) and red_gold_leader
+
+        blue_light = blue_kills > red_kills and blue_gold_leader
+        red_light = red_kills > blue_kills and red_gold_leader
+        light_leader = blue_light or red_light
+
         straight_leader = blue_leader or red_leader
         two_towers_destroyed = blue_towers + red_towers > 1
         towers_leader = blue_towers > 1 or red_towers > 1
@@ -203,8 +208,8 @@ class Chrome:
                     (all_kills < 15 and gametime > 320),
                     (all_kills < 24 and gametime > 420),
                     (all_kills < 28 and gametime > 480),
-                    (all_kills <= 35 and module_kills >= 9 and gametime > 420),
-                    (all_kills <= 50 and module_kills >= 15 and gametime > 420)
+                    (all_kills <= 35 and module_kills >= 9 and light_leader and gametime > 420),
+                    (all_kills <= 50 and module_kills >= 15 and light_leader and gametime > 420)
                 ]
 
             }
