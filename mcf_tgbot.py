@@ -74,10 +74,8 @@ async def change_actual_mirror(update: Update, context: CallbackContext):
 
 async def echo_score(update: Update, context: CallbackContext) -> None:
     
-    # with open(ACTIVE_GAMESCORE_PATH, 'r') as file:
-    #     score_data = json.load(file)
 
-    if r.get('is_active') != '0':
+    if r.get('is_active').__int__ != '0':
         
         with open(os.path.join('.', 'arambot_lib', 'score_answer_sample.txt'), 'r', encoding='utf-8') as sample:
             message_sample = sample.read()
