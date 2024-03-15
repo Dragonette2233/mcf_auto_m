@@ -31,6 +31,7 @@ snip = {
     "red_gold": 0,
     "is_active": 0
 }
+
 # Установка значения
 for key, value in snip.items():
     r.set(key, value)
