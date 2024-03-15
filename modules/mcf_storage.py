@@ -32,10 +32,10 @@ class MCFStorage:
     def save_score(cls, score: dict = None, stop_tracking=False):
 
         if stop_tracking:
-            score['is_active'] = 0
-
-        for key, value in score.items():
-            r.set(key, value)
+            r.set('is_active', 0)#  = 0
+        else:
+            for key, value in score.items():
+                r.set(key, value)
 
     @classmethod
     def get_selective_data(cls, route: tuple):
