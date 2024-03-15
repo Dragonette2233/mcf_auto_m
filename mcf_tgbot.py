@@ -36,6 +36,8 @@ snip = {
 for key, value in snip.items():
     r.set(key, value)
 
+# print(r.get('is_active'))
+
 async def start(update: Update, context: CallbackContext):
     keyboard = [ [KeyboardButton('/game'), KeyboardButton('/build')], [KeyboardButton('/predicts_result')] ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
@@ -75,7 +77,7 @@ async def echo_score(update: Update, context: CallbackContext) -> None:
     # with open(ACTIVE_GAMESCORE_PATH, 'r') as file:
     #     score_data = json.load(file)
 
-    if r.get('is_active') != 0:
+    if r.get('is_active') != '0':
         
         with open(os.path.join('.', 'arambot_lib', 'score_answer_sample.txt'), 'r', encoding='utf-8') as sample:
             message_sample = sample.read()
