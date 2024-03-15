@@ -9,8 +9,10 @@ from mcf_data import (
 )
 
 import logging
+import redis
 
 logger = logging.getLogger(__name__)
+r = redis.Redis(host='localhost', port=6379, decode_responses=True)
 
 class MCFStorage:
 
@@ -29,16 +31,11 @@ class MCFStorage:
     @classmethod
     def save_score(cls, score: dict = None, stop_tracking=False):
 
-        with open(ACTIVE_GAMESCORE_PATH, 'r') as file:
-            data = json.load(file)
-
         if stop_tracking:
-            data['is_active'] = False
-        else:
-            data = score
-        
-        with open(ACTIVE_GAMESCORE_PATH, 'w+') as file:
-            json.dump(data, file, indent=4)
+            score['is_active'] = 0
+
+        for key, value in score.items():
+            r.set(key, value)
 
     @classmethod
     def get_selective_data(cls, route: tuple):

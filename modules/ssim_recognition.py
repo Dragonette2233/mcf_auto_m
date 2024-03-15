@@ -195,7 +195,7 @@ class ScoreRecognition:
             'red_towers': int(red_towers) if red_towers != '' else 0,
             'blue_gold': float(blue_golds),
             'red_gold': float(red_golds),
-            'is_active': True
+            'is_active': 1
         }
 
         return gamedata
