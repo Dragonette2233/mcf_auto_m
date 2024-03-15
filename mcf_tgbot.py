@@ -72,8 +72,8 @@ async def change_actual_mirror(update: Update, context: CallbackContext):
 
 async def echo_score(update: Update, context: CallbackContext) -> None:
     
-    with open(ACTIVE_GAMESCORE_PATH, 'r') as file:
-        score_data = json.load(file)
+    # with open(ACTIVE_GAMESCORE_PATH, 'r') as file:
+    #     score_data = json.load(file)
 
     if r.get('is_active'):
         with open(os.path.join('.', 'arambot_lib', 'score_answer_sample.txt'), 'r', encoding='utf-8') as sample:
@@ -81,7 +81,7 @@ async def echo_score(update: Update, context: CallbackContext) -> None:
 
         # 🐳 Киллы: {blue_kills} | Башни: {blue_towers}
         # 🐙 Киллы: {red_kills} | Башни: {red_towers}
-        timestamp = divmod(score_data['time'], 60)
+        timestamp = divmod(r.get('time'), 60)
         minutes = timestamp[0] if timestamp[0] > 9 else f"0{timestamp[0]}"
         seconds = timestamp[1] if timestamp[1] > 9 else f"0{timestamp[1]}"
         message_for_reply = message_sample.format(
