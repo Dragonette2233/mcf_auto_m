@@ -177,7 +177,7 @@ class Chrome:
             
             predictions = {
                 '⬆️ PR 110Б (FL 1) ⬆️': [
-                    (all_kills >= 60 and module_kills < 5 and no_towers_destroyed and gametime < 420 and gold_equals),
+                    (all_kills >= 60 and module_kills < 6 and no_towers_destroyed and gametime < 420 and gold_equals),
 
                 ],
                 '⬆️ PR 110Б (FL 0.75) ⬆️': [
@@ -205,6 +205,7 @@ class Chrome:
                 '⬇️ PR 110М (FL 0.5) ⬇️': [
                     (all_kills < 60 and gametime > 420 and hard_towers_leader),
                     (all_kills < 15 and gametime > 320),
+                    (all_kills < 24 and module_kills > 6 and light_leader and gametime > 360)
                     (all_kills < 24 and gametime > 420),
                     (all_kills < 28 and gametime > 480),
                     (all_kills <= 35 and module_kills >= 9 and light_leader and gametime > 420),
