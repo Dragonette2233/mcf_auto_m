@@ -114,12 +114,12 @@ class Chrome:
         # is_opened = self.check_if_opened()
         gametime = score["time"]
         
-        if not Validator.tracer["300s"] and gametime in range(295, 310):
-            Trace.add_tracing(timestamp='300s', score=score)
-        if not Validator.tracer["420s"] and gametime in range(417, 425):
-            Trace.add_tracing(timestamp='420s', score=score)
-        if not Validator.tracer["540s"] and gametime in range(540, 550):
-            Trace.add_tracing(timestamp='540s', score=score)
+        # if not Validator.tracer["300s"] and gametime in range(295, 310):
+        #     Trace.add_tracing(timestamp='300s', score=score)
+        # if not Validator.tracer["420s"] and gametime in range(417, 425):
+        #     Trace.add_tracing(timestamp='420s', score=score)
+        # if not Validator.tracer["540s"] and gametime in range(540, 550):
+        #     Trace.add_tracing(timestamp='540s', score=score)
 
         blue_kills = score["blue_kills"] # "blue_kiils": 49,
         red_kills = score["red_kills"] # "red_kills": 43,
@@ -156,11 +156,11 @@ class Chrome:
         if not Validator.predict_value_flet['stats']:
 
             spredictions = {
-                '⬇️ S_Predict 110М (FL 0.5) ⬇️': [
+                '⬇️ S_PR 110М (FL 0.5) ⬇️': [
                     (StatsRate.tl_accepted() and all_kills < 40 and some_tower_destroyed and gametime > 400),
                     (StatsRate.tl_accepted() and all_kills < 30 and gametime > 400)
                 ],
-                '⬆️ S_Predict 110Б (FL 0.5) ⬆️': [
+                '⬆️ S_PR 110Б (FL 0.5) ⬆️': [
                     (StatsRate.tb_accepted() and all_kills > 45 and module_kills < 7 and gametime < 360)
                 ]
             }
@@ -176,33 +176,33 @@ class Chrome:
         if not Validator.predict_value_flet['main']:
             
             predictions = {
-                '⬆️ Predict 110Б (FL 1) ⬆️': [
+                '⬆️ PR 110Б (FL 1) ⬆️': [
                     (all_kills >= 60 and module_kills < 5 and no_towers_destroyed and gametime < 420 and gold_equals),
 
                 ],
-                '⬆️ Predict 110Б (FL 0.75) ⬆️': [
+                '⬆️ PR 110Б (FL 0.75) ⬆️': [
                     # (all_kills >= 50 and module_kills < 3 and no_towers_destroyed and gametime < 360 and gold_equals),
                     (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed and gametime < 420 and gold_equals),
                 ],
-                '⬆️ Predict 110Б (FL 0.5) ⬆️': [
+                '⬆️ PR 110Б (FL 0.5) ⬆️': [
                     (all_kills >= 55 and module_kills < 6 and no_towers_destroyed and (gametime in range(421, 540)) and gold_equals)
                 ],
 
-                '⬇️ Predict 110М (FL 1) ⬇️': [
+                '⬇️ PR 110М (FL 1) ⬇️': [
                     (all_kills < 24 and straight_leader and gametime > 300),
                     (all_kills < 28 and straight_leader and gametime > 360),
                     (all_kills < 32 and straight_leader and gametime > 420),
                     (all_kills < 41 and straight_leader and gametime > 540),
                     (all_kills < 51 and straight_leader and module_kills > 9 and gametime > 540)
                 ],
-                '⬇️ Predict 110М (FL 0.75) ⬇️': [
+                '⬇️ PR 110М (FL 0.75) ⬇️': [
                     (all_kills <= 22 and some_tower_destroyed and gametime > 250),
                     (all_kills < 36 and some_tower_destroyed and gametime > 480),
                     (all_kills < 45 and two_towers_destroyed and gametime > 480),
                     (all_kills < 50 and towers_leader),
                     
                 ],
-                '⬇️ Predict 110М (FL 0.5) ⬇️': [
+                '⬇️ PR 110М (FL 0.5) ⬇️': [
                     (all_kills < 60 and gametime > 420 and hard_towers_leader),
                     (all_kills < 15 and gametime > 320),
                     (all_kills < 24 and gametime > 420),
