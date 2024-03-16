@@ -10,7 +10,7 @@ import json
 import os
 import logging
 import redis
-from mcf_data import ACTIVE_GAMESCORE_PATH, MIRROR_PAGE
+from mcf_data import MIRROR_PAGE
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -44,6 +44,7 @@ async def info(update: Update, context: CallbackContext):
     await update.message.reply_text(f'Да, здесь будет инфа. Нужно немного подождать, {visitor}')
 
 async def start(update: Update, context: CallbackContext):
+
     keyboard = [ [KeyboardButton('/game'), KeyboardButton('/build')], [KeyboardButton('/predicts_global'), KeyboardButton('/predicts_daily')] ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
@@ -137,30 +138,27 @@ async def mcf_status(update: Update, context: CallbackContext) -> None:
     # await update.message.reply_text('Бот перезагружен')
 async def predicts_check(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
+
+    with open(os.path.join('.', 'arambot_lib', 'predicts_answer_sample.txt'), 'r', encoding='utf-8') as file:
+        predicts_answer_message = file.read()
+
     if update.message.text == '/predicts_global':
         top_message = 'Результат по предиктам за все время'
         predicts_path = os.path.join('.', 'untracking', 'predicts_trace.json')
     else:
         top_message = 'Результат по предиктам за сутки'
         predicts_path = os.path.join('.', 'untracking', 'predicts_trace_daily.json')
+
     with open(predicts_path, 'r', encoding='utf-8') as js_stats:
         predicts: dict = json.load(js_stats)
         itms = list(predicts.items())
-        message = f"""
-{top_message}
-110М +: итоговый тотал <= 105
-110Б +: итоговый тотал >= 115
 
-{itms[0][0]}     ✅ {itms[0][1][0]}   ❌ {itms[0][1][1]}
-{itms[1][0]}      ✅ {itms[1][1][0]}   ❌ {itms[1][1][1]}
-{itms[2][0]}           ✅ {itms[2][1][0]}   ❌ {itms[2][1][1]}
-{itms[3][0]}         ✅ {itms[3][1][0]}   ❌ {itms[3][1][1]}
-{itms[4][0]}              ✅ {itms[4][1][0]}   ❌ {itms[4][1][1]}
-{itms[5][0]}          ✅ {itms[5][1][0]}   ❌ {itms[5][1][1]}
-{itms[6][0]}        ✅ {itms[6][1][0]}   ❌ {itms[6][1][1]}
-{itms[7][0]}             ✅ {itms[7][1][0]}   ❌ {itms[7][1][1]}
-"""
-        await update.message.reply_text(message)
+        ordered_plus = [value[1][0] for value in itms]
+        ordered_minus = [value[1][1] for value in itms]
+
+        message = predicts_answer_message.format(*ordered_plus, *ordered_minus, top_message=top_message)
+
+    await update.message.reply_text(message)
        
 def main() -> None:
     """Start the bot."""

@@ -4,10 +4,9 @@ from mcf_data import (
     DEBUG_STATS_PATH,
     JSON_GAMEDATA_PATH,
     PREVIOUS_GAMEID_PATH,
-    ACTIVE_GAMESCORE_PATH,
     PREDICTS_TRACE_GLOBAL_PATH,
     PREDICTS_TRACE_DAILY_PATH,
-    TODAY,
+    
 )
 
 import logging
@@ -16,6 +15,21 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+
+class SafeJson:
+
+    @staticmethod
+    def load(json_path: str) -> dict:
+
+        with open(json_path, 'r', encoding='utf-8') as file:
+            data: dict = json.load(file)
+        return data
+    
+    @staticmethod
+    def dump(json_path, data: dict):
+
+        with open(json_path, 'w+', encoding='utf-8') as file:
+            json.dump(data, file, indent=4)
 
 class MCFStorage:
 
@@ -30,6 +44,7 @@ class MCFStorage:
 
         with open(PREVIOUS_GAMEID_PATH, 'w+') as file:
             file.write(game_id)
+
         # open()
     @classmethod
     def save_score(cls, score: dict = None, stop_tracking=False):
@@ -86,7 +101,8 @@ class MCFStorage:
 
     @classmethod
     def predicts_monitor(cls, kills: int, key: str, daily=False):
-        
+        from mcf_data import TODAY
+
         if Validator.predict_value_flet[key] is None:
             return
 
@@ -95,26 +111,22 @@ class MCFStorage:
             trace_day = datetime.now().day
 
             if trace_day != TODAY:
-                with open(predicts_path, 'r', encoding='utf-8') as file:
-                    data: dict = json.load(file)
-               
+                data = SafeJson.load(predicts_path)
+                
                 for predict in data.keys():
                    data[predict][0] = 0
                    data[predict][1] = 0
                 
-                with open(predicts_path, 'w+', encoding='utf-8') as file:
-                    json.dump(data, file, indent=4)
+                SafeJson.dump(data=data)
                 
                 TODAY = trace_day
                    
-
         else:
             predicts_path = PREDICTS_TRACE_GLOBAL_PATH
 
-        with open(predicts_path, 'r', encoding='utf-8') as file:
-            data = json.load(file)
+        data = SafeJson.load(predicts_path)
 
-        print(data)
+        # print(data)
         match Validator.predict_value_flet[key]:
             case ("110Б" | "S_110Б" as ttl, fl):
                 if kills >= 115:
@@ -132,8 +144,7 @@ class MCFStorage:
         Validator.predict_value_flet[key] = None
 
     
-        with open(predicts_path, 'w+', encoding='utf-8') as file:
-            json.dump(data, file, indent=4)
+        SafeJson.dump(data=data)
 
     @classmethod
     def stats_monitor(cls, validor):
@@ -156,17 +167,11 @@ class MCFStorage:
                 print('UNDEFINED IN STATS MONITOR. CHECK CODE')
                 return
 
-        import json
-
-        with open(DEBUG_STATS_PATH, 'r', encoding='utf-8') as js_stats:
-
-            stats_register = json.load(js_stats)
+        stats_register = SafeJson.load(DEBUG_STATS_PATH)
 
         if is_plus:
             stats_register['PLUS'] += 1
         else:
             stats_register['minus'] += 1
 
-        with open(DEBUG_STATS_PATH, 'w+', encoding='utf-8') as js_stats:
-
-            json.dump(stats_register, js_stats, indent=4)
+        SafeJson.dump(stats_register)
