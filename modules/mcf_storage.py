@@ -5,11 +5,14 @@ from mcf_data import (
     JSON_GAMEDATA_PATH,
     PREVIOUS_GAMEID_PATH,
     ACTIVE_GAMESCORE_PATH,
-    PREDICTS_TRACE_PATH
+    PREDICTS_TRACE_GLOBAL_PATH,
+    PREDICTS_TRACE_DAILY_PATH,
+    TODAY,
 )
 
 import logging
 import redis
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 r = redis.Redis(host='localhost', port=6379, decode_responses=True)
@@ -82,12 +85,33 @@ class MCFStorage:
 
 
     @classmethod
-    def predicts_monitor(cls, kills: int, key: str):
+    def predicts_monitor(cls, kills: int, key: str, daily=False):
         
         if Validator.predict_value_flet[key] is None:
             return
 
-        with open(PREDICTS_TRACE_PATH, 'r', encoding='utf-8') as file:
+        if daily:
+            predicts_path = PREDICTS_TRACE_DAILY_PATH
+            trace_day = datetime.now().day
+
+            if trace_day != TODAY:
+                with open(predicts_path, 'r', encoding='utf-8') as file:
+                    data: dict = json.load(file)
+               
+                for predict in data.keys():
+                   data[predict][0] = 0
+                   data[predict][1] = 0
+                
+                with open(predicts_path, 'w+', encoding='utf-8') as file:
+                    json.dump(data, file, indent=4)
+                
+                TODAY = trace_day
+                   
+
+        else:
+            predicts_path = PREDICTS_TRACE_GLOBAL_PATH
+
+        with open(predicts_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
         print(data)
@@ -108,7 +132,7 @@ class MCFStorage:
         Validator.predict_value_flet[key] = None
 
     
-        with open(PREDICTS_TRACE_PATH, 'w+', encoding='utf-8') as file:
+        with open(predicts_path, 'w+', encoding='utf-8') as file:
             json.dump(data, file, indent=4)
 
     @classmethod

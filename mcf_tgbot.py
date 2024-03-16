@@ -36,13 +36,20 @@ snip = {
 for key, value in snip.items():
     r.set(key, value)
 
-# print(r.get('is_active'))
+print(r.get('is_active'))
+
+async def info(update: Update, context: CallbackContext):
+
+    visitor = update.message.chat.first_name
+    await update.message.reply_text(f'Да, здесь будет инфа. Нужно немного подождать, {visitor}')
 
 async def start(update: Update, context: CallbackContext):
-    keyboard = [ [KeyboardButton('/game'), KeyboardButton('/build')], [KeyboardButton('/predicts_result')] ]
+    keyboard = [ [KeyboardButton('/game'), KeyboardButton('/build')], [KeyboardButton('/predicts_global'), KeyboardButton('/predicts_daily')] ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-    await update.message.reply_text('Здарова, тварына', reply_markup=reply_markup)
+    visitor = update.message.chat.first_name
+
+    await update.message.reply_text(f'Привет, {visitor}. Для краткого ознакомления с ботом нажми /info', reply_markup=reply_markup)
 
 async def devkit(update: Update, context: CallbackContext):
     keyboard = [ [KeyboardButton('/game'), KeyboardButton('/build')], [KeyboardButton('/predicts_result')],
@@ -75,7 +82,7 @@ async def change_actual_mirror(update: Update, context: CallbackContext):
 async def echo_score(update: Update, context: CallbackContext) -> None:
     
 
-    if r.get('is_active').__int__ != '0':
+    if r.get('is_active') != '0':
         
         with open(os.path.join('.', 'arambot_lib', 'score_answer_sample.txt'), 'r', encoding='utf-8') as sample:
             message_sample = sample.read()
@@ -130,12 +137,19 @@ async def mcf_status(update: Update, context: CallbackContext) -> None:
     # await update.message.reply_text('Бот перезагружен')
 async def predicts_check(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
-    with open(os.path.join('.', 'untracking', 'predicts_trace.json'), 'r', encoding='utf-8') as js_stats:
+    if update.message.text == '/predicts_global':
+        top_message = 'Результат по предиктам за все время'
+        predicts_path = os.path.join('.', 'untracking', 'predicts_trace.json')
+    else:
+        top_message = 'Результат по предиктам за сутки'
+        predicts_path = os.path.join('.', 'untracking', 'predicts_trace_daily.json')
+    with open(predicts_path, 'r', encoding='utf-8') as js_stats:
         predicts: dict = json.load(js_stats)
         itms = list(predicts.items())
         message = f"""
-Плюс для 110М: итоговый тотал <= 105
-Плюс для 110Б: итоговый тотал >= 115
+{top_message}
+110М +: итоговый тотал <= 105
+110Б +: итоговый тотал >= 115
 
 {itms[0][0]}     ✅ {itms[0][1][0]}   ❌ {itms[0][1][1]}
 {itms[1][0]}      ✅ {itms[1][1][0]}   ❌ {itms[1][1][1]}
@@ -154,10 +168,12 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("game", echo_score))
     application.add_handler(CommandHandler("build", echo_build))
-    application.add_handler(CommandHandler("predicts_result", predicts_check))
+    application.add_handler(CommandHandler("predicts_global", predicts_check))
+    application.add_handler(CommandHandler("predicts_daily", predicts_check))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'https\S+'), change_actual_mirror))
     application.add_handler(CommandHandler('mcf_reload', mcf_reload))
     application.add_handler(CommandHandler('mcf_stop', mcf_stop))
+    application.add_handler(CommandHandler('info', info))
     application.add_handler(CommandHandler('mcf_status', mcf_status))
     application.add_handler(CommandHandler('mirror', actual_mirror))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bfallside\b'), devkit))

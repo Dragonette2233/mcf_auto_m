@@ -368,6 +368,8 @@ class MCFApi:
                 # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
                 MCFStorage.predicts_monitor(kills=kills, key='main')
                 MCFStorage.predicts_monitor(kills=kills, key='stats')
+                MCFStorage.predicts_monitor(kills=kills, key='main', daily=True)
+                MCFStorage.predicts_monitor(kills=kills, key='stats', daily=True)
                 ActiveGame.is_game_founded = False
                 Switches.request = False
 

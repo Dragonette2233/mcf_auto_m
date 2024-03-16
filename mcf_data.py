@@ -1,6 +1,7 @@
 import os
 import threading
 import getpass
+from datetime import datetime
 from modules import (
     mcf_pillow,
 )
@@ -85,6 +86,7 @@ ten_roles_dict = {
 
 
 WINDOWS_USER = getpass.getuser()
+TODAY = datetime.now().day
 SPECTATOR_MODE = 'spectator.{reg}.lol.pvp.net:8080'
 FEATURED_GAMES_URL = "https://{region}.api.riotgames.com/lol/spectator/v4/featured-games"
 URL_PORO_BY_REGIONS = "https://porofessor.gg/current-games/{champion}/{region}/queue-450"
@@ -121,7 +123,8 @@ MIRROR_PAGE = os.path.join(MCF_BOT_PATH, 'untracking', 'mirror_page.txt')
 PREVIOUS_GAMEID_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'previous_gameid.txt')
 ACTIVE_GAMESCORE_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'activegame_score.json')
 SCORE_TRACE_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'score_trace.json')
-PREDICTS_TRACE_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'predicts_trace.json')
+PREDICTS_TRACE_GLOBAL_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'predicts_trace.json')
+PREDICTS_TRACE_DAILY_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'predicts_trace_daily.json')
 # SCORE_ANSWER_PATH = os.path.join(MCF_BOT_PATH, 'untracking', '')
 
 
