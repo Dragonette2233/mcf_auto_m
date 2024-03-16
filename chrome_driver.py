@@ -281,7 +281,7 @@ class Chrome:
 
             self.remove_cancel()
 
-            print(self.PASSAGES)
+            # print(self.PASSAGES)
             if self.PASSAGES in (40, 80, 120):
                 if not self.open_league_page():
                     self.force_quit()
