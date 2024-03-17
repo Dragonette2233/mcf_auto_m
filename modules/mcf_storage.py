@@ -117,7 +117,7 @@ class MCFStorage:
                    data[predict][0] = 0
                    data[predict][1] = 0
                 
-                SafeJson.dump(data=data)
+                SafeJson.dump(json_path=predicts_path,data=data)
                 
                 TODAY = trace_day
                    
@@ -144,7 +144,7 @@ class MCFStorage:
         Validator.predict_value_flet[key] = None
 
     
-        SafeJson.dump(data=data)
+        SafeJson.dump(json_path=predicts_path, data=data)
 
     @classmethod
     def stats_monitor(cls, validor):
@@ -174,4 +174,4 @@ class MCFStorage:
         else:
             stats_register['minus'] += 1
 
-        SafeJson.dump(stats_register)
+        SafeJson.dump(json_path=DEBUG_STATS_PATH, data=stats_register)
