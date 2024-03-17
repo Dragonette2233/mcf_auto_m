@@ -47,8 +47,8 @@ def auth(authorized_users):
         @wraps(func)
         async def wrapper(update: Update, context: CallbackContext):
             user_id = update.message.from_user.id
-            print(user_id)
-            print(authorized_users)
+            # print(user_id)
+            # print(authorized_users)
             if str(user_id) in authorized_users:
                 return await func(update, context)
             else:
