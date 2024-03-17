@@ -22,7 +22,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 r = redis.Redis(host='localhost', port=6379, decode_responses=True)
 
-with open('./arambot_lib/authorized_users', 'r') as us:
+with open('./untracking/authorized_users', 'r') as us:
     authorized_users = [i[:-1] for i in us.readlines()]
 
 snip = {
@@ -64,7 +64,7 @@ async def first_auth(update: Update, context: CallbackContext):
     else:
         authorized_users.append(us_id)
 
-        with open('./arambot_lib/authorized_users', 'w+') as us:
+        with open('./untracking/authorized_users', 'w+') as us:
             for i in authorized_users:
                 us.writelines(i + '\n')
 
