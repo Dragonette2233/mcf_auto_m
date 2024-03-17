@@ -14,6 +14,7 @@ import redis
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
+
 r = redis.Redis(host='localhost', port=6379, decode_responses=True)
 
 class SafeJson:
@@ -32,6 +33,8 @@ class SafeJson:
             json.dump(data, file, indent=4)
 
 class MCFStorage:
+
+    TODAY = datetime.now().day
 
     @classmethod
     def get_gameid(cls):
@@ -101,7 +104,7 @@ class MCFStorage:
 
     @classmethod
     def predicts_monitor(cls, kills: int, key: str, daily=False):
-        from mcf_data import TODAY
+        # from mcf_data import TODAY
 
         if Validator.predict_value_flet[key] is None:
             return
@@ -111,7 +114,7 @@ class MCFStorage:
             predicts_path = PREDICTS_TRACE_DAILY_PATH
             trace_day = datetime.now().day
 
-            if trace_day != TODAY:
+            if trace_day != cls.TODAY:
                 data = SafeJson.load(predicts_path)
                 
                 for predict in data.keys():
@@ -120,7 +123,7 @@ class MCFStorage:
                 
                 SafeJson.dump(json_path=predicts_path,data=data)
                 
-                TODAY = trace_day
+                cls.TODAY = trace_day
                    
         else:
             predicts_path = PREDICTS_TRACE_GLOBAL_PATH
