@@ -145,7 +145,7 @@ class MCFStorage:
             case _:
                 ...
         
-        Validator.predict_value_flet[key] = None
+        # Validator.predict_value_flet[key] = None
 
     
         SafeJson.dump(json_path=predicts_path, data=data)

@@ -370,6 +370,8 @@ class MCFApi:
                 MCFStorage.predicts_monitor(kills=kills, key='stats')
                 MCFStorage.predicts_monitor(kills=kills, key='main', daily=True)
                 MCFStorage.predicts_monitor(kills=kills, key='stats', daily=True)
+                Validator.predict_value_flet['main'] = None
+                Validator.predict_value_flet['stats'] = None
                 ActiveGame.is_game_founded = False
                 Switches.request = False
 
