@@ -71,7 +71,8 @@ class Chrome:
     def remove_cancel(self):
         try:
             element = self.driver.find_element(By.CSS_SELECTOR, self.CSS_BTN_REJECT_LIVE)
-            element.click()
+            if element is not None:
+                element.click()
         except (NoSuchElementException, TimeoutException, StaleElementReferenceException):
             pass
 
@@ -204,6 +205,7 @@ class Chrome:
                 ],
                 '⬇️ PR 110М (FL 0.5) ⬇️': [
                     (all_kills < 60 and gametime > 420 and hard_towers_leader),
+                    (all_kills < 7 and gametime > 240),
                     (all_kills < 15 and gametime > 320),
                     (all_kills < 24 and module_kills > 6 and light_leader and gametime > 360),
                     (all_kills < 24 and gametime > 420),

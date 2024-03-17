@@ -1,4 +1,4 @@
-🐳 K: {blue_kills} | TW: {blue_towers} | GOLD: {blue_gold}k
-🐙 K: {red_kills} | TW: {red_towers} | GOLD: {red_gold}k
+🐳 K: {blue_kills} | T: {blue_towers} | G: {blue_gold}k
+🐙 K: {red_kills} | T: {red_towers} | G: {red_gold}k
 
 Время: {time}
