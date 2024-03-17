@@ -107,6 +107,7 @@ class MCFStorage:
             return
 
         if daily:
+            logger.warning('_Something here!_')
             predicts_path = PREDICTS_TRACE_DAILY_PATH
             trace_day = datetime.now().day
 
