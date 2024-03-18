@@ -132,7 +132,7 @@ class Chrome:
         all_kills = blue_kills + red_kills
         module_kills = abs(blue_kills - red_kills)
         module_gold = abs(blue_gold - red_gold)
-        gold_equals = module_gold < 1.1
+        gold_equals = module_gold < 0.5
         blue_gold_leader = blue_gold > red_gold and module_gold > 1.7
         red_gold_leader = red_gold > blue_gold and module_gold > 1.7
         # blue_gold_winner = blue_gold > red_gold and module_gold > 2.8
