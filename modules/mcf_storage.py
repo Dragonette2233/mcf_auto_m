@@ -121,7 +121,7 @@ class MCFStorage:
                    data[predict][0] = 0
                    data[predict][1] = 0
                 
-                SafeJson.dump(json_path=predicts_path,data=data)
+                SafeJson.dump(json_path=predicts_path, data=data)
                 
                 cls.TODAY = trace_day
                    

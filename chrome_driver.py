@@ -190,28 +190,36 @@ class Chrome:
                 ],
 
                 '⬇️ PR 110М (FL 1) ⬇️': [
-                    (all_kills < 24 and straight_leader and gametime > 300),
-                    (all_kills < 28 and straight_leader and gametime > 360),
-                    (all_kills < 32 and straight_leader and gametime > 420),
-                    (all_kills < 41 and straight_leader and gametime > 540),
-                    (all_kills < 51 and straight_leader and module_kills > 9 and gametime > 540)
+
+                    (all_kills < 20 and straight_leader and gametime > 240),
+                    (all_kills < 26 and straight_leader and gametime > 300),
+                    (all_kills < 32 and straight_leader and gametime > 360),
+                    (all_kills < 38 and straight_leader and gametime > 420),
+                    (all_kills < 44 and straight_leader and gametime > 540),
+                    (all_kills < 50 and straight_leader and module_kills > 9 and gametime > 540)
+                    
                 ],
                 '⬇️ PR 110М (FL 0.75) ⬇️': [
-                    (all_kills <= 22 and some_tower_destroyed and gametime > 250),
-                    (all_kills < 36 and some_tower_destroyed and gametime > 480),
-                    (all_kills < 45 and two_towers_destroyed and gametime > 480),
+
+                    (all_kills < 16 and some_tower_destroyed and gametime > 240),
+                    (all_kills < 20 and some_tower_destroyed and gametime > 300),
+                    (all_kills < 24 and some_tower_destroyed and gametime > 360),
+                    (all_kills < 28 and some_tower_destroyed and gametime > 420),
+                    (all_kills < 32 and some_tower_destroyed and gametime > 480),
+                    (all_kills < 44 and two_towers_destroyed and gametime > 480),
                     (all_kills < 50 and towers_leader),
                     
                 ],
                 '⬇️ PR 110М (FL 0.5) ⬇️': [
-                    (all_kills < 60 and gametime > 420 and hard_towers_leader),
+                    
                     (all_kills < 7 and gametime > 240),
                     (all_kills < 15 and gametime > 320),
-                    (all_kills < 24 and module_kills > 6 and light_leader and gametime > 360),
-                    (all_kills < 24 and gametime > 420),
-                    (all_kills < 28 and gametime > 480),
+                    (all_kills < 20 and module_kills > 5 and light_leader and gametime > 360),
+                    (all_kills < 22 and gametime > 420),
+                    (all_kills < 42 and gametime > 420 and hard_towers_leader),
+                    (all_kills < 28 and module_kills > 5 and gametime > 480),
                     (all_kills <= 35 and module_kills >= 9 and light_leader and gametime > 420),
-                    (all_kills <= 50 and module_kills >= 15 and light_leader and gametime > 420)
+                    (all_kills <= 44 and module_kills >= 15 and light_leader and gametime > 420)
                 ]
 
             }
