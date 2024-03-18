@@ -139,8 +139,8 @@ class Chrome:
         # red_gold_winner = red_gold > blue_gold and module_gold > 2.8
         # blue_gold_winner = blu
         
-        blue_leader = (blue_kills > red_kills or blue_gold > red_gold) and (blue_towers != 0 and red_towers == 0) and blue_gold_leader
-        red_leader = (red_kills > blue_kills or red_gold > blue_gold) and (red_towers != 0 and blue_towers == 0) and red_gold_leader
+        blue_leader = (blue_towers != 0 and red_towers == 0) and blue_gold_leader
+        red_leader = (red_towers != 0 and blue_towers == 0) and red_gold_leader
 
         blue_light = blue_kills > red_kills and blue_gold_leader
         red_light = red_kills > blue_kills and red_gold_leader
