@@ -133,18 +133,19 @@ class Chrome:
         module_kills = abs(blue_kills - red_kills)
         module_gold = abs(blue_gold - red_gold)
         gold_equals = module_gold < 0.5
-        blue_gold_leader = blue_gold > red_gold and module_gold > 1.7
-        red_gold_leader = red_gold > blue_gold and module_gold > 1.7
-        # blue_gold_winner = blue_gold > red_gold and module_gold > 2.8
-        # red_gold_winner = red_gold > blue_gold and module_gold > 2.8
+
+        blue_gold_leader = blue_gold > red_gold and module_gold > 1.4
+        red_gold_leader = red_gold > blue_gold and module_gold > 1.4
+        blue_gold_winner = blue_gold > red_gold and module_gold > 2.5
+        red_gold_winner = red_gold > blue_gold and module_gold > 2.5
         # blue_gold_winner = blu
         
-        blue_leader = (blue_towers != 0 and red_towers == 0) and blue_gold_leader
-        red_leader = (red_towers != 0 and blue_towers == 0) and red_gold_leader
+        blue_leader = (blue_towers != 0 and red_towers == 0) and blue_gold_winner
+        red_leader = (red_towers != 0 and blue_towers == 0) and red_gold_winner
 
-        blue_light = blue_kills > red_kills and blue_gold_leader
-        red_light = red_kills > blue_kills and red_gold_leader
-        light_leader = blue_light or red_light
+        # blue_light = blue_kills > red_kills and blue_gold_leader
+        # red_light = red_kills > blue_kills and red_gold_leader
+        light_leader = blue_gold_leader or red_gold_leader
 
         straight_leader = blue_leader or red_leader
         two_towers_destroyed = blue_towers + red_towers > 1
@@ -191,33 +192,33 @@ class Chrome:
 
                 '⬇️ PR 110М (FL 1) ⬇️': [
 
-                    (all_kills < 20 and straight_leader and gametime > 240),
-                    (all_kills < 26 and straight_leader and gametime > 300),
-                    (all_kills < 32 and straight_leader and gametime > 360),
-                    (all_kills < 38 and straight_leader and gametime > 420),
-                    (all_kills < 44 and straight_leader and gametime > 540),
+                    (all_kills < 16 and straight_leader and gametime > 240),
+                    (all_kills < 22 and straight_leader and gametime > 300),
+                    (all_kills < 28 and straight_leader and gametime > 360),
+                    (all_kills < 34 and straight_leader and gametime > 420),
+                    (all_kills < 40 and straight_leader and gametime > 540),
                     (all_kills < 50 and straight_leader and module_kills > 9 and gametime > 540)
                     
                 ],
                 '⬇️ PR 110М (FL 0.75) ⬇️': [
 
-                    (all_kills < 16 and some_tower_destroyed and gametime > 240),
-                    (all_kills < 20 and some_tower_destroyed and gametime > 300),
-                    (all_kills < 24 and some_tower_destroyed and gametime > 360),
-                    (all_kills < 28 and some_tower_destroyed and gametime > 420),
-                    (all_kills < 32 and some_tower_destroyed and gametime > 480),
-                    (all_kills < 44 and two_towers_destroyed and gametime > 480),
+                    (all_kills < 12 and some_tower_destroyed and gametime > 240),
+                    (all_kills < 16 and some_tower_destroyed and gametime > 300),
+                    (all_kills < 20 and some_tower_destroyed and gametime > 360),
+                    (all_kills < 24 and some_tower_destroyed and gametime > 420),
+                    (all_kills < 28 and some_tower_destroyed and gametime > 480),
+                    (all_kills < 38 and two_towers_destroyed and gametime > 480),
                     (all_kills < 50 and towers_leader),
                     
                 ],
                 '⬇️ PR 110М (FL 0.5) ⬇️': [
                     
                     (all_kills < 7 and gametime > 240),
-                    (all_kills < 15 and gametime > 320),
-                    (all_kills < 20 and module_kills > 5 and light_leader and gametime > 360),
+                    (all_kills < 14 and gametime > 300),
+                    (all_kills < 20 and light_leader and gametime > 360),
                     (all_kills < 22 and gametime > 420),
                     (all_kills < 42 and gametime > 420 and hard_towers_leader),
-                    (all_kills < 28 and module_kills > 5 and gametime > 480),
+                    (all_kills < 28 and light_leader and gametime > 480),
                     (all_kills <= 35 and module_kills >= 9 and light_leader and gametime > 420),
                     (all_kills <= 44 and module_kills >= 15 and light_leader and gametime > 420)
                 ]
