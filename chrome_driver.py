@@ -107,8 +107,9 @@ class Chrome:
                 game_index = '_'.join(game_link.split('/')[7:])
                 if game_index == self.game_index_ended:
                     button = games[0].find_element(By.CSS_SELECTOR, 'button.ui-market.ui-market--nameless')
+                    # button = games[0].find_element(By.XPATH, '//*[@id="app"]/div[3]/div[1]/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[1]/ul/li/div[2]/span/button[1]')
                     try:
-                        lock_icon = button.find_element(By.CSS_SELECTOR, 'span.ico ui-market__lock ico--lock')
+                        lock_icon = button.find_element(By.CSS_SELECTOR, 'span.ico.ui-market__lock.ico--lock')
                         return False
                     except:
                         Switches.coeff_opened = True
