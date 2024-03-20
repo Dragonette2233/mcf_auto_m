@@ -65,7 +65,9 @@ class Chrome:
             self.driver.get(url=url)
             time.sleep(6)
             return True
-        except (TimeoutException, WebDriverException):
+        except TimeoutException:
+            return False
+        except WebDriverException:
             return False
         # time.sleep(6)
 
@@ -99,13 +101,20 @@ class Chrome:
             aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, 'span.caption__label').get_attribute('innerText')
               
             if aram_title_inner == 'All Random All Mid':
-                game_link = games[0].find_element(By.CSS_SELECTOR, 'a.dashboard-game-block__link.dashboard-game-block-link').get_attribute('href')
+                game_links = games[0].find_elements(By.CSS_SELECTOR, 'a.dashboard-game-block__link.dashboard-game-block-link')# .get_attribute('href')
+                game_link = game_links[0].get_attribute('href')
+                # ico ui-market__lock ico--lock
                 game_index = '_'.join(game_link.split('/')[7:])
                 if game_index == self.game_index_ended:
                     button = games[0].find_element(By.CSS_SELECTOR, 'button.ui-market.ui-market--nameless')
-                    if not button.get_attribute('disabled'):
-                        Switches.coeff_opened = True
+                    try:
+                        lock_icon = button.find_element(By.CSS_SELECTOR, 'span.ico ui-market__lock ico--lock')
+                        return False
+                    except:
                         return True
+                    # if not button.get_attribute('disabled'):
+                    #     Switches.coeff_opened = True
+                    #     return True
         except (NoSuchElementException, IndexError, Exception):
             pass
             
