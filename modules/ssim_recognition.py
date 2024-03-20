@@ -98,9 +98,17 @@ class ScoreRecognition:
     def get_compare(cls, cut_image, type, position, team=None):
 
         match type, position, team:
+            case 'tw_access', pos, None:
+                main_image_arr = np.array(Image.open(os.path.join('.', 'ssim_score_data', 'tw_health', 'access.png')))
+                similarity_index = ssim(main_image_arr, cut_image)
+                if similarity_index > 0.75:
+                    return True
+                else:
+                    return False
+            case 'thp', pos, team:
+                main_images = [Image.open(os.path.join('.', 'ssim_score_data', 'tw_health', f'{i}.png')) for i in range(10)]
             case 'gold', pos, None:
                 main_images = [Image.open(os.path.join('.', 'ssim_score_data', 'gold', f'{i}.png')) for i in range(10)]
-                # print(cut_image.width)
             case 'gtime', 0, None:
                 main_images = [Image.open(os.path.join(GTIME_DATA_PATH, f'{position}', f'{i}.png')) for i in range(4)]
             case 'gtime', 1 | 3, None:
@@ -130,7 +138,37 @@ class ScoreRecognition:
                 return idx
         else:
             return ''
-            
+
+    @classmethod
+    def towers_healh_recognition(cls, image):
+        # 20, 850, 59, 902
+        if not cls.get_compare(np.array(image.crop((20, 850, 59, 902)).convert('L')), 'tw_access', 0):
+            return False
+
+
+        t1_health = [
+            cls.get_compare(np.array(image.crop((87, 853, 94, 866)).convert('L')), 'thp', 0),
+            cls.get_compare(np.array(image.crop((95, 853, 102, 866)).convert('L')), 'thp', 1),
+            cls.get_compare(np.array(image.crop((103, 853, 110, 866)).convert('L')), 'thp', 2)
+        ]
+
+        round_value = 295
+        
+        if all([value == '' for value in t1_health]):
+            t1_health = [
+                cls.get_compare(np.array(image.crop((91, 853, 98, 866)).convert('L')), 'thp', 0),
+                cls.get_compare(np.array(image.crop((99, 853, 106, 866)).convert('L')), 'thp', 1),
+                cls.get_compare(np.array(image.crop((107, 853, 114, 866)).convert('L')), 'thp', 2)
+            ]
+
+            round_value = 2950
+       
+        t1 = ''.join([str(i) for i in t1_health])
+
+        t1_res = int(t1) if t1 !='' else 0
+
+        return int((t1_res / round_value) * 100)
+
     @classmethod
     def screen_score_recognition(cls, image=None) -> dict[str, int]:
 

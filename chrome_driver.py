@@ -140,20 +140,22 @@ class Chrome:
         red_towers = score["red_towers"] # "red_towers": 1,
         blue_gold = score["blue_gold"]
         red_gold = score["red_gold"]
+        blue_t1_hp = score["blue_t1_hp"]
+        red_t1_hp = score["red_t1_hp"]
 
         all_kills = blue_kills + red_kills
         module_kills = abs(blue_kills - red_kills)
         module_gold = abs(blue_gold - red_gold)
-        gold_equals = module_gold < 0.9
+        gold_equals = module_gold < 0.6
 
-        blue_gold_leader = blue_gold > red_gold and module_gold > 1.4
-        red_gold_leader = red_gold > blue_gold and module_gold > 1.4
-        blue_gold_winner = blue_gold > red_gold and module_gold > 2.5
-        red_gold_winner = red_gold > blue_gold and module_gold > 2.5
+        blue_gold_leader = blue_gold > red_gold and module_gold > 1.65
+        red_gold_leader = red_gold > blue_gold and module_gold > 1.65
+        blue_gold_winner = blue_gold > red_gold and module_gold > 2.8
+        red_gold_winner = red_gold > blue_gold and module_gold > 2.8
         # blue_gold_winner = blu
         
-        blue_leader = (blue_towers != 0 and red_towers == 0) and blue_gold_winner
-        red_leader = (red_towers != 0 and blue_towers == 0) and red_gold_winner
+        blue_leader = ( (blue_towers != 0 and red_towers == 0) or (blue_t1_hp > 75 and red_t1_hp < 20) ) and blue_gold_winner
+        red_leader = ( (red_towers != 0 and blue_towers == 0) or (red_t1_hp > 75 and blue_t1_hp < 20) ) and red_gold_winner
 
         # blue_light = blue_kills > red_kills and blue_gold_leader
         # red_light = red_kills > blue_kills and red_gold_leader
@@ -163,15 +165,15 @@ class Chrome:
         two_towers_destroyed = blue_towers + red_towers > 1
         towers_leader = blue_towers > 1 or red_towers > 1
         hard_towers_leader = (red_towers == 0 and blue_towers > 1) or (blue_towers == 0 and red_towers > 1)
-        no_towers_destroyed = blue_towers == 0 and red_towers == 0
-        some_tower_destroyed = blue_towers != 0 or red_towers != 0
-        t1_towers_destroyed = blue_towers == 1 and red_towers == 1
+        no_towers_destroyed = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 65 and red_t1_hp > 65)
+        some_tower_destroyed = (blue_towers != 0 or red_towers != 0) or (blue_t1_hp < 30 or red_t1_hp < 30)
+        t1_towers_destroyed = (blue_towers == 1 and red_towers == 1) or (blue_t1_hp < 25 and red_t1_hp < 25)
         
         if not Validator.predict_value_flet['stats']:
 
             spredictions = {
                 '⬇️ S_PR 110М (FL 0.5) ⬇️': [
-                    (StatsRate.tl_accepted() and all_kills < 40 and some_tower_destroyed and gametime > 400),
+                    (StatsRate.tl_accepted() and all_kills < 35 and some_tower_destroyed and gametime > 400),
                     (StatsRate.tl_accepted() and all_kills < 30 and gametime > 400)
                 ],
                 '⬆️ S_PR 110Б (FL 0.5) ⬆️': [
@@ -191,15 +193,15 @@ class Chrome:
             
             predictions = {
                 '⬆️ PR 110Б (FL 1) ⬆️': [
-                    (all_kills >= 60 and module_kills < 3 and no_towers_destroyed and gametime < 480 and gold_equals),
+                    (all_kills >= 55 and module_kills < 4 and no_towers_destroyed and gametime < 480 and gold_equals),
 
                 ],
                 '⬆️ PR 110Б (FL 0.75) ⬆️': [
                     # (all_kills >= 50 and module_kills < 3 and no_towers_destroyed and gametime < 360 and gold_equals),
-                    (all_kills >= 80 and module_kills < 4 and t1_towers_destroyed and gametime < 480 and gold_equals),
+                    (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 480 and gold_equals),
                 ],
                 '⬆️ PR 110Б (FL 0.5) ⬆️': [
-                    (all_kills >= 55 and module_kills < 5 and no_towers_destroyed and (gametime in range(481, 540)) and gold_equals)
+                    (all_kills >= 50 and module_kills < 6 and no_towers_destroyed and (gametime in range(481, 540)) and gold_equals)
                 ],
 
                 '⬇️ PR 110М (FL 1) ⬇️': [

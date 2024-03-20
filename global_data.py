@@ -1,3 +1,12 @@
+class TowersHealth:
+    blue_backup = 0
+    red_backup = 0
+
+    @classmethod
+    def reset(cls):
+        cls.blue_backup = 0
+        cls.red_backup = 0
+        
 class ActiveGame:
     nick_region = None
     region = None

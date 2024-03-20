@@ -1,6 +1,8 @@
 from PIL import Image, ImageChops, ImageGrab
+from global_data import TowersHealth
 import os
 import logging
+import time
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
 # from mcf_data import Validator
@@ -67,14 +69,59 @@ def is_league_stream_active(debug=False):
     if similarity_index > 0.949:
         return True
 
+def reset_towers_backup():
+    TowersHealth.reset()
+    
 def generate_scoreboard():
+
     from modules.ssim_recognition import ScoreRecognition
     from modules.mcf_storage import MCFStorage
-    screen = ImageGrab.grab()
-    score = screen.crop((681, 7, 1261, 99))
+    from modules import mcf_autogui
+
+    blue_shot = None
+    red_shot = None
+   
+    score = ScoreRecognition.screen_score_recognition()
+
+    if score['red_towers'] == 0:
+        mcf_autogui.click(1770, 976)
+        time.sleep(0.05)
+        mcf_autogui.doubleClick(770, 670)
+        time.sleep(0.05)
+        blue_shot = ImageGrab.grab()
+        blue_t1_health = ScoreRecognition.towers_healh_recognition(image=blue_shot)
+        if not blue_t1_health:
+            blue_t1_health = TowersHealth.blue_backup
+        else:
+            TowersHealth.blue_backup = blue_t1_health
+    else:
+        blue_t1_health = 0
+
+    if score['blue_towers'] == 0:
+        mcf_autogui.click(1819, 925)
+        time.sleep(0.05)
+        mcf_autogui.doubleClick(959, 630)
+        time.sleep(0.05)
+        red_shot = ImageGrab.grab()
+        red_t1_health = ScoreRecognition.towers_healh_recognition(image=red_shot)
+        if not red_t1_health:
+            red_t1_health = TowersHealth.red_backup
+        else:
+            TowersHealth.red_backup = red_t1_health
+    else:
+        red_t1_health = 0
+    
+    # screen = ImageGrab.grab()
+    score = blue_shot.crop((681, 7, 1261, 99))
     scoredata = ScoreRecognition.screen_score_recognition(image=score)
+    scoredata['blue_t1_hp'] = blue_t1_health
+    scoredata['red_t1_hp'] = red_t1_health
+
     MCFStorage.save_score(score=scoredata)
     
-    items_build = screen.crop((602, 850, 1334, 1078))
+    items_build = blue_shot.crop((602, 850, 1334, 1078))
     items_build.save(os.path.join('images_lib', 'buildcrop.png'))
+
+    
+
     return scoredata

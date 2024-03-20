@@ -53,7 +53,7 @@ class MCFStorage:
     def save_score(cls, score: dict = None, stop_tracking=False):
 
         if stop_tracking:
-            r.set('is_active', 0)#  = 0
+            r.set('is_active', 0)
         else:
             for key, value in score.items():
                 r.set(key, value)

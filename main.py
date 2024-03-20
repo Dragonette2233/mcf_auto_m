@@ -62,14 +62,16 @@ def main():
 
             while Switches.request:
                 mcf_autogui.doubleClick(x=658, y=828)
+                # tower_health = 
                 score = mcf_pillow.generate_scoreboard()
                 if score["time"] < 600:
                     chrome.generate_predict(score)
                 chrome.remove_cancel()
-                time.sleep(2)
+                time.sleep(0.25)
 
             MCFApi.delete_scoreboard()
             MCFApi.close_league_of_legends()
+            mcf_pillow.reset_towers_backup()
 
             logger.info('Game ended.')
             

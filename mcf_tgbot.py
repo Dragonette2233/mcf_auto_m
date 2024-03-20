@@ -27,12 +27,19 @@ with open('./untracking/authorized_users', 'r') as us:
 
 snip = {
     "time": 0,
+
     "blue_kills": 0,
     "red_kills": 0,
+
     "blue_towers": 0,
     "red_towers": 0,
+
+    "blue_t1_hp": 0,
+    "red_t1_hp": 0,
+
     "blue_gold": 0,
     "red_gold": 0,
+
     "is_active": 0
 }
 
@@ -88,6 +95,13 @@ async def start(update: Update, context: CallbackContext):
     await update.message.reply_text(f'Привет, {visitor}. Для краткого ознакомления с ботом нажми /info', reply_markup=reply_markup)
 
 @auth(authorized_users=authorized_users)
+async def emul(update: Update, context: CallbackContext):
+    
+    r.set('emulation', '0')
+
+    await update.message.reply_text('Emulation stoped')
+
+@auth(authorized_users=authorized_users)
 async def devkit(update: Update, context: CallbackContext):
     keyboard = [ [KeyboardButton('/game'), KeyboardButton('/build')], [KeyboardButton('/predicts_result')],
                 [KeyboardButton('/mcf_reload'), KeyboardButton('/mcf_stop'), KeyboardButton('/mcf_status')] ]
@@ -138,6 +152,8 @@ async def echo_score(update: Update, context: CallbackContext) -> None:
             red_towers = r.get('red_towers'),
             blue_gold = r.get('blue_gold'),
             red_gold = r.get('red_gold'),
+            blue_t1_hp = r.get('blue_t1_hp'),
+            red_t1_hp = r.get('red_t1_hp'),
             time = ':'.join([str(minutes), str(seconds)]),
         )
         await update.message.reply_text(message_for_reply)
@@ -213,13 +229,16 @@ def main() -> None:
     application.add_handler(CommandHandler("predicts_daily", predicts_check))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'https\S+'), change_actual_mirror))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'https\S+'), change_actual_mirror))
+    application.add_handler(CommandHandler('info', info))
+    application.add_handler(CommandHandler('mirror', actual_mirror))
+
+
+    application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bfallside\b'), devkit))
     application.add_handler(CommandHandler('mcf_reload', mcf_reload))
     application.add_handler(CommandHandler('mcf_stop', mcf_stop))
-    application.add_handler(CommandHandler('info', info))
+    application.add_handler(CommandHandler('emul_stop', emul))
     application.add_handler(CommandHandler('mcf_status', mcf_status))
-    application.add_handler(CommandHandler('mirror', actual_mirror))
-    application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'\bfallside\b'), devkit))
-    # application.add_handler(CommandHandler('stats_check', stats_check))
+    
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == '__main__':
