@@ -14,6 +14,7 @@ from selenium.common.exceptions import (
     TimeoutException, 
     NoSuchElementException, 
     StaleElementReferenceException,
+    WebDriverException,
     )
 
 logger = logging.getLogger(__name__)
@@ -64,7 +65,7 @@ class Chrome:
             self.driver.get(url=url)
             time.sleep(6)
             return True
-        except TimeoutException:
+        except (TimeoutException, WebDriverException):
             return False
         # time.sleep(6)
 
@@ -132,7 +133,7 @@ class Chrome:
         all_kills = blue_kills + red_kills
         module_kills = abs(blue_kills - red_kills)
         module_gold = abs(blue_gold - red_gold)
-        gold_equals = module_gold < 0.5
+        gold_equals = module_gold < 0.9
 
         blue_gold_leader = blue_gold > red_gold and module_gold > 1.4
         red_gold_leader = red_gold > blue_gold and module_gold > 1.4
@@ -179,15 +180,15 @@ class Chrome:
             
             predictions = {
                 '⬆️ PR 110Б (FL 1) ⬆️': [
-                    (all_kills >= 60 and module_kills < 6 and no_towers_destroyed and gametime < 420 and gold_equals),
+                    (all_kills >= 60 and module_kills < 3 and no_towers_destroyed and gametime < 480 and gold_equals),
 
                 ],
                 '⬆️ PR 110Б (FL 0.75) ⬆️': [
                     # (all_kills >= 50 and module_kills < 3 and no_towers_destroyed and gametime < 360 and gold_equals),
-                    (all_kills >= 80 and module_kills < 5 and t1_towers_destroyed and gametime < 420 and gold_equals),
+                    (all_kills >= 80 and module_kills < 4 and t1_towers_destroyed and gametime < 480 and gold_equals),
                 ],
                 '⬆️ PR 110Б (FL 0.5) ⬆️': [
-                    (all_kills >= 55 and module_kills < 6 and no_towers_destroyed and (gametime in range(421, 540)) and gold_equals)
+                    (all_kills >= 55 and module_kills < 5 and no_towers_destroyed and (gametime in range(481, 540)) and gold_equals)
                 ],
 
                 '⬇️ PR 110М (FL 1) ⬇️': [
