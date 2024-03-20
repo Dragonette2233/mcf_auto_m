@@ -111,6 +111,7 @@ class Chrome:
                         lock_icon = button.find_element(By.CSS_SELECTOR, 'span.ico ui-market__lock ico--lock')
                         return False
                     except:
+                        Switches.coeff_opened = True
                         return True
                     # if not button.get_attribute('disabled'):
                     #     Switches.coeff_opened = True
