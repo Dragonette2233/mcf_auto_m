@@ -84,9 +84,9 @@ def generate_scoreboard():
     score = ScoreRecognition.screen_score_recognition()
 
     if score['red_towers'] == 0:
-        mcf_autogui.click(1770, 976)
+        mcf_autogui.click(1752, 970)
         time.sleep(0.05)
-        mcf_autogui.doubleClick(770, 670)
+        mcf_autogui.doubleClick(936, 620)
         time.sleep(0.05)
         blue_shot = ImageGrab.grab()
         blue_t1_health = ScoreRecognition.towers_healh_recognition(image=blue_shot)
@@ -98,9 +98,9 @@ def generate_scoreboard():
         blue_t1_health = 0
 
     if score['blue_towers'] == 0:
-        mcf_autogui.click(1819, 925)
+        mcf_autogui.click(1811, 919)
         time.sleep(0.05)
-        mcf_autogui.doubleClick(959, 630)
+        mcf_autogui.doubleClick(951, 490)
         time.sleep(0.05)
         red_shot = ImageGrab.grab()
         red_t1_health = ScoreRecognition.towers_healh_recognition(image=red_shot)
@@ -119,8 +119,8 @@ def generate_scoreboard():
 
     MCFStorage.save_score(score=score)
     
-    items_build = blue_shot.crop((602, 850, 1334, 1078))
-    items_build.save(os.path.join('images_lib', 'buildcrop.png'))
+    # items_build = blue_shot.crop((602, 850, 1334, 1078))
+    # items_build.save(os.path.join('images_lib', 'buildcrop.png'))
 
     
 

@@ -1,6 +1,6 @@
 class TowersHealth:
-    blue_backup = 0
-    red_backup = 0
+    blue_backup = 100
+    red_backup = 100
 
     @classmethod
     def reset(cls):

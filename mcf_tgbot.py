@@ -224,7 +224,7 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("gabe_pidoras", first_auth))
     application.add_handler(CommandHandler("game", echo_score))
-    application.add_handler(CommandHandler("build", echo_build))
+    # application.add_handler(CommandHandler("build", echo_build))
     application.add_handler(CommandHandler("predicts_global", predicts_check))
     application.add_handler(CommandHandler("predicts_daily", predicts_check))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'https\S+'), change_actual_mirror))
