@@ -88,6 +88,10 @@ async def info(update: Update, context: CallbackContext):
 async def start(update: Update, context: CallbackContext):
 
     keyboard = [ [KeyboardButton('/game'), KeyboardButton('/build')], [KeyboardButton('/predicts_global'), KeyboardButton('/predicts_daily')] ]
+
+    if update.message.from_user.id == 577810613:
+        keyboard.append([KeyboardButton('/mcf_status')])
+
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
     visitor = update.message.chat.first_name
