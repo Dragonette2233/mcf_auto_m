@@ -106,8 +106,6 @@ class Chrome:
         try:
             game_market_contents = self.driver.find_element(By.CSS_SELECTOR, 'div.game-markets-content')
             markets = game_market_contents.find_elements(By.CSS_SELECTOR, 'div.ui-accordion.game-markets-group')
-        # except:
-        #    return
         
             for i, mrk in enumerate(markets):
                 btn = mrk.find_element(By.CSS_SELECTOR, 'span.ui-market__name')

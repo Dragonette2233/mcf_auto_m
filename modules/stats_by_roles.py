@@ -105,6 +105,8 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
 
     else:
         final_result = {
+        'blue_roles': ten_roles_rate['blue_roles'],
+        'red_roles': ten_roles_rate['red_roles'],
         'w1': _rate_chance_and_color(int(ten_roles_rate['w1']), int(ten_roles_rate['all_m'])),
         'w2': _rate_chance_and_color(int(ten_roles_rate['w2']), int(ten_roles_rate['all_m'])),
         'tb': _rate_chance_and_color(int(ten_roles_rate['tb']), int(ten_roles_rate['all_ttl'])),
