@@ -64,12 +64,6 @@ class TGApi:
 
         cls.post_request(message=full_message)
 
-        # Validator.stats_register['W1_pr'] = 0 if formated_dict['W1_e'] == '🟥' else 1
-        # Validator.stats_register['W2_pr'] = 0 if formated_dict['W2_e'] == '🟥' else 1
-        # Validator.total_register['W1_pr'] = 0 if formated_dict['TB_e'] == '🟥' else 1
-        # Validator.total_register['W2_pr'] = 0 if formated_dict['TL_e'] == '🟥' else 1
-
-    
     @classmethod
     def send_simple_message(cls, message: str):        
         cls.post_request(message=message)

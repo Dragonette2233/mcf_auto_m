@@ -20,7 +20,7 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
             case 0, div:
                 return ['0%', '🟥']
             case out, div if div < 10:
-                if out >= 80: return [f"{'%.1f' % out}%", '🟩'] 
+                if out >= 80: return [f"{'%.1f' % out}%", '🟩']
                 if out < 80: return [f"{'%.1f' % out}%", '🟥']
             case out, div if div in range(10, 15):
                 if out >= 75: return [f"{'%.1f' % out}%", '🟩']
@@ -62,6 +62,8 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
         w2_rate = results[1] if leader == 'red' else results[2]
 
         return {
+                'blue_roles': roles_strings['T1'],
+                'red_roles': roles_strings['T2'],
                 'w1': int(w1_rate),
                 'w2': int(w2_rate),
                 'tb': int(results[3]),
@@ -69,6 +71,7 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
                 'all_m': int(results[5]),
                 'all_ttl': int(results[6][:-1])
             }
+    
     def _get_converted_roles(champ):
         
         for i in ten_roles_dict.items():

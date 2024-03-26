@@ -99,7 +99,7 @@ class Chrome:
             mcf_autogui.click(x=1871, y=361)
         else:
             mcf_autogui.click(x=1871, y=325)
-        time.sleep(3.5)
+        time.sleep(2.5)
 
     def is_total_coeff_opened(self, end_check=False):
 
@@ -123,34 +123,34 @@ class Chrome:
                 else:
                     return False
 
-    def check_if_opened(self):
+    # def check_if_opened(self):
        
-        try:
-            games = self.driver.find_elements(By.CSS_SELECTOR, 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray')
-            aram_title_outer = games[0].find_element(By.CSS_SELECTOR, 'span.caption.ui-dashboard-champ-name__caption.caption--size-m')
-            aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, 'span.caption__label').get_attribute('innerText')
+    #     try:
+    #         games = self.driver.find_elements(By.CSS_SELECTOR, 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray')
+    #         aram_title_outer = games[0].find_element(By.CSS_SELECTOR, 'span.caption.ui-dashboard-champ-name__caption.caption--size-m')
+    #         aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, 'span.caption__label').get_attribute('innerText')
               
-            if aram_title_inner == 'All Random All Mid':
-                game_links = games[0].find_elements(By.CSS_SELECTOR, 'a.dashboard-game-block__link.dashboard-game-block-link')# .get_attribute('href')
-                game_link = game_links[0].get_attribute('href')
-                # ico ui-market__lock ico--lock
-                game_index = '_'.join(game_link.split('/')[7:])
-                if game_index == self.game_index_ended:
-                    button = games[0].find_element(By.CSS_SELECTOR, 'button.ui-market.ui-market--nameless')
-                    # button = games[0].find_element(By.XPATH, '//*[@id="app"]/div[3]/div[1]/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[1]/ul/li/div[2]/span/button[1]')
-                    try:
-                        lock_icon = button.find_element(By.CSS_SELECTOR, 'span.ico.ui-market__lock.ico--lock')
-                        return False
-                    except:
-                        Switches.coeff_opened = True
-                        return True
-                    # if not button.get_attribute('disabled'):
-                    #     Switches.coeff_opened = True
-                    #     return True
-        except (NoSuchElementException, IndexError, Exception):
-            pass
+    #         if aram_title_inner == 'All Random All Mid':
+    #             game_links = games[0].find_elements(By.CSS_SELECTOR, 'a.dashboard-game-block__link.dashboard-game-block-link')# .get_attribute('href')
+    #             game_link = game_links[0].get_attribute('href')
+    #             # ico ui-market__lock ico--lock
+    #             game_index = '_'.join(game_link.split('/')[7:])
+    #             if game_index == self.game_index_ended:
+    #                 button = games[0].find_element(By.CSS_SELECTOR, 'button.ui-market.ui-market--nameless')
+    #                 # button = games[0].find_element(By.XPATH, '//*[@id="app"]/div[3]/div[1]/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[1]/ul/li/div[2]/span/button[1]')
+    #                 try:
+    #                     lock_icon = button.find_element(By.CSS_SELECTOR, 'span.ico.ui-market__lock.ico--lock')
+    #                     return False
+    #                 except:
+    #                     Switches.coeff_opened = True
+    #                     return True
+    #                 # if not button.get_attribute('disabled'):
+    #                 #     Switches.coeff_opened = True
+    #                 #     return True
+    #     except (NoSuchElementException, IndexError, Exception):
+    #         pass
             
-        return False
+    #     return False
     
     def send_predict(self, predictions: dict, key: str):
 
@@ -162,11 +162,11 @@ class Chrome:
                     message = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
                     MCFStorage.rgs_predicts_monitor(message=message,
                                                     key=key)
-                    TGApi.send_simple_message('🟢' + message)
+                    TGApi.send_simple_message(message)
                     logger.info(message)
                 else:
                     TGApi.send_simple_message(message.replace('🔽', '🔻').replace('🔼', '🔺'))
-                    logger.info('🟡' + message)
+                    logger.info(message)
                 break
 
     def generate_predict(self, score):
@@ -214,8 +214,8 @@ class Chrome:
         hard_towers_leader = (red_towers == 0 and blue_towers > 1) or (blue_towers == 0 and red_towers > 1)
         no_towers_destroyed = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 65 and red_t1_hp > 65)
         towers_still_healthy = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 35 and red_t1_hp > 35)
-        full_towers_health = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 80 and red_t1_hp > 80)
-        some_tower_destroyed = (blue_towers != 0 or red_towers != 0) or (blue_t1_hp < 30 or red_t1_hp < 30)
+        full_towers_health = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 75 and red_t1_hp > 75)
+        some_tower_destroyed = (blue_towers != 0 or red_towers != 0) or (blue_t1_hp < 25 or red_t1_hp < 25)
         some_tower_toched = blue_t1_hp <= 75 or red_t1_hp <= 75
         t1_towers_destroyed = (blue_towers == 1 and red_towers == 1) or (blue_t1_hp < 25 and red_t1_hp < 25)
         
@@ -223,11 +223,12 @@ class Chrome:
 
             spredictions = {
                 '🔽 S_PR 110.5М FL_0.5 🔽': [
-                    (StatsRate.tl_accepted() and all_kills < 35 and some_tower_destroyed and gametime > 400),
-                    (StatsRate.tl_accepted() and all_kills < 30 and gametime > 400)
+                    (StatsRate.tl_accepted() and all_kills < 30 and some_tower_destroyed and gametime > 400),
+                    (StatsRate.tl_accepted() and all_kills < 24 and gametime > 400)
                 ],
                 '⬆️ S_PR 110.5Б FL_0.5 ⬆️': [
                     (StatsRate.tb_accepted() and all_kills > 45 and module_kills < 7 and gametime < 360)
+                    (StatsRate.tb_accepted() and StatsRate.tanks_in_teams())
                 ]
             }
 
@@ -246,8 +247,8 @@ class Chrome:
                 ],
                 '🔼PR 110.5Б FL_0.5🔼': [
                     (all_kills >= 50 and module_kills < 6 and no_towers_destroyed and (gametime in range(481, 540)) and gold_equals),
-                    (all_kills >= 48 and module_kills < 4 and towers_still_healthy and gametime < 420 and gold_equals),
-                    (all_kills >= 40 and module_kills < 4 and full_towers_health and gametime < 360 and gold_equals),
+                    (all_kills >= 48 and module_kills < 5 and towers_still_healthy and gametime < 420 and gold_equals),
+                    (all_kills >= 40 and module_kills < 5 and full_towers_health and gametime < 420 and StatsRate.tanks_in_teams()),
                 ],
 
                 '🔽PR 110.5М FL_1🔽': [

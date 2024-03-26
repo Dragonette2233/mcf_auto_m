@@ -231,6 +231,9 @@ class Switches:
     # spredicted = False
 
 class StatsRate:
+    blue_roles = None
+    red_roles = None
+
     blue_rate: list[str] = [0, '']
     red_rate: list[str] = [0, '']
     tb_rate: list[str] = [0, '']
@@ -249,6 +252,8 @@ class StatsRate:
                 red_entry=team_red,
             )
         if stats_result is not None:
+            cls.blue_roles = stats_result['blue_roles']
+            cls.red_roles = stats_result['red_roles']
             cls.blue_rate = stats_result['w1']
             cls.red_rate = stats_result['w2']
             cls.tb_rate = stats_result['tb']
@@ -273,6 +278,15 @@ class StatsRate:
     @classmethod
     def win_red_accepted(cls):
         if (cls.games_all != 0) and (cls.red_rate[1] == cls.WINNER):
+            return True
+
+    @classmethod
+    def tanks_in_teams(cls):
+
+        tank_in_blue = '8' in cls.blue_roles or '9' in cls.blue_roles
+        tank_in_red = '8' in cls.red_roles or '9' in cls.red_roles
+
+        if tank_in_blue and tank_in_red:
             return True
 
     @classmethod
