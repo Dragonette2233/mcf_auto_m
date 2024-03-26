@@ -39,7 +39,8 @@ def main():
 
         chrome.stream_fullscreen()
         teams = MCFApi.get_characters()
-        chrome.stream_close()
+        chrome.open_activegame_page()
+        # chrome.stream_close()
         nicknames = MCFApi.finded_game(teams=teams)
 
         logger.info(nicknames)
@@ -77,7 +78,7 @@ def main():
             
             if Switches.coeff_opened is False:
                 for _ in range(120):
-                    is_opened = chrome.check_if_opened()
+                    is_opened = chrome.is_total_coeff_opened(end_check=True)
                     if is_opened:
                         TGApi.send_simple_message('🟢 Открыты')
                         break

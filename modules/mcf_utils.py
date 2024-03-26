@@ -48,7 +48,7 @@ def close_league_of_legends(self):
 def advance_poro_search():
     ...
 
-def direct_poro_parsing(red_champion):
+def direct_poro_parsing(red_champion) -> list:
 
     """
         Avaliable gamemods: aram | ranked-flex | ranked-solo
@@ -130,7 +130,9 @@ def direct_poro_parsing(red_champion):
         whole_string = f"{champs}-|-{names_region}"
         featured_games.append(whole_string)
     
-    MCFStorage.write_data(route=('MatchesPoroGlobal', ), value=featured_games)
+    # MCFStorage.write_data(route=('MatchesPoroGlobal', ), value=featured_games)
+    # print(featured_games)
+    return featured_games
 
 def async_poro_parsing(champion_name, advance_elo: str | bool = False):
 
@@ -140,8 +142,10 @@ def async_poro_parsing(champion_name, advance_elo: str | bool = False):
     
     """
 
+    featured_games = {}
+
     async def parsing(champion, region):
-        nonlocal missing_regions
+        nonlocal missing_regions, featured_games
         # print('inhere')
         if advance_elo:
             url = URL_PORO_ADVANCE.format(region=region, champion=champion, elo=advance_elo.lower())
@@ -210,7 +214,7 @@ def async_poro_parsing(champion_name, advance_elo: str | bool = False):
                     converted_ids = [ALL_CHAMPIONS_IDs.get(i) for i in ids]
                     games['champions'].append(converted_ids)
 
-                featured_games = []
+                finded_games = []
             
 
                 for c, n, r in zip(games['champions'], nicknames, games['regions']): # games['elorank']):
@@ -218,12 +222,14 @@ def async_poro_parsing(champion_name, advance_elo: str | bool = False):
                     champs = ' | '.join(c)
                     names_region = '_|_'.join([f"{name}:{r.split('/')[2].upper()}" for name in n])
                     whole_string = f"{champs}-|-{names_region}"
-                    featured_games.append(whole_string)
+                    finded_games.append(whole_string)
                 
-                if advance_elo:
-                    MCFStorage.write_data(route=(f'MatchesPoro{advance_elo}', region,), value=featured_games)
-                else:
-                    MCFStorage.write_data(route=('MatchesPoroRegions', region,), value=featured_games)
+                featured_games[region] = finded_games.copy()
+                # print(featured_games[region])
+                # if advance_elo:
+                #     MCFStorage.write_data(route=(f'MatchesPoro{advance_elo}', region,), value=featured_games)
+                # else:
+                #     MCFStorage.write_data(route=('MatchesPoroRegions', region,), value=featured_games)
                     
     async def main_aram(champion_name):
 
@@ -264,8 +270,8 @@ def async_poro_parsing(champion_name, advance_elo: str | bool = False):
     missing_regions = 0
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     asyncio.run(main_aram(champion_name))
-    
-    return missing_regions
+    # print(featured_games)
+    return featured_games
 
 
 def async_riot_parsing():
@@ -276,8 +282,10 @@ def async_riot_parsing():
     
     """
 
+    featured_games = {}
+
     async def parsing(region):
-        nonlocal missing_regions
+        nonlocal missing_regions, featured_games
         
         async with ClientSession() as session:
             async with session.get(url=FEATURED_GAMES_URL.format(region=region), 
@@ -294,7 +302,7 @@ def async_riot_parsing():
                     missing_regions += 1
                     return
 
-        
+
                 routelist = []
                 for s in range(0, len(gameList)):
                     
@@ -308,10 +316,13 @@ def async_riot_parsing():
                     summoners = '_|_'.join([f"{i['summonerName']}:{gameList[s]['platformId']}" for i in gameList[s]['participants']])
                             
                     routelist.append(f"{champ_string}-|-{summoners}")
-                MCFStorage.write_data(
-                    route=('MatchesAPI', region.upper(), ), 
-                    value=routelist
-                    )
+                # print(routelist)
+                featured_games[region] = routelist.copy()
+                # print(featured_games[region])
+                # MCFStorage.write_data(
+                #     route=('MatchesAPI', region.upper(), ), 
+                #     value=routelist
+                #     )
                     
     async def main_aram():
 
@@ -333,4 +344,6 @@ def async_riot_parsing():
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     asyncio.run(main_aram())
     
-    return missing_regions
+    # print(featured_games)
+    # print(missing_regions)
+    return featured_games

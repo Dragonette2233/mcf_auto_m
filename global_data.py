@@ -8,6 +8,8 @@ class TowersHealth:
         cls.red_backup = 0
         
 class ActiveGame:
+    cached_parse = None
+    
     nick_region = None
     region = None
     area = None
@@ -38,6 +40,9 @@ class Validator:
         "420s": False,
         "540s": False
     }
+
+    # predicts_value_flet[key] = [98.5, 'Б', '0.5']
+
     predict_value_flet = {
         'main': None,
         'stats': None,

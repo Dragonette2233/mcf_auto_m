@@ -21,6 +21,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+# greet_message = open('./arambot_lib/greet_message.txt', encoding='utf-8').read()
 
 with open('./untracking/authorized_users', 'r') as us:
     authorized_users = [i[:-1] for i in us.readlines()]
@@ -46,8 +47,6 @@ snip = {
 # Установка значения
 for key, value in snip.items():
     r.set(key, value)
-
-print(r.get('is_active'))
 
 def auth(authorized_users):
     def decorator(func):
@@ -80,9 +79,13 @@ async def first_auth(update: Update, context: CallbackContext):
 @auth(authorized_users=authorized_users)
 async def info(update: Update, context: CallbackContext):
 
-    visitor = update.message.chat.first_name
-    print(update.message.from_user.id)
-    await update.message.reply_text(f'Да, здесь будет инфа. Нужно немного подождать, {visitor}')
+    if update.message.text == '/info':
+        answer = open('./arambot_lib/bot_info_message.txt', encoding='utf-8').read()
+    elif update.message.text == '/info_predicts':
+        answer = open('./arambot_lib/flets_info_message.txt', encoding='utf-8').read()
+    elif update.message.text == '/info_extend':
+        answer = open('./arambot_lib/bot_extendinfo_message.txt', encoding='utf-8').read()
+    await update.message.reply_text(answer)
 
 @auth(authorized_users=authorized_users)
 async def start(update: Update, context: CallbackContext):
@@ -144,8 +147,6 @@ async def echo_score(update: Update, context: CallbackContext) -> None:
         with open(os.path.join('.', 'arambot_lib', 'score_answer_sample.txt'), 'r', encoding='utf-8') as sample:
             message_sample = sample.read()
 
-        # 🐳 Киллы: {blue_kills} | Башни: {blue_towers}
-        # 🐙 Киллы: {red_kills} | Башни: {red_towers}
         timestamp = divmod(int(r.get('time')), 60)
         minutes = timestamp[0] if timestamp[0] > 9 else f"0{timestamp[0]}"
         seconds = timestamp[1] if timestamp[1] > 9 else f"0{timestamp[1]}"
@@ -233,7 +234,10 @@ def main() -> None:
     application.add_handler(CommandHandler("predicts_daily", predicts_check))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'https\S+'), change_actual_mirror))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'https\S+'), change_actual_mirror))
+
     application.add_handler(CommandHandler('info', info))
+    application.add_handler(CommandHandler('info_predicts', info))
+    application.add_handler(CommandHandler('info_extend', info))
     application.add_handler(CommandHandler('mirror', actual_mirror))
 
 

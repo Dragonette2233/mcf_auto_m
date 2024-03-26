@@ -36,9 +36,10 @@ match command:
         ImageGrab.grab().save('x_full.png')
     case 'parse':
         from mcf_api import MCFApi
-        MCFApi.parse_from_all_sources(char_r='Leona')
-        featured: list[str] = MCFApi.get_games_by_character(character='Malphite')
-        finded_game_characerts = ['Kogmaw', 'Ezreal', 'Aphelios', 'Fizz', 'Malphite']
+        MCFApi.parse_from_all_sources(char_r='Belveth')
+        featured: list[str] = MCFApi.get_games_by_character(character='Ahri')
+        finded_game_characerts = 'Ahri Lillia Shen Varus Pyke'.split()
+        # print(featured)
         for charlist in featured:
             nicknames = charlist.split('-|-')[1].split('_|_')
             characters = charlist.split('-|-')[0].split(' | ')

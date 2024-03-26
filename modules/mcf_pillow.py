@@ -41,6 +41,18 @@ def is_game_started():
     np_cut_blue = np.array(cut_cmp_blue)
     np_cut_red = np.array(cut_cmp_red)
 
+    # cut_cmp_loadscreen = None
+    # np_loadscreen = np.array()
+    # similarity_2 = [
+    #     ssim(np_cut_riot, GREYSHADE_CMP_RIOT),
+    #     ssim(np_cut_blue, GREYSHADE_CMP_BLUE),
+    #     ssim(np_cut_red, GREYSHADE_CMP_RED),
+    #     ssim(np_cut_riot, GREYSHADE_mCMP_RIOT),
+    #     ssim(np_cut_blue, GREYSHADE_mCMP_BLUE),
+    #     ssim(np_cut_red, GREYSHADE_mCMP_RED),
+    #         ]
+    # print(similarity_2)
+
     # diff_1 = ssim(np_cut_map, GREYSHADE_CMP_MAP)
     similarity = [
         ssim(np_cut_riot, GREYSHADE_CMP_RIOT) > 0.93,

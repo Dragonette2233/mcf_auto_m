@@ -27,6 +27,15 @@ logger = logging.getLogger(__name__)
 
 class MCFApi:
     
+    CACHE_RIOT_API = {}
+    CACHED_RIOT_REGIONS = {}
+
+    PARSED_RIOT_API = {}
+    PARSED_PORO_REGIONS = {}
+    PARSED_PORO_DIRECT = []
+    PARSED_PORO_BRONZE = {}
+    PARSED_PORO_SILVER = {}
+
     @classmethod
     def get_characters(cls):
 
@@ -90,17 +99,12 @@ class MCFApi:
 
         all_matches = []
 
-        matches_by_regions_api = MCFStorage.get_selective_data(route=('MatchesAPI', ))
-        matches_by_regions_poro = MCFStorage.get_selective_data(route=('MatchesPoroRegions', ))
-        matches_by_regions_poro_bronze = MCFStorage.get_selective_data(route=('MatchesPoroBronze', ))
-        matches_by_regions_poro_silver = MCFStorage.get_selective_data(route=('MatchesPoroSilver', ))
-
-        all_matches += [item for sublist in matches_by_regions_api.values() for item in sublist]
-        all_matches += [item for sublist in matches_by_regions_poro.values() for item in sublist]
-        all_matches += [item for sublist in matches_by_regions_poro_bronze.values() for item in sublist]
-        all_matches += [item for sublist in matches_by_regions_poro_silver.values() for item in sublist]
-        all_matches += MCFStorage.get_selective_data(route=('MatchesPoroGlobal', ))
-            
+        all_matches += [item for sublist in cls.PARSED_RIOT_API.values() for item in sublist]
+        all_matches += [item for sublist in cls.PARSED_PORO_REGIONS.values() for item in sublist]
+        all_matches += [item for sublist in cls.PARSED_PORO_BRONZE.values() for item in sublist]
+        all_matches += [item for sublist in cls.PARSED_PORO_SILVER.values() for item in sublist]
+        all_matches += cls.PARSED_PORO_DIRECT
+        
         finded_games = set()
 
         for match in all_matches:
@@ -115,11 +119,11 @@ class MCFApi:
         while True:
             try:
                 logger.info('Parsing from RiotAPI and Poro...')
-                mcf_utils.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
-                mcf_utils.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
-                mcf_utils.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
-                mcf_utils.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
-                mcf_utils.async_riot_parsing() # Parse featured games from Riot API
+                cls.PARSED_PORO_REGIONS = mcf_utils.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
+                cls.PARSED_PORO_BRONZE = mcf_utils.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
+                cls.PARSED_PORO_SILVER = mcf_utils.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
+                cls.PARSED_PORO_DIRECT = mcf_utils.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
+                cls.PARSED_RIOT_API = mcf_utils.async_riot_parsing() # Parse featured games from Riot API
                 logger.info('Games parsed succesfully.')
                 break
             except Exception as ex:
@@ -138,16 +142,27 @@ class MCFApi:
          return len(common_elements)
 
     @classmethod
-    def finded_game(cls, teams: dict):
+    def cached_games(cls, parse=False, get=False):
+        if parse:
+            cls.CACHE_RIOT_API = mcf_utils.async_riot_parsing() # Parse featured games from Riot API
+        
+        if get:
+            return [item for sublist in cls.CACHE_RIOT_API.values() for item in sublist]
+
+    @classmethod
+    def finded_game(cls, teams: dict, from_cache=False):
 
         team_cycle = itertools.cycle(zip(teams['blue'], teams['red']))
 
         Validator.finded_game_characerts = teams['blue'].copy()
 
         for char_b, char_r in team_cycle:
-
-            cls.parse_from_all_sources(char_r=char_r)
-            games_by_character: list[str] = cls.get_games_by_character(character=char_b)
+            
+            if not from_cache:
+                cls.parse_from_all_sources(char_r=char_r)
+                games_by_character: list[str] = cls.get_games_by_character(character=char_b)
+            else:
+                games_by_character: list[str] = cls.cached_games(get=True)
 
             for charlist in games_by_character:
                 nicknames = charlist.split('-|-')[1].split('_|_')
@@ -354,7 +369,7 @@ class MCFApi:
                 
             
                 if chrome is not None:
-                    is_opened = chrome.check_if_opened()
+                    is_opened = chrome.is_total_coeff_opened()
                 else:
                     is_opened = False
 
@@ -372,6 +387,7 @@ class MCFApi:
                 MCFStorage.predicts_monitor(kills=kills, key='stats', daily=True)
                 Validator.predict_value_flet['main'] = None
                 Validator.predict_value_flet['stats'] = None
+                chrome.ACTIVE_TOTAL_VALUE = 0
                 ActiveGame.is_game_founded = False
                 Switches.request = False
 

@@ -36,6 +36,9 @@ class Chrome:
 
         self.PASSAGES = 0
         self.RESTART_REQUIRED = False
+
+        self.URL: str = ''
+        self.ACTIVE_TOTAL_VALUE = 0
         
     
     def start(self):
@@ -53,16 +56,22 @@ class Chrome:
             
         self.RESTART_REQUIRED = True
 
+    def open_activegame_page(self):
+
+        self.driver.get(self.URL + '/' + self.game_index_ended.replace('_', '/') + '?platform_type=mobile')
+
     def open_league_page(self):
         with open(MIRROR_PAGE, 'r') as ex_url:
-            url: str = ex_url.read().strip()
+            self.URL = ex_url.read().strip()
         
-        if url.startswith('https://mel'):
+        if self.URL.startswith('https://mel'):
             Validator.active_mel_mirror = True
         else:
             Validator.active_mel_mirror = False
+        
+        
         try:
-            self.driver.get(url=url)
+            self.driver.get(url=self.URL + '?platform_type=desktop')
             time.sleep(6)
             return True
         except TimeoutException:
@@ -92,6 +101,27 @@ class Chrome:
             mcf_autogui.click(x=1871, y=325)
         time.sleep(3.5)
 
+    def is_total_coeff_opened(self, end_check=False):
+
+        try:
+            game_market_contents = self.driver.find_element(By.CSS_SELECTOR, 'div.game-markets-content')
+            markets = game_market_contents.find_elements(By.CSS_SELECTOR, 'div.ui-accordion.game-markets-group')
+        except:
+            return
+        
+        for i, mrk in enumerate(markets):
+            btn = mrk.find_element(By.CSS_SELECTOR, 'span.ui-market__name')
+            mrk_text = btn.text
+            if mrk_text.endswith('Б'):
+                total_value = mrk_text.split()[0]
+                # print(total_value)
+                lock_ico = mrk.find_elements(By.CSS_SELECTOR, 'span.ico.ui-market__lock')
+                if len(lock_ico) == 0:
+                    if not end_check:
+                        self.ACTIVE_TOTAL_VALUE = total_value
+                    return True
+                else:
+                    return False
 
     def check_if_opened(self):
        
@@ -168,46 +198,56 @@ class Chrome:
         no_towers_destroyed = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 65 and red_t1_hp > 65)
         full_towers_health = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 80 and red_t1_hp > 80)
         some_tower_destroyed = (blue_towers != 0 or red_towers != 0) or (blue_t1_hp < 30 or red_t1_hp < 30)
+        some_tower_toched = blue_t1_hp <= 75 or red_t1_hp <= 75
         t1_towers_destroyed = (blue_towers == 1 and red_towers == 1) or (blue_t1_hp < 25 and red_t1_hp < 25)
         
         if not Validator.predict_value_flet['stats']:
 
             spredictions = {
-                '⬇️ S_PR 110М (FL 0.5) ⬇️': [
+                '🔽 S_PR 110.5М FL_0.5 🔽': [
                     (StatsRate.tl_accepted() and all_kills < 35 and some_tower_destroyed and gametime > 400),
                     (StatsRate.tl_accepted() and all_kills < 30 and gametime > 400)
                 ],
-                '⬆️ S_PR 110Б (FL 0.5) ⬆️': [
+                '⬆️ S_PR 110.5Б FL_0.5 ⬆️': [
                     (StatsRate.tb_accepted() and all_kills > 45 and module_kills < 7 and gametime < 360)
                 ]
             }
 
             for message, conditions in spredictions.items():
                 if any(conditions):
-                    MCFStorage.rgs_predicts_monitor(message=message,
-                                                    key='stats')
-                    TGApi.send_simple_message(message)
-                    Switches.spredicted = True
+                    # Switches.spre
+                    if self.is_total_coeff_opened():
+                        if int(self.ACTIVE_TOTAL_VALUE) not in range(92, 123):
+                            break
+                        message = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
+                        MCFStorage.rgs_predicts_monitor(message=message,
+                                                        key='main')
+                        TGApi.send_simple_message('🟢' + message)
+                        logger.info('🟢' + message)
+                    else:
+                        TGApi.send_simple_message('🟡' + message)
+                        logger.info('🟡' + message)
                     break
+
 
         if not Validator.predict_value_flet['main']:
             
             predictions = {
-                '⬆️ PR 110Б (FL 1) ⬆️': [
+                '🔼 PR 110.5Б FL_1 🔼': [
                     (all_kills >= 55 and module_kills < 4 and no_towers_destroyed and gametime < 480 and gold_equals),
 
                 ],
-                '⬆️ PR 110Б (FL 0.75) ⬆️': [
+                '🔼 PR 110.5Б FL_0.75 🔼': [
                     # (all_kills >= 50 and module_kills < 3 and no_towers_destroyed and gametime < 360 and gold_equals),
                     (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 480 and gold_equals),
                 ],
-                '⬆️ PR 110Б (FL 0.5) ⬆️': [
+                '🔼 PR 110.5Б FL_0.5 🔼': [
                     (all_kills >= 50 and module_kills < 6 and no_towers_destroyed and (gametime in range(481, 540)) and gold_equals),
                     (all_kills >= 48 and module_kills < 4 and no_towers_destroyed and gametime < 420 and gold_equals),
                     (all_kills >= 40 and module_kills < 4 and full_towers_health and gametime < 360 and gold_equals),
                 ],
 
-                '⬇️ PR 110М (FL 1) ⬇️': [
+                '🔽 PR 110.5М FL_1 🔽': [
 
                     (all_kills < 16 and straight_leader and gametime > 240),
                     (all_kills < 22 and straight_leader and gametime > 300),
@@ -217,7 +257,7 @@ class Chrome:
                     (all_kills < 50 and straight_leader and module_kills > 9 and gametime > 540)
                     
                 ],
-                '⬇️ PR 110М (FL 0.75) ⬇️': [
+                '🔽 PR 110.5М FL_0.75 🔽': [
 
                     (all_kills < 12 and some_tower_destroyed and gametime > 240),
                     (all_kills < 16 and some_tower_destroyed and gametime > 300),
@@ -228,26 +268,34 @@ class Chrome:
                     (all_kills < 50 and towers_leader),
                     
                 ],
-                '⬇️ PR 110М (FL 0.5) ⬇️': [
+                '🔽 PR 110.5М FL_0.5 🔽': [
                     
-                    (all_kills < 7 and gametime > 240),
-                    (all_kills < 14 and gametime > 300),
-                    (all_kills < 20 and light_leader and gametime > 360),
+                    (all_kills < 10 and some_tower_toched and gametime > 240),
+                    (all_kills < 16 and some_tower_toched and gametime > 300),
+                    (all_kills < 22 and some_tower_toched and light_leader and gametime > 360),
                     (all_kills < 22 and gametime > 420),
                     (all_kills < 42 and gametime > 420 and hard_towers_leader),
                     (all_kills < 28 and light_leader and gametime > 480),
-                    (all_kills <= 35 and module_kills >= 9 and light_leader and gametime > 420),
-                    (all_kills <= 44 and module_kills >= 15 and light_leader and gametime > 420)
+                    (all_kills <= 30 and module_kills >= 9 and gametime > 420),
+                    (all_kills <= 38 and module_kills >= 15 and gametime > 420)
                 ]
 
             }
 
             for message, conditions in predictions.items():
                 if any(conditions):
-                    Switches.predicted_total = True
-                    MCFStorage.rgs_predicts_monitor(message=message,
-                                                    key='main')
-                    TGApi.send_simple_message(message)
+                    # Switches.predicted_total = True
+                    if self.is_total_coeff_opened():
+                        if int(float(self.ACTIVE_TOTAL_VALUE)) not in range(92, 123):
+                            break
+                        message = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
+                        MCFStorage.rgs_predicts_monitor(message=message,
+                                                        key='main')
+                        TGApi.send_simple_message('🟢' + message)
+                        logger.info('🟢' + message)
+                    else:
+                        TGApi.send_simple_message('🟡' + message)
+                        logger.info('🟡' + message)
                     break
 
     def notify_when_starts(self):
@@ -284,6 +332,7 @@ class Chrome:
                             logger.info('Game started: (from comparing stream)')
                             self.game_index_new = ''
                             MCFStorage.save_gameid(self.game_index_ended)
+                            # self.open_activegame_page()
                             return
                         else:
                             stream_btn.click()

@@ -92,11 +92,13 @@ class MCFStorage:
         try:
             _tmp = message.split()
             predict_type = _tmp[1]
-            value = _tmp[2]
-            flet = _tmp[4][:-1]
+            value = _tmp[2][0:-1]
+            direction = 'T' + _tmp[2][-1]
+            flet = _tmp[3].split('_')[1]
             if predict_type.split('_')[0] == 'S':
-                value = '_'.join(['S', value])
-            Validator.predict_value_flet[key] = (value, flet)
+                direction = '_'.join(['S', direction])
+            # return (value, direction, flet)
+            Validator.predict_value_flet[key] = (value, direction, flet)
         except Exception as ex_:
             logger.warning(ex_)
 
@@ -104,8 +106,7 @@ class MCFStorage:
 
     @classmethod
     def predicts_monitor(cls, kills: int, key: str, daily=False):
-        # from mcf_data import TODAY
-
+        
         if Validator.predict_value_flet[key] is None:
             return
 
@@ -130,18 +131,18 @@ class MCFStorage:
 
         data = SafeJson.load(predicts_path)
 
-        # print(data)
+        # # sample of predicts_value_flet = ('96.5', 'ТМ', '0.5')
         match Validator.predict_value_flet[key]:
-            case ("110Б" | "S_110Б" as ttl, fl):
-                if kills >= 115:
-                    data[f"{ttl} (FL {fl})"][0] += 1
+            case (value, 'ТБ' | 'S_ТБ' as direction, flet):
+                if kills > float(value):
+                    data[f"{direction} (FL {flet})"][0] += 1
                 else:
-                    data[f"{ttl} (FL {fl})"][1] += 1
-            case ("110М" | "S_110М" as ttl, fl):
-                if kills <= 105:
-                    data[f"{ttl} (FL {fl})"][0] += 1
+                    data[f"{direction} (FL {flet})"][0] -= 1
+            case (value, 'ТМ' | 'S_ТМ' as direction, flet):
+                if kills < float(value):
+                    data[f"{direction} (FL {flet})"][0] += 1
                 else:
-                    data[f"{ttl} (FL {fl})"][1] += 1
+                    data[f"{direction} (FL {flet})"][0] -= 1
             case _:
                 ...
         
