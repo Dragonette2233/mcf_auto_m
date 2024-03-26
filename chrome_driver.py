@@ -152,6 +152,23 @@ class Chrome:
             
         return False
     
+    def send_predict(self, predictions: dict, key: str):
+
+        for message, conditions in predictions.items():
+            if any(conditions):
+                if self.is_total_coeff_opened():
+                    if int(float(self.ACTIVE_TOTAL_VALUE)) not in range(92, 123):
+                        break
+                    message = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
+                    MCFStorage.rgs_predicts_monitor(message=message,
+                                                    key=key)
+                    TGApi.send_simple_message('🟢' + message)
+                    logger.info(message)
+                else:
+                    TGApi.send_simple_message(message.replace('🔽', '🔻').replace('🔼', '🔺'))
+                    logger.info('🟡' + message)
+                break
+
     def generate_predict(self, score):
 
         # is_opened = self.check_if_opened()
@@ -214,22 +231,7 @@ class Chrome:
                 ]
             }
 
-            for message, conditions in spredictions.items():
-                if any(conditions):
-                    # Switches.spre
-                    if self.is_total_coeff_opened():
-                        if int(float(self.ACTIVE_TOTAL_VALUE)) not in range(92, 123):
-                            break
-                        message = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
-                        MCFStorage.rgs_predicts_monitor(message=message,
-                                                        key='main')
-                        TGApi.send_simple_message('🟢' + message)
-                        logger.info('🟢' + message)
-                    else:
-                        TGApi.send_simple_message('🟡' + message)
-                        logger.info('🟡' + message)
-                    break
-
+            self.send_predict(predictions=spredictions, key='stats')
 
         if not Validator.predict_value_flet['main']:
             
@@ -283,21 +285,7 @@ class Chrome:
 
             }
 
-            for message, conditions in predictions.items():
-                if any(conditions):
-                    # Switches.predicted_total = True
-                    if self.is_total_coeff_opened():
-                        if int(float(self.ACTIVE_TOTAL_VALUE)) not in range(92, 123):
-                            break
-                        message = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
-                        MCFStorage.rgs_predicts_monitor(message=message,
-                                                        key='main')
-                        TGApi.send_simple_message('🟢' + message)
-                        logger.info(message)
-                    else:
-                        TGApi.send_simple_message(message.replace('🔽', '🔻').replace('🔼', '🔺'))
-                        logger.info('🟡' + message)
-                    break
+            self.send_predict(predictions=predictions, key='main')
 
     def notify_when_starts(self):
 
