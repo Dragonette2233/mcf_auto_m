@@ -21,8 +21,7 @@ def main():
 
     MCFApi.delete_scoreboard()
     StatsRate.stats_clear()
-    # chrome = Chrome()
-    # chrome.start()
+
     logger.info('BOT started')
     
     while True:
@@ -40,7 +39,6 @@ def main():
         chrome.stream_fullscreen()
         teams = MCFApi.get_characters()
         chrome.open_activegame_page()
-        # chrome.stream_close()
         nicknames = MCFApi.finded_game(teams=teams)
 
         logger.info(nicknames)
@@ -65,7 +63,7 @@ def main():
                 mcf_autogui.doubleClick(x=658, y=828)
                 # tower_health = 
                 score = mcf_pillow.generate_scoreboard()
-                if score["time"] < 600:
+                if score["time"] < 600 and Switches.request:
                     chrome.generate_predict(score)
                 chrome.remove_cancel()
                 time.sleep(0.25)

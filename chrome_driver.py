@@ -290,8 +290,6 @@ class Chrome:
 
     def notify_when_starts(self):
 
-        # passages = 0
-
         while True:
 
             try:
@@ -306,14 +304,11 @@ class Chrome:
                     if game_index != self.game_index_ended:
                         logger.info('Gamelink changed, refreshing driver')
                         self.open_league_page()
-                        # input('HERE WAITING')
                         time.sleep(6)
                         self.game_index_new = game_index
                         self.game_index_ended = game_index
 
-                    # logger.info('HERE IS')
                     if game_index == self.game_index_new:
-                        # self.game_index_ended = self.game_index_new
                         stream_btn = games[0].find_element(By.CSS_SELECTOR, 'span.dashboard-game-action-bar__group')
                         stream_btn.find_element(By.CSS_SELECTOR, self.CSS_BTN_STREAM).click()
                         time.sleep(2)

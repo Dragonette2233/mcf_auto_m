@@ -137,12 +137,12 @@ class MCFStorage:
                 if kills > float(value):
                     data[f"{direction} (FL {flet})"][0] += 1
                 else:
-                    data[f"{direction} (FL {flet})"][0] -= 1
+                    data[f"{direction} (FL {flet})"][1] += 1
             case (value, 'ТМ' | 'S_ТМ' as direction, flet):
                 if kills < float(value):
                     data[f"{direction} (FL {flet})"][0] += 1
                 else:
-                    data[f"{direction} (FL {flet})"][0] -= 1
+                    data[f"{direction} (FL {flet})"][1] += 1
             case _:
                 ...
         
