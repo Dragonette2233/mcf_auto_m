@@ -159,7 +159,7 @@ class Chrome:
                 if self.is_total_coeff_opened():
                     if int(float(self.ACTIVE_TOTAL_VALUE)) not in range(92, 123):
                         break
-                    message = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
+                    message: str = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
                     MCFStorage.rgs_predicts_monitor(message=message,
                                                     key=key)
                     TGApi.send_simple_message(message)
@@ -227,7 +227,7 @@ class Chrome:
                     (StatsRate.tl_accepted() and all_kills < 24 and gametime > 400)
                 ],
                 '⬆️ S_PR 110.5Б FL_0.5 ⬆️': [
-                    (StatsRate.tb_accepted() and all_kills > 45 and module_kills < 7 and gametime < 360)
+                    (StatsRate.tb_accepted() and all_kills > 45 and module_kills < 7 and gametime < 360),
                     (StatsRate.tb_accepted() and StatsRate.tanks_in_teams())
                 ]
             }
