@@ -91,10 +91,10 @@ class MCFStorage:
     def rgs_predicts_monitor(cls, message: str, key: str):
         try:
             _tmp = message.split()
-            predict_type = _tmp[1]
-            value = _tmp[2][0:-1]
-            direction = 'T' + _tmp[2][-1]
-            flet = _tmp[3].split('_')[1]
+            predict_type = _tmp[0][1:]
+            value = _tmp[1][0:-1]
+            direction = 'T' + _tmp[1][-1]
+            flet = _tmp[2].split('_')[1][:-1]
             if predict_type.split('_')[0] == 'S':
                 direction = '_'.join(['S', direction])
             # return (value, direction, flet)

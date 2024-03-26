@@ -196,6 +196,7 @@ class Chrome:
         towers_leader = blue_towers > 1 or red_towers > 1
         hard_towers_leader = (red_towers == 0 and blue_towers > 1) or (blue_towers == 0 and red_towers > 1)
         no_towers_destroyed = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 65 and red_t1_hp > 65)
+        towers_still_healthy = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 35 and red_t1_hp > 35)
         full_towers_health = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 80 and red_t1_hp > 80)
         some_tower_destroyed = (blue_towers != 0 or red_towers != 0) or (blue_t1_hp < 30 or red_t1_hp < 30)
         some_tower_toched = blue_t1_hp <= 75 or red_t1_hp <= 75
@@ -217,7 +218,7 @@ class Chrome:
                 if any(conditions):
                     # Switches.spre
                     if self.is_total_coeff_opened():
-                        if int(self.ACTIVE_TOTAL_VALUE) not in range(92, 123):
+                        if int(float(self.ACTIVE_TOTAL_VALUE)) not in range(92, 123):
                             break
                         message = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
                         MCFStorage.rgs_predicts_monitor(message=message,
@@ -233,21 +234,21 @@ class Chrome:
         if not Validator.predict_value_flet['main']:
             
             predictions = {
-                '🔼 PR 110.5Б FL_1 🔼': [
-                    (all_kills >= 55 and module_kills < 4 and no_towers_destroyed and gametime < 480 and gold_equals),
+                '🔼PR 110.5Б FL_1🔼': [
+                    (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime < 480 and gold_equals),
 
                 ],
-                '🔼 PR 110.5Б FL_0.75 🔼': [
+                '🔼PR 110.5Б FL_0.75🔼': [
                     # (all_kills >= 50 and module_kills < 3 and no_towers_destroyed and gametime < 360 and gold_equals),
                     (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 480 and gold_equals),
                 ],
-                '🔼 PR 110.5Б FL_0.5 🔼': [
+                '🔼PR 110.5Б FL_0.5🔼': [
                     (all_kills >= 50 and module_kills < 6 and no_towers_destroyed and (gametime in range(481, 540)) and gold_equals),
-                    (all_kills >= 48 and module_kills < 4 and no_towers_destroyed and gametime < 420 and gold_equals),
+                    (all_kills >= 48 and module_kills < 4 and towers_still_healthy and gametime < 420 and gold_equals),
                     (all_kills >= 40 and module_kills < 4 and full_towers_health and gametime < 360 and gold_equals),
                 ],
 
-                '🔽 PR 110.5М FL_1 🔽': [
+                '🔽PR 110.5М FL_1🔽': [
 
                     (all_kills < 16 and straight_leader and gametime > 240),
                     (all_kills < 22 and straight_leader and gametime > 300),
@@ -257,7 +258,7 @@ class Chrome:
                     (all_kills < 50 and straight_leader and module_kills > 9 and gametime > 540)
                     
                 ],
-                '🔽 PR 110.5М FL_0.75 🔽': [
+                '🔽PR 110.5М FL_0.75🔽': [
 
                     (all_kills < 12 and some_tower_destroyed and gametime > 240),
                     (all_kills < 16 and some_tower_destroyed and gametime > 300),
@@ -268,7 +269,7 @@ class Chrome:
                     (all_kills < 50 and towers_leader),
                     
                 ],
-                '🔽 PR 110.5М FL_0.5 🔽': [
+                '🔽PR 110.5М FL_0.5🔽': [
                     
                     (all_kills < 10 and some_tower_toched and gametime > 240),
                     (all_kills < 16 and some_tower_toched and gametime > 300),
@@ -292,9 +293,9 @@ class Chrome:
                         MCFStorage.rgs_predicts_monitor(message=message,
                                                         key='main')
                         TGApi.send_simple_message('🟢' + message)
-                        logger.info('🟢' + message)
+                        logger.info(message)
                     else:
-                        TGApi.send_simple_message('🟡' + message)
+                        TGApi.send_simple_message(message.replace('🔽', '🔻').replace('🔼', '🔺'))
                         logger.info('🟡' + message)
                     break
 
