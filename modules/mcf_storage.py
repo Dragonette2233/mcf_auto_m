@@ -109,7 +109,7 @@ class MCFStorage:
     @classmethod
     def predicts_monitor(cls, kills: int, key: str, daily=False):
         
-        if Validator.predict_value_flet[key] is None:
+        if Validator.predict_value_flet[key] is None or Validator.predict_value_flet[key] == 'closed':
             return
 
         if daily:

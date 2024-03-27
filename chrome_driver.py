@@ -166,6 +166,7 @@ class Chrome:
                     logger.info(message)
                 else:
                     TGApi.send_simple_message(message.replace('🔽', '🔻').replace('🔼', '🔺'))
+                    Validator.predict_value_flet[key] = 'closed'
                     logger.info(message)
                 break
 
