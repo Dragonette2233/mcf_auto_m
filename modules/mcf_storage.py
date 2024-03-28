@@ -89,7 +89,7 @@ class MCFStorage:
     
     @classmethod
     def rgs_predicts_monitor(cls, message: str, key: str):
-        print(message)
+        # print(message)
         try:
             _tmp = message.split()
             predict_type = _tmp[0][1:]
@@ -98,17 +98,20 @@ class MCFStorage:
             flet = _tmp[2].split('_')[1][:-1]
             if predict_type.split('_')[0] == 'S':
                 direction = '_'.join(['S', direction])
-            
+            # print('here')
             Validator.predict_value_flet[key] = (value, direction, flet)
-            print(Validator.predict_value_flet[key])
+            # print(Validator.predict_value_flet[key])
+            # print(key)
         except Exception as ex_:
             logger.warning(ex_)
 
-
+        # print(Validator.predict_value_flet[key])
 
     @classmethod
     def predicts_monitor(cls, kills: int, key: str, daily=False):
         
+        # print(Validator.predict_value_flet[key])
+
         if Validator.predict_value_flet[key] is None or Validator.predict_value_flet[key] == 'closed':
             return
 
@@ -145,8 +148,9 @@ class MCFStorage:
                     data[f"{direction} (FL {flet})"][0] += 1
                 else:
                     data[f"{direction} (FL {flet})"][1] += 1
-            case _:        
+            case _:
                 ...
+       # print(Validator.predict_value_flet[key])
         
         SafeJson.dump(json_path=predicts_path, data=data)
 
