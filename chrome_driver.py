@@ -202,8 +202,8 @@ class Chrome:
         red_gold_winner = red_gold > blue_gold and module_gold > 2.8
         # blue_gold_winner = blu
         
-        blue_leader = (blue_t1_hp > 75 and red_t1_hp < 27) and blue_gold_winner
-        red_leader = (red_t1_hp > 75 and blue_t1_hp < 27) and red_gold_winner    
+        blue_leader = ( (blue_towers != 0 and red_towers == 0) or (blue_t1_hp > 75 and red_t1_hp < 27) ) and blue_gold_winner
+        red_leader = ( (red_towers != 0 and blue_towers == 0) or (red_t1_hp > 75 and blue_t1_hp < 27) ) and red_gold_winner
 
         # blue_light = blue_kills > red_kills and blue_gold_leader
         # red_light = red_kills > blue_kills and red_gold_leader
@@ -213,7 +213,7 @@ class Chrome:
         two_towers_destroyed = blue_towers + red_towers > 1
         towers_leader = blue_towers > 1 or red_towers > 1
         hard_towers_leader = (red_towers == 0 and blue_towers > 1) or (blue_towers == 0 and red_towers > 1)
-        no_towers_destroyed = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 65 and red_t1_hp > 65)
+        # no_towers_destroyed = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 65 and red_t1_hp > 65)
         towers_still_healthy = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 35 and red_t1_hp > 35)
         full_towers_health = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 75 and red_t1_hp > 75)
         some_tower_destroyed = (blue_towers != 0 or red_towers != 0) or (blue_t1_hp < 25 or red_t1_hp < 25)
@@ -239,7 +239,7 @@ class Chrome:
             
             predictions = {
                 '🔼PR 110.5Б FL_1🔼': [
-                    (all_kills >= 50 and module_kills < 4 and no_towers_destroyed and gametime < 480 and gold_equals),
+                    (all_kills >= 50 and module_kills < 4 and full_towers_health and gametime < 420 and gold_equals),
 
                 ],
                 '🔼PR 110.5Б FL_0.75🔼': [
@@ -247,7 +247,7 @@ class Chrome:
                     (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 480 and gold_equals),
                 ],
                 '🔼PR 110.5Б FL_0.5🔼': [
-                    (all_kills >= 50 and module_kills < 6 and no_towers_destroyed and (gametime in range(481, 540)) and gold_equals),
+                    (all_kills >= 50 and module_kills < 6 and full_towers_health and (gametime in range(481, 540)) and gold_equals),
                     (all_kills >= 48 and module_kills < 5 and towers_still_healthy and gametime < 420 and gold_equals),
                     (all_kills >= 40 and module_kills < 5 and full_towers_health and gametime < 420 and StatsRate.tanks_in_teams()),
                 ],
@@ -259,7 +259,7 @@ class Chrome:
                     (all_kills < 28 and straight_leader and gametime > 360),
                     (all_kills < 34 and straight_leader and gametime > 420),
                     (all_kills < 40 and straight_leader and gametime > 540),
-                    (all_kills < 50 and straight_leader and module_kills > 12 and gametime > 540)
+                    (all_kills < 50 and straight_leader and module_kills > 9 and gametime > 540)
                     
                 ],
                 '🔽PR 110.5М FL_0.75🔽': [
