@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 class TGApi:
 
+    test_run = False
     token = os.getenv('BOT_TOKEN')
     method_send = 'sendMessage'
     method_updates = 'getUpdates'
@@ -44,7 +45,7 @@ class TGApi:
     @switch_active
     @timeout_handler
     def post_request(message: str):
-
+        print(TGApi.token)
 
         requests.post(
             url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_send),

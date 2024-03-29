@@ -202,8 +202,8 @@ class Chrome:
         red_gold_winner = red_gold > blue_gold and module_gold > 2.8
         # blue_gold_winner = blu
         
-        blue_leader = ( (blue_towers != 0 and red_towers == 0) or (blue_t1_hp > 75 and red_t1_hp < 27) ) and blue_gold_winner
-        red_leader = ( (red_towers != 0 and blue_towers == 0) or (red_t1_hp > 75 and blue_t1_hp < 27) ) and red_gold_winner
+        blue_leader = (blue_t1_hp > 75 and red_t1_hp < 27) and blue_gold_winner
+        red_leader = (red_t1_hp > 75 and blue_t1_hp < 27) and red_gold_winner    
 
         # blue_light = blue_kills > red_kills and blue_gold_leader
         # red_light = red_kills > blue_kills and red_gold_leader
@@ -259,7 +259,7 @@ class Chrome:
                     (all_kills < 28 and straight_leader and gametime > 360),
                     (all_kills < 34 and straight_leader and gametime > 420),
                     (all_kills < 40 and straight_leader and gametime > 540),
-                    (all_kills < 50 and straight_leader and module_kills > 9 and gametime > 540)
+                    (all_kills < 50 and straight_leader and module_kills > 12 and gametime > 540)
                     
                 ],
                 '🔽PR 110.5М FL_0.75🔽': [
