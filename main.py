@@ -3,7 +3,7 @@ import time
 logging.basicConfig(level=logging.INFO)
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
+from modules.mcf_storage import MCFStorage
 from modules import mcf_pillow
 from modules import mcf_autogui
 from global_data import ActiveGame
@@ -38,6 +38,12 @@ def main():
 
         chrome.stream_fullscreen()
         teams = MCFApi.get_characters()
+        
+        if not teams:
+            MCFStorage.save_gameid('Err')
+            del chrome
+            break
+
         chrome.open_activegame_page()
         nicknames = MCFApi.finded_game(teams=teams)
 

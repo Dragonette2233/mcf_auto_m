@@ -72,7 +72,7 @@ class Chrome:
         
         try:
             self.driver.get(url=self.URL + '?platform_type=desktop')
-            time.sleep(6)
+            time.sleep(5)
             return True
         except TimeoutException:
             return False

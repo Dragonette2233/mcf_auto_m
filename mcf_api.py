@@ -49,25 +49,19 @@ class MCFApi:
 
             logger.info(team_blue.characters)
             logger.info(team_red.characters)
-            if len(team_blue.characters) < 5 and len(team_red.characters) < 5:
-                if Validator.recognition == 40:
-                    Validator.recognition = 0
-                    return None
-                
-                Validator.recognition += 1
-                logger.warning('Recognizing Failed. Continue...')
-                time.sleep(2)
-                continue
-            else:
-                StatsRate.calculate(
-                    team_blue=team_blue.characters,
-                    team_red=team_red.characters
-                )
+            
+            if len(set(team_blue.characters)) != 5:
+                return
 
-                return {
-                    'blue': team_blue.characters,
-                    'red': team_red.characters
-                }
+            StatsRate.calculate(
+                team_blue=team_blue.characters,
+                team_red=team_red.characters
+            )
+
+            return {
+                'blue': team_blue.characters,
+                'red': team_red.characters
+            }
 
     @classmethod   
     def close_league_of_legends(cls):
