@@ -370,6 +370,8 @@ class MCFApi:
             
                 if chrome is not None:
                     is_opened = chrome.is_total_coeff_opened()
+                    if is_opened:
+                        Switches.coeff_opened = True
                 else:
                     is_opened = False
 
