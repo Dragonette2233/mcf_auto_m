@@ -160,10 +160,17 @@ class Chrome:
                     if int(float(self.ACTIVE_TOTAL_VALUE)) not in range(92, 123):
                         break
                     message: str = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
-                    MCFStorage.rgs_predicts_monitor(message=message,
-                                                    key=key)
+                    # MCFStorage.rgs_predicts_monitor(message=message,
+                    #                                 key=key)
                     TGApi.send_simple_message(message)
                     logger.info(message)
+
+                    time.sleep(7)
+
+                    if self.is_total_coeff_opened():
+                        MCFStorage.rgs_predicts_monitor(message=message, key=key)
+                    else:
+                        Validator.predict_value_flet[key] = 'closed'
                 else:
                     TGApi.send_simple_message(message.replace('🔽', '🔻').replace('🔼', '🔺'))
                     Validator.predict_value_flet[key] = 'closed'
@@ -218,6 +225,7 @@ class Chrome:
         full_towers_health = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 75 and red_t1_hp > 75)
         some_tower_destroyed = (blue_towers != 0 or red_towers != 0) or (blue_t1_hp < 25 or red_t1_hp < 25)
         some_tower_toched = blue_t1_hp <= 75 or red_t1_hp <= 75
+        health_tower_leader = (blue_t1_hp > 75 and red_t1_hp < 51) or (red_t1_hp > 75 and blue_t1_hp < 51)
         t1_towers_destroyed = (blue_towers == 1 and red_towers == 1) or (blue_t1_hp < 25 and red_t1_hp < 25)
         
         if not Validator.predict_value_flet['stats']:
@@ -250,6 +258,7 @@ class Chrome:
                     (all_kills >= 50 and module_kills < 6 and full_towers_health and (gametime in range(481, 540)) and gold_equals),
                     (all_kills >= 48 and module_kills < 5 and towers_still_healthy and gametime < 420 and gold_equals),
                     (all_kills >= 40 and module_kills < 5 and full_towers_health and gametime < 420 and StatsRate.tanks_in_teams()),
+                    (all_kills >= 30 and module_kills < 5 and full_towers_health and gametime < 360 and StatsRate.tanks_in_teams()),
                 ],
 
                 '🔽PR 110.5М FL_1🔽': [
@@ -265,10 +274,10 @@ class Chrome:
                 '🔽PR 110.5М FL_0.75🔽': [
 
                     (all_kills < 12 and some_tower_destroyed and gametime > 240),
-                    (all_kills < 16 and some_tower_destroyed and gametime > 300),
-                    (all_kills < 20 and some_tower_destroyed and gametime > 360),
-                    (all_kills < 24 and some_tower_destroyed and gametime > 420),
-                    (all_kills < 28 and some_tower_destroyed and gametime > 480),
+                    (all_kills < 18 and some_tower_destroyed and gametime > 300),
+                    (all_kills < 22 and some_tower_destroyed and gametime > 360),
+                    (all_kills < 26 and some_tower_destroyed and gametime > 420),
+                    (all_kills < 30 and some_tower_destroyed and gametime > 480),
                     (all_kills < 38 and two_towers_destroyed and gametime > 480),
                     (all_kills < 50 and towers_leader),
                     
@@ -277,7 +286,8 @@ class Chrome:
                     
                     (all_kills < 10 and some_tower_toched and gametime > 240),
                     (all_kills < 16 and some_tower_toched and gametime > 300),
-                    (all_kills < 22 and some_tower_toched and light_leader and gametime > 360),
+                    (all_kills < 20 and health_tower_leader and gametime > 300),
+                    (all_kills < 22 and some_tower_toched and gametime > 360),
                     (all_kills < 22 and gametime > 420),
                     (all_kills < 42 and gametime > 420 and hard_towers_leader),
                     (all_kills < 28 and light_leader and gametime > 480),
