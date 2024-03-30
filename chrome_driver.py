@@ -235,7 +235,7 @@ class Chrome:
                     (StatsRate.tl_accepted() and all_kills < 30 and some_tower_destroyed and gametime > 400),
                     (StatsRate.tl_accepted() and all_kills < 24 and gametime > 400)
                 ],
-                '⬆️S_PR 110.5Б FL_0.5⬆️': [
+                '🔼S_PR 110.5Б FL_0.5🔼': [
                     (StatsRate.tb_accepted() and all_kills > 45 and module_kills < 7 and gametime < 360),
                     (StatsRate.tb_accepted() and StatsRate.tanks_in_teams())
                 ]
