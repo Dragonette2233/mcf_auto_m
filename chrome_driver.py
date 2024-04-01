@@ -247,16 +247,18 @@ class Chrome:
             
             predictions = {
                 '🔼PR 110.5Б FL_1🔼': [
-                    (all_kills >= 50 and module_kills < 4 and full_towers_health and gametime < 420 and gold_equals),
+                    (all_kills >= 60 and module_kills < 4 and full_towers_health and gametime < 420 and gold_equals),
+                    (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 480 and gold_equals),
 
                 ],
                 '🔼PR 110.5Б FL_0.75🔼': [
+                    (all_kills >= 60 and module_kills < 4 and towers_still_healthy and gametime < 420 and gold_equals),
                     # (all_kills >= 50 and module_kills < 3 and no_towers_destroyed and gametime < 360 and gold_equals),
-                    (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 480 and gold_equals),
+                    # (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 480 and gold_equals),
                 ],
                 '🔼PR 110.5Б FL_0.5🔼': [
                     (all_kills >= 50 and module_kills < 6 and full_towers_health and (gametime in range(481, 540)) and gold_equals),
-                    (all_kills >= 48 and module_kills < 5 and towers_still_healthy and gametime < 420 and gold_equals),
+                    (all_kills >= 48 and module_kills < 5 and full_towers_health and gametime < 420 and gold_equals),
                     (all_kills >= 40 and module_kills < 5 and full_towers_health and gametime < 420 and StatsRate.tanks_in_teams()),
                     (all_kills >= 30 and module_kills < 5 and full_towers_health and gametime < 360 and StatsRate.tanks_in_teams()),
                 ],
@@ -268,7 +270,7 @@ class Chrome:
                     (all_kills < 28 and straight_leader and gametime > 360),
                     (all_kills < 34 and straight_leader and gametime > 420),
                     (all_kills < 40 and straight_leader and gametime > 540),
-                    (all_kills < 50 and straight_leader and module_kills > 9 and gametime > 540)
+                    (all_kills < 50 and straight_leader and module_kills > 13 and gametime > 540)
                     
                 ],
                 '🔽PR 110.5М FL_0.75🔽': [
