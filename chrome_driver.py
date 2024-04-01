@@ -209,8 +209,8 @@ class Chrome:
         red_gold_winner = red_gold > blue_gold and module_gold > 2.8
         # blue_gold_winner = blu
         
-        blue_leader = ( (blue_towers != 0 and red_towers == 0) or (blue_t1_hp > 75 and red_t1_hp < 27) ) and blue_gold_winner
-        red_leader = ( (red_towers != 0 and blue_towers == 0) or (red_t1_hp > 75 and blue_t1_hp < 27) ) and red_gold_winner
+        blue_leader = ( (blue_towers != 0 and red_towers == 0) or (blue_t1_hp > 75 and red_t1_hp < 20) ) and blue_gold_winner
+        red_leader = ( (red_towers != 0 and blue_towers == 0) or (red_t1_hp > 75 and blue_t1_hp < 20) ) and red_gold_winner
 
         # blue_light = blue_kills > red_kills and blue_gold_leader
         # red_light = red_kills > blue_kills and red_gold_leader
@@ -223,7 +223,7 @@ class Chrome:
         # no_towers_destroyed = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 65 and red_t1_hp > 65)
         towers_still_healthy = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 35 and red_t1_hp > 35)
         full_towers_health = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 75 and red_t1_hp > 75)
-        some_tower_destroyed = (blue_towers != 0 or red_towers != 0) or (blue_t1_hp < 25 or red_t1_hp < 25)
+        some_tower_destroyed = (blue_towers != 0 or red_towers != 0) or (blue_t1_hp < 20 or red_t1_hp < 20)
         some_tower_toched = blue_t1_hp <= 75 or red_t1_hp <= 75
         health_tower_leader = (blue_t1_hp > 75 and red_t1_hp < 51) or (red_t1_hp > 75 and blue_t1_hp < 51)
         t1_towers_destroyed = (blue_towers == 1 and red_towers == 1) or (blue_t1_hp < 25 and red_t1_hp < 25)
@@ -288,7 +288,7 @@ class Chrome:
                     
                     (all_kills < 10 and some_tower_toched and gametime > 240),
                     (all_kills < 16 and some_tower_toched and gametime > 300),
-                    (all_kills < 20 and health_tower_leader and gametime > 300),
+                    (all_kills < 20 and some_tower_toched and gametime > 300),
                     (all_kills < 22 and some_tower_toched and gametime > 360),
                     (all_kills < 22 and gametime > 420),
                     (all_kills < 42 and gametime > 420 and hard_towers_leader),
