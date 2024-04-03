@@ -152,12 +152,24 @@ class Chrome:
             
     #     return False
     
+    def predicts_is_accepted(self, message):
+
+        predict_direction = message.split()[1][-1]
+        active_total = float(self.ACTIVE_TOTAL_VALUE)
+
+        if predict_direction == 'Б' and active_total < 123.5:
+            return True
+
+        if predict_direction == 'М' and active_total > 92.5:
+            return True
+            
+
     def send_predict(self, predictions: dict, key: str):
 
         for message, conditions in predictions.items():
             if any(conditions):
                 if self.is_total_coeff_opened():
-                    if int(float(self.ACTIVE_TOTAL_VALUE)) not in range(92, 123):
+                    if not self.predicts_is_accepted(message=message):
                         break
                     message: str = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
                     # MCFStorage.rgs_predicts_monitor(message=message,
@@ -165,16 +177,13 @@ class Chrome:
                     TGApi.send_simple_message(message)
                     logger.info(message)
 
-                    time.sleep(7)
+                    time.sleep(5)
 
                     if self.is_total_coeff_opened():
                         MCFStorage.rgs_predicts_monitor(message=message, key=key)
                     else:
                         Validator.predict_value_flet[key] = 'closed'
-                else:
-                    TGApi.send_simple_message(message.replace('🔽', '🔻').replace('🔼', '🔺'))
-                    Validator.predict_value_flet[key] = 'closed'
-                    logger.info(message)
+                
                 break
 
     def generate_predict(self, score):
