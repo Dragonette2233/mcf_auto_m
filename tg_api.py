@@ -1,6 +1,7 @@
 import requests
 import os
 import logging
+import time
 from global_data import Validator
 from mcf_data import (
     Switches,
@@ -11,14 +12,15 @@ logger = logging.getLogger(__name__)
 
 class TGApi:
 
-    test_run = False
+    # test_run = False
     token = os.getenv('BOT_TOKEN')
     method_send = 'sendMessage'
     method_updates = 'getUpdates'
     tg_api_url = 'https://api.telegram.org/bot{token}/{method}'
     RES_FOR_PREDICT = False
     CHAT_ID = os.getenv('CHAT_ID')
-    CHAT_PREDICTS = os.getenv('CHAT_PREDICTS')
+    CHAT_ID_PUB = os.getenv('CHAT_ID_PUB')
+    CHAT_ID_TRIAL = os.getenv('CHAT_ID_TRIAL')
 
     # @classmethod
     def switch_active(func):
@@ -37,21 +39,31 @@ class TGApi:
                 except (requests.exceptions.ConnectTimeout,
                         requests.exceptions.ConnectionError,
                         requests.exceptions.ReadTimeout):
-                    
+                    print('here')
                     pass
     
         return wrapper
 
     @switch_active
     @timeout_handler
-    def post_request(message: str):
-        print(TGApi.token)
+    def post_send(message: str, chat_id):
 
         requests.post(
             url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_send),
-            data={'chat_id': TGApi.CHAT_ID, 'text': message }, timeout=2
+            data={'chat_id': chat_id, 'text': message }, timeout=2
         )
-    
+
+        
+    @classmethod
+    def post_request(cls, message: str):
+        
+        cls.post_send(message=message, chat_id=cls.CHAT_ID)
+        cls.post_send(message=message, chat_id=cls.CHAT_ID_PUB)
+        
+        time.sleep(4)
+        cls.post_send(message=message, chat_id=cls.CHAT_ID_TRIAL)
+
+
     @classmethod
     def gamestart_notification(cls, team_blue: list, team_red: list, status_message=''):
 

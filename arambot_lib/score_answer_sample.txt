@@ -1,6 +1,0 @@
-K:   🐳 {blue_kills} 🐙 {red_kills}
-T:   🐳 {blue_towers}   🐙 {red_towers}
-G:   🐳 {blue_gold}k 🐙 {red_gold}k
-T1: 🐳 {blue_t1_hp}% 🐙 {red_t1_hp}%
-
-{time}
