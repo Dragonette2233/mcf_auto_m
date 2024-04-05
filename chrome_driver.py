@@ -110,7 +110,7 @@ class Chrome:
             if end_check:
                 lock_ico = markets[0].find_elements(By.CSS_SELECTOR, 'span.ico.ui-market__lock')
                 if len(lock_ico) == 0: return True
-                    
+            
             else:
                 for i, mrk in enumerate(markets):
                     btn = mrk.find_element(By.CSS_SELECTOR, 'span.ui-market__name')
@@ -124,7 +124,8 @@ class Chrome:
                             self.ACTIVE_TOTAL_VALUE = total_value
                             return True
         except:
-            return
+            return False
+        return False
 
     # def check_if_opened(self):
        

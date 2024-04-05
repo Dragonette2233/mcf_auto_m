@@ -57,7 +57,7 @@ class TGApi:
     @classmethod
     def post_request(cls, message: str):
         
-        cls.post_send(message=message, chat_id=cls.CHAT_ID)
+        # cls.post_send(message=message, chat_id=cls.CHAT_ID)
         cls.post_send(message=message, chat_id=cls.CHAT_ID_PUB)
         
         time.sleep(4)
