@@ -161,10 +161,10 @@ class Chrome:
         predict_direction = message.split()[1][-1]
         active_total = float(self.ACTIVE_TOTAL_VALUE)
 
-        if predict_direction == 'Б' and active_total < 123.5:
+        if predict_direction == 'Б' and active_total < 119.5:
             return True
 
-        if predict_direction == 'М' and active_total > 92.5:
+        if predict_direction == 'М' and active_total > 93.5:
             return True
             
 
