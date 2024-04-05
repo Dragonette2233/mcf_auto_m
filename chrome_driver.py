@@ -235,7 +235,7 @@ class Chrome:
         hard_towers_leader = (red_towers == 0 and blue_towers > 1) or (blue_towers == 0 and red_towers > 1)
         # no_towers_destroyed = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 65 and red_t1_hp > 65)
         towers_still_healthy = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 35 and red_t1_hp > 35)
-        full_towers_health = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 75 and red_t1_hp > 75)
+        full_towers_health = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 90 and red_t1_hp > 90)
         some_tower_destroyed = (blue_towers != 0 or red_towers != 0) or (blue_t1_hp < 20 or red_t1_hp < 20)
         some_tower_toched = blue_t1_hp <= 75 or red_t1_hp <= 75
         health_tower_leader = (blue_t1_hp > 75 and red_t1_hp < 51) or (red_t1_hp > 75 and blue_t1_hp < 51)
@@ -264,14 +264,9 @@ class Chrome:
                     (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 480 and gold_equals),
 
                 ],
-                '🔼PR 110.5Б FL_0.75🔼': [
-                    (all_kills >= 60 and module_kills < 4 and towers_still_healthy and gametime < 420 and gold_equals),
-                    # (all_kills >= 50 and module_kills < 3 and no_towers_destroyed and gametime < 360 and gold_equals),
-                    # (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 480 and gold_equals),
-                ],
                 '🔼PR 110.5Б FL_0.5🔼': [
-                    (all_kills >= 50 and module_kills < 6 and full_towers_health and (gametime in range(481, 540)) and gold_equals),
-                    (all_kills >= 48 and module_kills < 5 and full_towers_health and gametime < 420 and gold_equals),
+                    (all_kills >= 50 and module_kills < 6 and full_towers_health and (gametime in range(481, 540)) and gold_equals and StatsRate.tanks_in_teams()),
+                    (all_kills >= 48 and module_kills < 5 and full_towers_health and gametime < 420 and gold_equals and StatsRate.tanks_in_teams()),
                     (all_kills >= 40 and module_kills < 5 and full_towers_health and gametime < 420 and StatsRate.tanks_in_teams()),
                     (all_kills >= 30 and module_kills < 5 and full_towers_health and gametime < 360 and StatsRate.tanks_in_teams()),
                 ],
