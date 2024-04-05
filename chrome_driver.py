@@ -106,20 +106,23 @@ class Chrome:
         try:
             game_market_contents = self.driver.find_element(By.CSS_SELECTOR, 'div.game-markets-content')
             markets = game_market_contents.find_elements(By.CSS_SELECTOR, 'div.ui-accordion.game-markets-group')
+
+            if end_check:
+                lock_ico = markets[0].find_elements(By.CSS_SELECTOR, 'span.ico.ui-market__lock')
+                if len(lock_ico) == 0: return True
+                    
+            else:
+                for i, mrk in enumerate(markets):
+                    btn = mrk.find_element(By.CSS_SELECTOR, 'span.ui-market__name')
+                    mrk_text = btn.text
+                    if mrk_text.endswith('Б'):
+                        total_value = mrk_text.split()[0]
+                        # print(total_value)
+                        lock_ico = mrk.find_elements(By.CSS_SELECTOR, 'span.ico.ui-market__lock')
+                        if len(lock_ico) == 0:
         
-            for i, mrk in enumerate(markets):
-                btn = mrk.find_element(By.CSS_SELECTOR, 'span.ui-market__name')
-                mrk_text = btn.text
-                if mrk_text.endswith('Б'):
-                    total_value = mrk_text.split()[0]
-                    # print(total_value)
-                    lock_ico = mrk.find_elements(By.CSS_SELECTOR, 'span.ico.ui-market__lock')
-                    if len(lock_ico) == 0:
-                        if not end_check:
                             self.ACTIVE_TOTAL_VALUE = total_value
-                        return True
-                    else:
-                        return False
+                            return True
         except:
             return
 
