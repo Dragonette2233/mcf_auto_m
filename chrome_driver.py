@@ -214,16 +214,16 @@ class Chrome:
         all_kills = blue_kills + red_kills
         module_kills = abs(blue_kills - red_kills)
         module_gold = abs(blue_gold - red_gold)
-        gold_equals = module_gold < 0.6
+        gold_equals = module_gold < 1.2
 
         blue_gold_leader = blue_gold > red_gold and module_gold > 1.65
         red_gold_leader = red_gold > blue_gold and module_gold > 1.65
-        blue_gold_winner = blue_gold > red_gold and module_gold > 2.8
-        red_gold_winner = red_gold > blue_gold and module_gold > 2.8
+        blue_gold_winner = blue_gold > red_gold and module_gold > 3.1
+        red_gold_winner = red_gold > blue_gold and module_gold > 3.1
         # blue_gold_winner = blu
         
-        blue_leader = ( (blue_towers != 0 and red_towers == 0) or (blue_t1_hp > 75 and red_t1_hp < 20) ) and blue_gold_winner
-        red_leader = ( (red_towers != 0 and blue_towers == 0) or (red_t1_hp > 75 and blue_t1_hp < 20) ) and red_gold_winner
+        blue_leader = blue_t1_hp > 75 and red_t1_hp < 20 and blue_gold_winner
+        red_leader = red_t1_hp > 75 and blue_t1_hp < 20 and red_gold_winner
 
         # blue_light = blue_kills > red_kills and blue_gold_leader
         # red_light = red_kills > blue_kills and red_gold_leader
@@ -234,11 +234,11 @@ class Chrome:
         towers_leader = blue_towers > 1 or red_towers > 1
         hard_towers_leader = (red_towers == 0 and blue_towers > 1) or (blue_towers == 0 and red_towers > 1)
         # no_towers_destroyed = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 65 and red_t1_hp > 65)
-        towers_still_healthy = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 35 and red_t1_hp > 35)
-        full_towers_health = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 90 and red_t1_hp > 90)
-        some_tower_destroyed = (blue_towers != 0 or red_towers != 0) or (blue_t1_hp < 20 or red_t1_hp < 20)
+        towers_still_healthy = blue_t1_hp > 35 and red_t1_hp > 35
+        full_towers_health = blue_t1_hp > 85 and red_t1_hp > 85
+        some_tower_destroyed = blue_t1_hp < 20 or red_t1_hp < 20
         some_tower_toched = blue_t1_hp <= 75 or red_t1_hp <= 75
-        health_tower_leader = (blue_t1_hp > 75 and red_t1_hp < 51) or (red_t1_hp > 75 and blue_t1_hp < 51)
+        # health_tower_leader = (blue_t1_hp > 75 and red_t1_hp < 51) or (red_t1_hp > 75 and blue_t1_hp < 51)
         t1_towers_destroyed = (blue_towers == 1 and red_towers == 1) or (blue_t1_hp < 25 and red_t1_hp < 25)
         
         if not Validator.predict_value_flet['stats']:
@@ -260,12 +260,12 @@ class Chrome:
             
             predictions = {
                 '🔼PR 110.5Б FL_1🔼': [
-                    (all_kills >= 60 and module_kills < 4 and full_towers_health and gametime < 420 and gold_equals),
-                    (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 480 and gold_equals),
+                    (all_kills >= 60 and module_kills < 4 and full_towers_health and gametime < 480 and gold_equals),
+                    (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 540 and gold_equals),
 
                 ],
                 '🔼PR 110.5Б FL_0.5🔼': [
-                    (all_kills >= 50 and module_kills < 6 and full_towers_health and (gametime in range(481, 540)) and gold_equals and StatsRate.tanks_in_teams()),
+                    (all_kills >= 50 and module_kills < 6 and full_towers_health and gametime < 540 and gold_equals and StatsRate.tanks_in_teams()),
                     (all_kills >= 48 and module_kills < 5 and full_towers_health and gametime < 420 and gold_equals and StatsRate.tanks_in_teams()),
                     (all_kills >= 40 and module_kills < 5 and full_towers_health and gametime < 420 and StatsRate.tanks_in_teams()),
                     (all_kills >= 30 and module_kills < 5 and full_towers_health and gametime < 360 and StatsRate.tanks_in_teams()),
