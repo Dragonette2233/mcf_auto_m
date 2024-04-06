@@ -47,6 +47,10 @@ class Validator:
         'main': None,
         'stats': None,
     }
+    predicts_debug = {
+        'main': None,
+        'stats': None
+    }
     active_mel_mirror = False
     quick_end = False
     findgame = 0

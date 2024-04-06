@@ -108,6 +108,16 @@ class MCFStorage:
         # print(Validator.predict_value_flet[key])
 
     @classmethod
+    def predicts_debug(cls, conditions: tuple, key: str):
+        try:
+            for i, con in conditions:
+                if con:
+                    Validator.predicts_debug[key] = i
+                    break
+        except Exception as ex_:
+            logger.warning(ex_)
+
+    @classmethod
     def predicts_monitor(cls, kills: int, key: str, daily=False):
         
         # print(Validator.predict_value_flet[key])
@@ -143,14 +153,30 @@ class MCFStorage:
                     data[f"{direction} (FL {flet})"][0] += 1
                 else:
                     data[f"{direction} (FL {flet})"][1] += 1
+
+                open('./untracking/reg_debug.txt', 'a+', encoding='utf-8').writelines(
+                    f"{direction}_{flet} #{Validator.predicts_debug} | End_total: {kills} \n"
+                )
+
             case (value, 'ТМ' | 'S_ТМ' as direction, flet):
                 if kills < float(value):
                     data[f"{direction} (FL {flet})"][0] += 1
                 else:
                     data[f"{direction} (FL {flet})"][1] += 1
+                open('./untracking/reg_debug.txt', 'a+', encoding='utf-8').writelines(
+                    f"{direction}_{flet} #{Validator.predicts_debug} | End_total: {kills} \n"
+                )
             case _:
                 ...
-       # print(Validator.predict_value_flet[key])
+
+        if Validator.predicts_debug[key] is not None:
+            
+            value, direction, flet = Validator.predict_value_flet[key]
+
+            open('./untracking/reg_debug.txt', 'a+', encoding='utf-8').writelines(
+                    f"{direction}_{flet} #{Validator.predicts_debug[key]} | Value: {value} | End_total: {kills} \n"
+                )
+            Validator.predicts_debug[key] = None
         
         SafeJson.dump(json_path=predicts_path, data=data)
 
