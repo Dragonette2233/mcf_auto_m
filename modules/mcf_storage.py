@@ -109,13 +109,15 @@ class MCFStorage:
 
     @classmethod
     def predicts_debug(cls, conditions: tuple, key: str):
+        # print(conditions)
         try:
-            for i, con in conditions:
+            for i, con in enumerate(conditions):
                 if con:
                     Validator.predicts_debug[key] = i
                     break
         except Exception as ex_:
             logger.warning(ex_)
+            logger.warning('mcf_storage:119')
 
     @classmethod
     def predicts_monitor(cls, kills: int, key: str, daily=False):
@@ -154,18 +156,12 @@ class MCFStorage:
                 else:
                     data[f"{direction} (FL {flet})"][1] += 1
 
-                open('./untracking/reg_debug.txt', 'a+', encoding='utf-8').writelines(
-                    f"{direction}_{flet} #{Validator.predicts_debug} | End_total: {kills} \n"
-                )
-
+                
             case (value, 'ТМ' | 'S_ТМ' as direction, flet):
                 if kills < float(value):
                     data[f"{direction} (FL {flet})"][0] += 1
                 else:
                     data[f"{direction} (FL {flet})"][1] += 1
-                open('./untracking/reg_debug.txt', 'a+', encoding='utf-8').writelines(
-                    f"{direction}_{flet} #{Validator.predicts_debug} | End_total: {kills} \n"
-                )
             case _:
                 ...
 
