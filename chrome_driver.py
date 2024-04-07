@@ -164,7 +164,7 @@ class Chrome:
         if predict_direction == 'Б' and active_total < 119.5:
             return True
 
-        if predict_direction == 'М' and active_total > 93.5:
+        if predict_direction == 'М' and active_total > 95.5:
             return True
             
 
