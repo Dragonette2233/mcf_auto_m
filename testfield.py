@@ -1,7 +1,7 @@
 import logging
 import time
-from PIL import ImageGrab
-import numpy as np
+# from PIL import ImageGrab
+# import numpy as np
 # from mcf_data import GREYSHADE_CLOCKS_CUT
 from modules import mcf_utils
 from skimage.metrics import structural_similarity as ssim
@@ -10,8 +10,8 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
-command: str = input('Enter test command: ')
-
+# command: str = input('Enter test command: ')
+command = 'parse_test'
 match command:
     case 'bot':
         from tg_api import TGApi
@@ -68,14 +68,10 @@ match command:
             logger.info('Debug end.')
     case 'parse_test':
         
-        # tests_1 = ['Aatrox', 'AurelionSol', 'Vayne', 'Sylas', 'Rengar']
-        tests_1 = 'Malphite Brand Mordekaiser Vayne'.split()
-        for i in tests_1:
-            logger.info(f'Parsing from RiotAPI and Poro... {i}')
-            mcf_utils.async_poro_parsing(champion_name=i) # Parse full PoroARAM by region
-            mcf_utils.direct_poro_parsing(red_champion=i) # Parse only main page PoroARAM
-            mcf_utils.async_riot_parsing() # Parse featured games from Riot API
-            logger.info(f'Games parsed succesfully. {i}')
+        
+        test_featured = mcf_utils.async_riot_parsing() # Parse featured games from Riot API
+        print(test_featured)
+            # logger.info(f'Games parsed succesfully. {i}')
     case 'cstm':
 
         while True:

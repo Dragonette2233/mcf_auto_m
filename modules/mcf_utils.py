@@ -22,6 +22,7 @@ from aiohttp.client_exceptions import (
     )
 import os
 
+logger = logging.getLogger(__name__)
 
 def delete_scoreboard(self):
 
@@ -293,12 +294,15 @@ def async_riot_parsing():
                 
                 data = await response.json()
                 
+                # print(data)
                 try:
                     gameList = data['gameList']
+                    # print(len(gameList))
                     if len(gameList) < 1:
                         missing_regions += 1
                         return
-                except KeyError:
+                except KeyError as key_err:
+                    logger.warning(f"{key_err}")
                     missing_regions += 1
                     return
 
@@ -317,6 +321,7 @@ def async_riot_parsing():
                             
                     routelist.append(f"{champ_string}-|-{summoners}")
                 # print(routelist)
+                print(routelist)
                 featured_games[region] = routelist.copy()
                 # print(featured_games[region])
                 # MCFStorage.write_data(

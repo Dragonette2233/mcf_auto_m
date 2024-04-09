@@ -94,11 +94,12 @@ class MCFApi:
         all_matches = []
 
         all_matches += [item for sublist in cls.PARSED_RIOT_API.values() for item in sublist]
+        logger.info(f'RiotAPI len matches: {len(all_matches)}')
         all_matches += [item for sublist in cls.PARSED_PORO_REGIONS.values() for item in sublist]
         all_matches += [item for sublist in cls.PARSED_PORO_BRONZE.values() for item in sublist]
         all_matches += [item for sublist in cls.PARSED_PORO_SILVER.values() for item in sublist]
         all_matches += cls.PARSED_PORO_DIRECT
-        
+        logger.info(f'Total len matches: {len(all_matches)}')
         finded_games = set()
 
         for match in all_matches:
@@ -118,6 +119,7 @@ class MCFApi:
                 cls.PARSED_PORO_SILVER = mcf_utils.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
                 cls.PARSED_PORO_DIRECT = mcf_utils.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
                 cls.PARSED_RIOT_API = mcf_utils.async_riot_parsing() # Parse featured games from Riot API
+                # print(cls.PARSED_PORO_BRONZE)
                 logger.info('Games parsed succesfully.')
                 break
             except Exception as ex:
