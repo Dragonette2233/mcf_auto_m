@@ -250,10 +250,12 @@ class MCFApi:
         
         ActiveGame.puuid = summoner_data['puuid']
         response_activegame = RiotAPI.get_active_by_summonerid(region=ActiveGame.region, 
-                                                               summid=summoner_data['id'],
+                                                               summid=summoner_data['puuid'],
                                                                status=True)
             
-    
+
+        # print(response_activegame.json())
+
         if response_activegame.status_code != 200:
             logger.info('Loading last game')
             cls.show_lastgame_info()

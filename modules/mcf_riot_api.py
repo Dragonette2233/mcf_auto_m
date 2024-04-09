@@ -12,7 +12,7 @@ class RiotAPI:
     __link_summoner_by_name = "https://{region}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{name}"
     __link_matches_by_puuid = "https://{area}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count=2"
     __link_match_by_gameid = "https://{area}.api.riotgames.com/lol/match/v5/matches/{gameid}"
-    __link_active_by_summid = "https://{region}.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/{summid}"
+    __link_active_by_summid = "https://{region}.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/{summid}"
     
     @staticmethod
     def connection_handler(func):

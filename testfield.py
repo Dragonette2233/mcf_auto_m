@@ -11,8 +11,29 @@ logger = logging.getLogger(__name__)
 
 
 # command: str = input('Enter test command: ')
-command = 'parse_test'
+command = 'game_find'
 match command:
+    case 'game_find':
+        from mcf_api import MCFApi
+
+        MCFApi.search_game(nick_region='Jotv#LAS:LAS')
+
+    case 'pr_test':
+        from stats_field.mcf_predictions import PR
+
+        score = {
+            'time': 251,
+            'blue_kills': 35,
+            'red_kills': 30,
+            'blue_towers': 0,
+            'red_towers': 0,
+            'blue_gold': 22.5,
+            'red_gold': 23.5,
+            'blue_t1_hp': 79,
+            'red_t1_hp': 75
+        }
+        
+        PR.gen_predict(score=score)
     case 'bot':
         from tg_api import TGApi
 
@@ -36,9 +57,9 @@ match command:
         ImageGrab.grab().save('x_full.png')
     case 'parse':
         from mcf_api import MCFApi
-        MCFApi.parse_from_all_sources(char_r='Belveth')
+        MCFApi.parse_from_all_sources(char_r='DrMundo')
         featured: list[str] = MCFApi.get_games_by_character(character='Ahri')
-        finded_game_characerts = 'Ahri Lillia Shen Varus Pyke'.split()
+        finded_game_characerts = 'Blitzcrank Pyke Ahri Quinn Teemo'.split()
         # print(featured)
         for charlist in featured:
             nicknames = charlist.split('-|-')[1].split('_|_')
