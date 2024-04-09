@@ -321,7 +321,7 @@ def async_riot_parsing():
                             
                     routelist.append(f"{champ_string}-|-{summoners}")
                 # print(routelist)
-                print(routelist)
+                # print(routelist)
                 featured_games[region] = routelist.copy()
                 # print(featured_games[region])
                 # MCFStorage.write_data(
