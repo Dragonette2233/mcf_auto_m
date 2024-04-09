@@ -88,7 +88,7 @@ ten_roles_dict = {
 WINDOWS_USER = getpass.getuser()
 TODAY = datetime.now().day
 SPECTATOR_MODE = 'spectator.{reg}.lol.pvp.net:8080'
-FEATURED_GAMES_URL = "https://{region}.api.riotgames.com/lol/spectator/v4/featured-games"
+FEATURED_GAMES_URL = "https://{region}.api.riotgames.com/lol/spectator/v5/featured-games"
 URL_PORO_BY_REGIONS = "https://porofessor.gg/current-games/{champion}/{region}/queue-450"
 URL_PORO_ADVANCE = "https://porofessor.gg/current-games/{champion}/{region}/{elo}/queue-450"
 
