@@ -108,8 +108,10 @@ class PR:
                 ]
             }
 
-            return cls.predict_possible(predictions=spredictions, key='stats')
-            
+            possible_predicts.append(cls.predict_possible(predictions=spredictions, key='stats'))
+        
+        else:
+            possible_predicts.append((None, None, None))
 
         if not Validator.predict_value_flet['main']:
             
@@ -171,6 +173,10 @@ class PR:
 
             }
 
-            return cls.predict_possible(predictions=predictions, key='main')
+            possible_predicts.append(cls.predict_possible(predictions=predictions, key='main'))
+
+        else:
+            possible_predicts.append((None, None, None))
+
 
         return possible_predicts

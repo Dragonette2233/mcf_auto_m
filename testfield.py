@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 # command: str = input('Enter test command: ')
-command = 'parse'
+command = 'pr_test'
 match command:
     case 'game_find':
         from mcf_api import MCFApi
@@ -19,21 +19,32 @@ match command:
         MCFApi.search_game(nick_region='Jotv#LAS:LAS')
 
     case 'pr_test':
-        from stats_field.mcf_predictions import PR
+        from modules.mcf_predicts import PR
+        from mcf_data import StatsRate as SR
+
+        SR.games_all = 1
+        SR.blue_roles = '88888'
+        SR.red_roles = '88888'
+        SR.tl_rate[1] = SR.WINNER
+
+        print(SR.tanks_in_teams())
+        
 
         score = {
-            'time': 251,
-            'blue_kills': 35,
-            'red_kills': 30,
+            'time': 318,
+            'blue_kills': 14,
+            'red_kills': 18,
             'blue_towers': 0,
             'red_towers': 0,
-            'blue_gold': 22.5,
-            'red_gold': 23.5,
-            'blue_t1_hp': 79,
-            'red_t1_hp': 75
+            'blue_gold': 22.3,
+            'red_gold': 23.2,
+            'blue_t1_hp': 72,
+            'red_t1_hp': 100
         }
         
-        PR.gen_predict(score=score)
+        pr = PR.gen_predict(score=score)
+        print(pr)
+
     case 'bot':
         from tg_api import TGApi
 

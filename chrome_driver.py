@@ -127,36 +127,7 @@ class Chrome:
         except:
             return False
         return False
-
-    # def check_if_opened(self):
-       
-    #     try:
-    #         games = self.driver.find_elements(By.CSS_SELECTOR, 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray')
-    #         aram_title_outer = games[0].find_element(By.CSS_SELECTOR, 'span.caption.ui-dashboard-champ-name__caption.caption--size-m')
-    #         aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, 'span.caption__label').get_attribute('innerText')
-              
-    #         if aram_title_inner == 'All Random All Mid':
-    #             game_links = games[0].find_elements(By.CSS_SELECTOR, 'a.dashboard-game-block__link.dashboard-game-block-link')# .get_attribute('href')
-    #             game_link = game_links[0].get_attribute('href')
-    #             # ico ui-market__lock ico--lock
-    #             game_index = '_'.join(game_link.split('/')[7:])
-    #             if game_index == self.game_index_ended:
-    #                 button = games[0].find_element(By.CSS_SELECTOR, 'button.ui-market.ui-market--nameless')
-    #                 # button = games[0].find_element(By.XPATH, '//*[@id="app"]/div[3]/div[1]/div/div[2]/main/div[2]/div/div/div[2]/div/ul/li[1]/ul/li/div[2]/span/button[1]')
-    #                 try:
-    #                     lock_icon = button.find_element(By.CSS_SELECTOR, 'span.ico.ui-market__lock.ico--lock')
-    #                     return False
-    #                 except:
-    #                     Switches.coeff_opened = True
-    #                     return True
-    #                 # if not button.get_attribute('disabled'):
-    #                 #     Switches.coeff_opened = True
-    #                 #     return True
-    #     except (NoSuchElementException, IndexError, Exception):
-    #         pass
-            
-    #     return False
-    
+  
     def predicts_is_accepted(self, message):
 
         predict_direction = message.split()[1][-1]
@@ -192,10 +163,13 @@ class Chrome:
         if Validator.predict_value_flet['main'] and Validator.predict_value_flet['stats']:
             return
         
-        predict_message, key, idx = PR.gen_predict(score=score)
+        s_predict, main_predict = PR.gen_predict(score=score)
 
-        if predict_message:
-            self.send_predict(message=predict_message, key=key, idx=idx)
+        if s_predict[0]:
+            self.send_predict(message=s_predict[0], key=s_predict[1], idx=s_predict[2])
+        
+        if main_predict[0]:
+            self.send_predict(message=main_predict[0], key=main_predict[1], idx=main_predict[2])
 
     def notify_when_starts(self):
 
