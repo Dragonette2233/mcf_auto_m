@@ -88,7 +88,7 @@ class MCFStorage:
             raise TypeError('Provide tuple for executing MCFData')
     
     @classmethod
-    def rgs_predicts_monitor(cls, message: str, key: str):
+    def rgs_predicts_monitor(cls, message: str, key: str, idx: int):
         # print(message)
         try:
             _tmp = message.split()
@@ -100,6 +100,7 @@ class MCFStorage:
                 direction = '_'.join(['S', direction])
             # print('here')
             Validator.predict_value_flet[key] = (value, direction, flet)
+            Validator.predicts_debug[key] = idx
             # print(Validator.predict_value_flet[key])
             # print(key)
         except Exception as ex_:
@@ -156,7 +157,6 @@ class MCFStorage:
                 else:
                     data[f"{direction} (FL {flet})"][1] += 1
 
-                
             case (value, 'ТМ' | 'S_ТМ' as direction, flet):
                 if kills < float(value):
                     data[f"{direction} (FL {flet})"][0] += 1

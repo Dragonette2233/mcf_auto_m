@@ -281,13 +281,15 @@ class StatsRate:
             return True
 
     @classmethod
-    def tanks_in_teams(cls):
-
+    def tanks_in_teams(cls, one_side=False):
+        
         tank_in_blue = '8' in cls.blue_roles or '9' in cls.blue_roles
         tank_in_red = '8' in cls.red_roles or '9' in cls.red_roles
 
-        if tank_in_blue and tank_in_red:
-            return True
+        if one_side:
+            return tank_in_blue or tank_in_red
+        
+        return tank_in_blue and tank_in_red
 
     @classmethod
     def tb_accepted(cls):

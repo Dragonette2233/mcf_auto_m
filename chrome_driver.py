@@ -4,6 +4,7 @@ import modules.mcf_autogui as mcf_autogui
 import modules.mcf_pillow as mcf_pillow
 from modules.mcf_storage import MCFStorage
 from modules.mcf_tracing import Trace
+from modules.mcf_predicts import PR
 from global_data import Validator
 from tg_api import TGApi
 from mcf_data import Switches, StatsRate, MIRROR_PAGE
@@ -168,147 +169,33 @@ class Chrome:
             return True
             
 
-    def send_predict(self, predictions: dict, key: str):
+    def send_predict(self, message: str, key: str, idx: int):
 
-        for message, conditions in predictions.items():
-            if any(conditions):
-                if self.is_total_coeff_opened():
-                    if not self.predicts_is_accepted(message=message):
-                        break
-                    message: str = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
-                    # MCFStorage.rgs_predicts_monitor(message=message,
-                    #                                 key=key)
-                    TGApi.send_simple_message(message)
-                    logger.info(message)
+        if self.is_total_coeff_opened():
+            if not self.predicts_is_accepted(message=message):
+                return
+            message: str = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
 
-                    time.sleep(5)
+            TGApi.send_simple_message(message)
+            logger.info(message)
 
-                    if self.is_total_coeff_opened():
-                        MCFStorage.rgs_predicts_monitor(message=message, key=key)
-                        MCFStorage.predicts_debug(conditions=conditions, key=key)
-                    else:
-                        Validator.predict_value_flet[key] = 'closed'
+            time.sleep(5)
+
+            if self.is_total_coeff_opened():
+                MCFStorage.rgs_predicts_monitor(message=message, key=key, idx=idx)
+            else:
+                Validator.predict_value_flet[key] = 'closed'
                 
-                break
 
     def generate_predict(self, score):
 
-        # is_opened = self.check_if_opened()
-        gametime = score["time"]
+        if Validator.predict_value_flet['main'] and Validator.predict_value_flet['stats']:
+            return
         
-        # if not Validator.tracer["300s"] and gametime in range(295, 310):
-        #     Trace.add_tracing(timestamp='300s', score=score)
-        # if not Validator.tracer["420s"] and gametime in range(417, 425):
-        #     Trace.add_tracing(timestamp='420s', score=score)
-        # if not Validator.tracer["540s"] and gametime in range(540, 550):
-        #     Trace.add_tracing(timestamp='540s', score=score)
+        predict_message, key, idx = PR.gen_predict(score=score)
 
-        blue_kills = score["blue_kills"] # "blue_kiils": 49,
-        red_kills = score["red_kills"] # "red_kills": 43,
-        blue_towers = score["blue_towers"] # "blue_towers": 3,
-        red_towers = score["red_towers"] # "red_towers": 1,
-        blue_gold = score["blue_gold"]
-        red_gold = score["red_gold"]
-        blue_t1_hp = score["blue_t1_hp"]
-        red_t1_hp = score["red_t1_hp"]
-
-        all_kills = blue_kills + red_kills
-        module_kills = abs(blue_kills - red_kills)
-        module_gold = abs(blue_gold - red_gold)
-        gold_equals = module_gold < 1.2
-
-        blue_gold_leader = blue_gold > red_gold and module_gold > 1.65
-        red_gold_leader = red_gold > blue_gold and module_gold > 1.65
-        blue_gold_winner = blue_gold > red_gold and module_gold > 3.1
-        red_gold_winner = red_gold > blue_gold and module_gold > 3.1
-        # blue_gold_winner = blu
-        
-        blue_leader = blue_t1_hp > 75 and red_t1_hp < 20 and blue_gold_winner
-        red_leader = red_t1_hp > 75 and blue_t1_hp < 20 and red_gold_winner
-
-        # blue_light = blue_kills > red_kills and blue_gold_leader
-        # red_light = red_kills > blue_kills and red_gold_leader
-        light_leader = blue_gold_leader or red_gold_leader
-
-        straight_leader = blue_leader or red_leader
-        two_towers_destroyed = blue_towers + red_towers > 1
-        towers_leader = blue_towers > 1 or red_towers > 1
-        hard_towers_leader = (red_towers == 0 and blue_towers > 1) or (blue_towers == 0 and red_towers > 1)
-        # no_towers_destroyed = (blue_towers == 0 and red_towers == 0) and (blue_t1_hp > 65 and red_t1_hp > 65)
-        towers_still_healthy = blue_t1_hp > 35 and red_t1_hp > 35
-        full_towers_health = blue_t1_hp > 85 and red_t1_hp > 85
-        some_tower_destroyed = blue_t1_hp < 20 or red_t1_hp < 20
-        some_tower_toched = blue_t1_hp < 81 or red_t1_hp < 81
-        # health_tower_leader = (blue_t1_hp > 75 and red_t1_hp < 51) or (red_t1_hp > 75 and blue_t1_hp < 51)
-        t1_towers_destroyed = (blue_towers == 1 and red_towers == 1) or (blue_t1_hp < 25 and red_t1_hp < 25)
-        
-        if not Validator.predict_value_flet['stats']:
-
-            spredictions = {
-                '🔽S_PR 110.5М FL_0.5🔽': [
-                    (StatsRate.tl_accepted() and all_kills < 30 and some_tower_destroyed and gametime > 400),
-                    (StatsRate.tl_accepted() and all_kills < 24 and gametime > 400)
-                ],
-                '🔼S_PR 110.5Б FL_0.5🔼': [
-                    (StatsRate.tb_accepted() and all_kills > 45 and module_kills < 7 and gametime < 360),
-                    (StatsRate.tb_accepted() and StatsRate.tanks_in_teams())
-                ]
-            }
-
-            self.send_predict(predictions=spredictions, key='stats')
-
-        if not Validator.predict_value_flet['main']:
-            
-            predictions = {
-                '🔼PR 110.5Б FL_1🔼': [
-                    (all_kills >= 60 and module_kills < 4 and full_towers_health and gametime < 480 and gold_equals),
-                    (all_kills >= 80 and module_kills < 7 and t1_towers_destroyed and gametime < 540 and gold_equals),
-
-                ],
-                '🔼PR 110.5Б FL_0.5🔼': [
-                    (all_kills >= 50 and module_kills < 6 and full_towers_health and gametime < 540 and gold_equals and StatsRate.tanks_in_teams()),
-                    (all_kills >= 48 and module_kills < 5 and full_towers_health and gametime < 420 and gold_equals and StatsRate.tanks_in_teams()),
-                    (all_kills >= 40 and module_kills < 5 and full_towers_health and gametime < 420 and StatsRate.tanks_in_teams()),
-                    (all_kills >= 30 and module_kills < 5 and full_towers_health and gametime < 360 and StatsRate.tanks_in_teams()),
-                ],
-
-                '🔽PR 110.5М FL_1🔽': [
-
-                    (all_kills < 16 and straight_leader and gametime > 240),
-                    (all_kills < 22 and straight_leader and gametime > 300),
-                    (all_kills < 28 and straight_leader and gametime > 360),
-                    (all_kills < 34 and straight_leader and gametime > 420),
-                    (all_kills < 40 and straight_leader and gametime > 540),
-                    (all_kills < 50 and straight_leader and module_kills > 13 and gametime > 540)
-                    
-                ],
-                '🔽PR 110.5М FL_0.75🔽': [
-
-                    (all_kills < 12 and some_tower_destroyed and gametime > 240),
-                    (all_kills < 18 and some_tower_destroyed and gametime > 300),
-                    (all_kills < 22 and some_tower_destroyed and gametime > 360),
-                    (all_kills < 26 and some_tower_destroyed and gametime > 420),
-                    (all_kills < 30 and some_tower_destroyed and gametime > 480),
-                    (all_kills < 38 and two_towers_destroyed and gametime > 480),
-                    (all_kills < 50 and towers_leader),
-                    
-                ],
-                '🔽PR 110.5М FL_0.5🔽': [
-                    
-                    (all_kills < 10 and some_tower_toched and gametime > 240),
-                    (all_kills < 16 and some_tower_toched and gametime > 300),
-                    (all_kills < 20 and some_tower_toched and gametime > 300),
-                    (all_kills < 22 and some_tower_toched and gametime > 360),
-                    (all_kills < 28 and some_tower_toched and gametime > 480),
-                    (all_kills < 22 and gametime > 420),
-                    (all_kills < 42 and hard_towers_leader),
-                    (all_kills <= 30 and module_kills >= 15 and gametime > 420),
-                    (all_kills <= 38 and module_kills >= 20 and gametime > 420)
-                ]
-
-            }
-
-            self.send_predict(predictions=predictions, key='main')
+        if predict_message:
+            self.send_predict(message=predict_message, key=key, idx=idx)
 
     def notify_when_starts(self):
 
