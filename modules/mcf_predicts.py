@@ -136,6 +136,9 @@ class PR:
                     (cls.all_kills < 36 and cls.straigh_leader(gold_value=2.9, towers_hp=(55, 20)) and cls.gtime > 420),
                     (cls.all_kills < 42 and cls.straigh_leader(gold_value=3.2, towers_hp=(50, 15)) and cls.gtime > 540),
                     (cls.all_kills < 50 and cls.straigh_leader(gold_value=3.5, towers_hp=(45, 10)) and cls.module_kills > 13 and cls.gtime > 540)
+
+                    # Optional predicts
+                    (cls.all_kills < 39 and cls.straigh_leader(gold_value=0.8, towers_hp=(80, 10)) and cls.gtime > 400)
                     
                 ],
                 '🔽PR 110.5М FL_0.75🔽': [
@@ -151,7 +154,7 @@ class PR:
                     (cls.all_kills < 50 and cls.two_towers_destroyed(some_side=True)),
 
                     # Optional predicts
-                    (cls.all_kills < 25 and cls.straigh_leader(gold_value=2.8, towers_hp=(0, 70)) and cls.gtime > 240),
+                    (cls.all_kills < 25 and cls.straigh_leader(gold_value=2.8, towers_hp=(70, 0)) and cls.gtime > 240),
 
                     
                 ],
