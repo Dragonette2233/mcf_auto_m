@@ -294,7 +294,7 @@ def async_riot_parsing():
                 
                 data = await response.json()
                 
-                # print(data)
+                logger.info(response.status)
                 try:
                     gameList = data['gameList']
                     # print(len(gameList))

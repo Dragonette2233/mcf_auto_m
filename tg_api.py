@@ -59,8 +59,7 @@ class TGApi:
         
         # cls.post_send(message=message, chat_id=cls.CHAT_ID)
         cls.post_send(message=message, chat_id=cls.CHAT_ID_PUB)
-        
-        time.sleep(4)
+        time.sleep(2)
         cls.post_send(message=message, chat_id=cls.CHAT_ID_TRIAL)
 
 

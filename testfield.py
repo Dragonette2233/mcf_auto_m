@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 # command: str = input('Enter test command: ')
-command = 'pr_test'
+command = 'parse'
 match command:
     case 'game_find':
         from mcf_api import MCFApi
