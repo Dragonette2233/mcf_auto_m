@@ -282,7 +282,9 @@ class StatsRate:
 
     @classmethod
     def tanks_in_teams(cls, one_side=False):
-        
+        if cls.games_all == 0:
+            return
+
         tank_in_blue = '8' in cls.blue_roles or '9' in cls.blue_roles
         tank_in_red = '8' in cls.red_roles or '9' in cls.red_roles
 
