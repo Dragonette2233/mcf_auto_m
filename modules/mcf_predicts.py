@@ -96,15 +96,13 @@ class PR:
         if not Validator.predict_value_flet['stats']:
 
             spredictions = {
-                '🔽S_PR 110.5М FL_1🔽': [
-                    (SR.tl_accepted() and cls.all_kills < 30 and cls.towers_hp_less_than(hp=25) and cls.gtime > 400),
-                ],
                 '🔽S_PR 110.5М FL_0.5🔽': [
-                    (SR.tl_accepted() and cls.all_kills < 24 and cls.gtime > 400)
+                    (SR.tl_accepted() and cls.all_kills < 30 and cls.towers_hp_less_than(hp=25) and cls.gtime > 400),
+                    (SR.tl_accepted() and cls.all_kills < 24 and cls.gtime > 400),
                 ],
                 '🔼S_PR 110.5Б FL_0.5🔼': [
                     (SR.tb_accepted() and cls.kills_gold_equals(kills=45, gold=1.5) and cls.gtime < 360),
-                    (SR.tb_accepted() and SR.tanks_in_teams())
+                    (SR.tb_accepted() and SR.tanks_in_teams()),
                 ]
             }
 
