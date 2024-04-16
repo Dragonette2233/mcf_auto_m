@@ -118,11 +118,10 @@ class Chrome:
                     mrk_text = btn.text
                     if mrk_text.endswith('Б'):
                         total_value = mrk_text.split()[0]
+                        self.ACTIVE_TOTAL_VALUE = total_value
                         # print(total_value)
                         lock_ico = mrk.find_elements(By.CSS_SELECTOR, 'span.ico.ui-market__lock')
                         if len(lock_ico) == 0:
-        
-                            self.ACTIVE_TOTAL_VALUE = total_value
                             return True
         except:
             return False
@@ -159,6 +158,9 @@ class Chrome:
                 
 
     def generate_predict(self, score):
+
+        if score['time'] > 660:
+            return
 
         if Validator.predict_value_flet['main'] and Validator.predict_value_flet['stats']:
             return

@@ -103,6 +103,8 @@ REGIONS_TUPLE = (
     ('th', 'th2', 'sea'), ('tw', 'tw2', 'sea')
 )
 
+
+
 """
     All pathes for app images
     
@@ -129,7 +131,7 @@ PREDICTS_TRACE_DAILY_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'predicts_t
 
 
 # SCREENSHOT_FILE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'screenshot_PIL.png')
-
+SCORE_SNIPPET: str = open(os.path.join(MCF_BOT_PATH, 'mcf_lib', 'score_snip.txt'), 'r', encoding='utf-8').read()
 
 """
     Data for screen score recognizing (Time, kills, towers)

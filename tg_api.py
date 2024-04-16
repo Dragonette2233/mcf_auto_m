@@ -6,6 +6,7 @@ from global_data import Validator
 from mcf_data import (
     Switches,
     WINDOWS_USER,
+    SCORE_SNIPPET,
 )
 
 logger = logging.getLogger(__name__)
@@ -13,54 +14,110 @@ logger = logging.getLogger(__name__)
 class TGApi:
 
     # test_run = False
+    active_post_id = 0
+    active_post_text = ''
     token = os.getenv('BOT_TOKEN')
     method_send = 'sendMessage'
-    method_updates = 'getUpdates'
+    method_edit = 'editMessageText'
     tg_api_url = 'https://api.telegram.org/bot{token}/{method}'
     RES_FOR_PREDICT = False
     CHAT_ID = os.getenv('CHAT_ID')
     CHAT_ID_PUB = os.getenv('CHAT_ID_PUB')
     CHAT_ID_TRIAL = os.getenv('CHAT_ID_TRIAL')
 
-    # @classmethod
-    def switch_active(func):
-        def wrapper(*args, **kwargs):
-            if WINDOWS_USER == 'ARA-M': # REMOVE !
-                func(*args, **kwargs)
-    
-        return wrapper
     
     def timeout_handler(func):
         def wrapper(*args, **kwargs):
             while True:
                 try:
-                    func(*args, **kwargs)
-                    break
+                    return func(*args, **kwargs)
                 except (requests.exceptions.ConnectTimeout,
                         requests.exceptions.ConnectionError,
-                        requests.exceptions.ReadTimeout):
-                    print('here')
+                        requests.exceptions.ReadTimeout) as ex_:
+                    logger.warning(ex_)
                     pass
     
         return wrapper
 
-    @switch_active
     @timeout_handler
     def post_send(message: str, chat_id):
 
-        requests.post(
+        resp = requests.post(
             url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_send),
             data={'chat_id': chat_id, 'text': message }, timeout=2
         )
 
+        # print(resp.json())
+        return resp.json()
+            
+
         
     @classmethod
-    def post_request(cls, message: str):
+    def post_request(cls, message: str, save_post_result=False):
         
-        # cls.post_send(message=message, chat_id=cls.CHAT_ID)
-        cls.post_send(message=message, chat_id=cls.CHAT_ID_PUB)
+        request = cls.post_send(message=message, chat_id=cls.CHAT_ID_PUB)
+        # print(request)
+        if save_post_result:
+            cls.active_post_id = request['result']['message_id']
+            cls.active_post_text = request['result']['text']
+
+            # print(cls.active_post_id, cls.active_post_text)
+
         time.sleep(2)
         cls.post_send(message=message, chat_id=cls.CHAT_ID_TRIAL)
+
+    @classmethod
+    def run_score_updating(cls):
+        
+        while Switches.request:
+
+            score = {
+                'time': 
+                'blue_kills'
+                'red_kills'
+                'blue_towers'
+                'red_towers'
+                'blue_gold'
+                'red_gold'
+                'blue_t1_hp'
+                'red_t1_hp'
+            }
+            
+
+
+    @classmethod
+    def update_score(cls, score, is_total_opened=False, total_value=0):
+        
+        if score:
+            timestamp = divmod(int(score['time']), 60)
+            minutes = timestamp[0] if timestamp[0] > 9 else f"0{timestamp[0]}"
+            seconds = timestamp[1] if timestamp[1] > 9 else f"0{timestamp[1]}"
+
+            score['time'] = ':'.join([str(minutes), str(seconds)])
+            score['total_value'] = total_value
+            if is_total_opened:
+                score['is_opened'] = f'Total event: {total_value}: ✅ Opened'
+            else:
+                score['is_opened'] = 'Total event: ❌ Closed'
+            # score['total_value']
+            text = cls.active_post_text + SCORE_SNIPPET.format(**score)
+        else:
+            text = cls.active_post_text
+
+        try:
+            requests.post(
+            url=TGApi.tg_api_url.format(token=TGApi.token, method=cls.method_edit),
+            data={'chat_id': cls.CHAT_ID_PUB, 
+                'message_id': cls.active_post_id, 
+                'text': text }, timeout=2
+            )
+            
+        except (requests.exceptions.ConnectTimeout,
+                requests.exceptions.ConnectionError,
+                requests.exceptions.ReadTimeout) as ex_:
+            logger.warning(ex_)
+            pass
+        
 
 
     @classmethod
@@ -74,7 +131,7 @@ class TGApi:
             status_message=status_message
         )
 
-        cls.post_request(message=full_message)
+        cls.post_request(message=full_message, save_post_result=True)
 
     @classmethod
     def send_simple_message(cls, message: str):        

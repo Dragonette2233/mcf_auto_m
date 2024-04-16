@@ -67,13 +67,17 @@ def main():
 
             while Switches.request:
                 mcf_autogui.doubleClick(x=658, y=828)
-                # tower_health = 
                 score = mcf_pillow.generate_scoreboard()
-                if score["time"] < 600 and Switches.request:
-                    chrome.generate_predict(score)
+                chrome.generate_predict(score)
+                
+                TGApi.update_score(score, 
+                                   is_total_opened=chrome.is_total_coeff_opened(),
+                                   total_value=chrome.ACTIVE_TOTAL_VALUE)
+                
                 chrome.remove_cancel()
-                time.sleep(0.25)
+                time.sleep(3.5)
 
+            TGApi.update_score(score=False)
             MCFApi.delete_scoreboard()
             MCFApi.close_league_of_legends()
             mcf_pillow.reset_towers_backup()
@@ -86,7 +90,7 @@ def main():
                     if is_opened:
                         TGApi.send_simple_message('🟢 Открыты')
                         break
-                    time.sleep(1)
+                    time.sleep(0.25)
             
             Switches.coeff_opened = False
             Switches.predicted_total = False
@@ -109,7 +113,7 @@ def main():
 
             if Validator.quick_end:
                 TGApi.winner_is(
-                            team=Validator.ended_winner, 
+                            team=Validator.ended_winner,
                             kills=Validator.ended_kills,
                             timestamp=Validator.ended_time
                         )

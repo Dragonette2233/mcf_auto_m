@@ -1,0 +1,8 @@
+
+
+KL:  🐳 {blue_kills} 🐙 {red_kills}
+TW: 🐳 {blue_towers}   🐙 {red_towers}
+GL:  🐳 {blue_gold}k 🐙 {red_gold}k
+T1:  🐳 {blue_t1_hp}% 🐙 {red_t1_hp}%
+
+⏳ {time}
