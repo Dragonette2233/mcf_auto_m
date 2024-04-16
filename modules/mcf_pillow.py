@@ -1,5 +1,6 @@
 from PIL import Image, ImageChops, ImageGrab
 from global_data import TowersHealth
+
 import os
 import logging
 import time
@@ -12,6 +13,19 @@ logger = logging.getLogger(__name__)
 def greyshade_array(image_path):
     
     return np.array(Image.open(image_path).convert('L'))
+
+def pre_cache_games():
+    from mcf_data import GREYSHADE_mCMP_LOADING, Switches
+
+    if Switches.cache_done:
+        return
+
+    np_mcmp_active = np.array(ImageGrab.grab().crop((1648, 245, 1722, 331)).convert('L'))
+
+    if ssim(np_mcmp_active, GREYSHADE_mCMP_LOADING) > 0.93:
+        from mcf_api import MCFApi
+        MCFApi.cache_before_stream()
+        Switches.cache_done = True
 
 def is_game_started():
     from global_data import Validator
@@ -41,19 +55,6 @@ def is_game_started():
     np_cut_blue = np.array(cut_cmp_blue)
     np_cut_red = np.array(cut_cmp_red)
 
-    # cut_cmp_loadscreen = None
-    # np_loadscreen = np.array()
-    # similarity_2 = [
-    #     ssim(np_cut_riot, GREYSHADE_CMP_RIOT),
-    #     ssim(np_cut_blue, GREYSHADE_CMP_BLUE),
-    #     ssim(np_cut_red, GREYSHADE_CMP_RED),
-    #     ssim(np_cut_riot, GREYSHADE_mCMP_RIOT),
-    #     ssim(np_cut_blue, GREYSHADE_mCMP_BLUE),
-    #     ssim(np_cut_red, GREYSHADE_mCMP_RED),
-    #         ]
-    # print(similarity_2)
-
-    # diff_1 = ssim(np_cut_map, GREYSHADE_CMP_MAP)
     similarity = [
         ssim(np_cut_riot, GREYSHADE_CMP_RIOT) > 0.93,
         ssim(np_cut_blue, GREYSHADE_CMP_BLUE) > 0.93,
@@ -123,17 +124,9 @@ def generate_scoreboard():
     else:
         red_t1_health = 0
     
-    # screen = ImageGrab.grab()
-    # score = blue_shot.crop((681, 7, 1261, 99))
-    # scoredata = ScoreRecognition.screen_score_recognition(image=score)
     score['blue_t1_hp'] = blue_t1_health
     score['red_t1_hp'] = red_t1_health
 
     MCFStorage.save_score(score=score)
-    
-    # items_build = blue_shot.crop((602, 850, 1334, 1078))
-    # items_build.save(os.path.join('images_lib', 'buildcrop.png'))
-
-    
 
     return score

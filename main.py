@@ -93,9 +93,7 @@ def main():
                     time.sleep(0.25)
             
             Switches.coeff_opened = False
-            Switches.predicted_total = False
-            Switches.predicted_winner = False
-            Switches.spredicted = False
+            Switches.cache_done = False
             StatsRate.stats_clear()
             ActiveGame.refresh()
             # time.sleep(300)

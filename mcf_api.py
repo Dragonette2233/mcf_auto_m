@@ -98,6 +98,7 @@ class MCFApi:
         all_matches += [item for sublist in cls.PARSED_PORO_REGIONS.values() for item in sublist]
         all_matches += [item for sublist in cls.PARSED_PORO_BRONZE.values() for item in sublist]
         all_matches += [item for sublist in cls.PARSED_PORO_SILVER.values() for item in sublist]
+        all_matches += [item for sublist in cls.CACHE_RIOT_API.values() for item in sublist]
         all_matches += cls.PARSED_PORO_DIRECT
         logger.info(f'Total len matches: {len(all_matches)}')
         finded_games = set()
@@ -138,12 +139,9 @@ class MCFApi:
          return len(common_elements)
 
     @classmethod
-    def cached_games(cls, parse=False, get=False):
-        if parse:
-            cls.CACHE_RIOT_API = mcf_utils.async_riot_parsing() # Parse featured games from Riot API
-        
-        if get:
-            return [item for sublist in cls.CACHE_RIOT_API.values() for item in sublist]
+    def cache_before_stream(cls):
+        cls.CACHE_RIOT_API = mcf_utils.async_riot_parsing() # Parse featured games from Riot API
+        logger.info('Games cached successfull!')
 
     @classmethod
     def finded_game(cls, teams: dict, from_cache=False):
@@ -154,11 +152,8 @@ class MCFApi:
 
         for char_b, char_r in team_cycle:
             
-            if not from_cache:
-                cls.parse_from_all_sources(char_r=char_r)
-                games_by_character: list[str] = cls.get_games_by_character(character=char_b)
-            else:
-                games_by_character: list[str] = cls.cached_games(get=True)
+            cls.parse_from_all_sources(char_r=char_r)
+            games_by_character: list[str] = cls.get_games_by_character(character=char_b)
 
             for charlist in games_by_character:
                 nicknames = charlist.split('-|-')[1].split('_|_')

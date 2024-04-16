@@ -183,6 +183,7 @@ GREYSHADE_CMP_RED = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp
 GREYSHADE_mCMP_RIOT = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_riot.png'))
 GREYSHADE_mCMP_BLUE = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_blue.png'))
 GREYSHADE_mCMP_RED = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_red.png'))
+GREYSHADE_mCMP_LOADING = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_loading.png'))
 
 """
     Classes for finded game and switches for controling threads and activity 
@@ -226,12 +227,8 @@ class Validator:
 class Switches:
     coeff_opened = False
     request = False
-    # timer = None
-    # bot_activity = False
-    # predicted_total = False
-    # predicted_winner = False
-    # spredicted = False
-
+    cache_done = False
+    
 class StatsRate:
     blue_roles = None
     red_roles = None

@@ -198,6 +198,9 @@ class Chrome:
                         stream_btn.find_element(By.CSS_SELECTOR, self.CSS_BTN_STREAM).click()
                         time.sleep(2)
 
+                        # if Switches.cache_done:
+                        mcf_pillow.pre_cache_games()
+
                         if mcf_pillow.is_game_started():
                             logger.info('Game started: (from comparing stream)')
                             self.game_index_new = ''
