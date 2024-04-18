@@ -3,6 +3,8 @@ import time
 from global_data import (
     ActiveGame,
     Validator,
+    StatsRate,
+    Switches
 )
 from tg_api import TGApi
 from mcf_data import (
@@ -10,8 +12,6 @@ from mcf_data import (
     ALL_CHAMPIONS_IDs,
     SPECTATOR_MODE,
     SPECTATOR_FILE_PATH,
-    Switches,
-    StatsRate,
 )
 import os
 import itertools
@@ -331,7 +331,7 @@ class MCFApi:
 
 
                 if ActiveGame.is_game_founded:
-                    # Trace.create_new_trace(gameid=ActiveGame.match_id)
+                    Trace.create_new_trace(gameid=ActiveGame.match_id)
                     return True
                     
             except Exception as ex:
@@ -375,7 +375,7 @@ class MCFApi:
                 
                 timestamp = f"[{time_stamp[0]}:{time_stamp[1]}]"
                 TGApi.winner_is(team=winner, kills=kills, timestamp=timestamp, opened=is_opened)
-                # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
+                Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
                 MCFStorage.predicts_monitor(kills=kills, key='main')
                 MCFStorage.predicts_monitor(kills=kills, key='stats')
                 MCFStorage.predicts_monitor(kills=kills, key='main', daily=True)

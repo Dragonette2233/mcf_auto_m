@@ -6,11 +6,10 @@ logger = logging.getLogger(__name__)
 from modules.mcf_storage import MCFStorage
 from modules import mcf_pillow
 from modules import mcf_autogui
-from global_data import ActiveGame
+from global_data import ActiveGame, Switches
 from chrome_driver import Chrome
 from global_data import Validator
 from mcf_data import (
-    Switches,
     MCFThread,
     StatsRate
 )

@@ -1,5 +1,5 @@
 import copy
-from mcf_data import (
+from global_data import (
     StatsRate as SR,
 )
 from global_data import Validator

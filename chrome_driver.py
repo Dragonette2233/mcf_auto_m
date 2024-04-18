@@ -7,7 +7,8 @@ from modules.mcf_tracing import Trace
 from modules.mcf_predicts import PR
 from global_data import Validator
 from tg_api import TGApi
-from mcf_data import Switches, StatsRate, MIRROR_PAGE
+from mcf_data import MIRROR_PAGE
+from global_data import StatsRate, Switches
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -161,6 +162,9 @@ class Chrome:
 
         if score['time'] > 660:
             return
+        
+        if score['time'] in range(360, 420):
+            Trace.add_tracing(score=score)
 
         if Validator.predict_value_flet['main'] and Validator.predict_value_flet['stats']:
             return

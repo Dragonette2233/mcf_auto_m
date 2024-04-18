@@ -1,6 +1,6 @@
 import json
 import os
-from mcf_data import SCORE_TRACE_PATH
+from mcf_data import SCORE_TRACE_PATH, StatsRate
 from global_data import Validator
 
 class Trace:
@@ -20,27 +20,44 @@ class Trace:
         data = cls.get_json()
 
         data[gameid] = {
-                            "300s": [0, 0, 0, 0],
-                            "420s": [0, 0, 0, 0],
-                            "540s": [0, 0, 0, 0],
-                            "result": ["", 0, "00:00"]
-                        }
+            'income': [
+                        '00000', # blue_roles
+                        '00000', # red_roles
+                        0, # blue_kills
+                        0, # red_kills
+                        0, # blue_towers
+                        0, # red_towers
+                        0, # blue_gold
+                        0, # red_gold
+                        0, # blue_t1_hp
+                        0, # red_t1_hp
+                        0, # time
+                    ],
+            'result': []
+        }
                     
         cls.put_to_json(data=data)
         cls.tracing_game = gameid
 
     @classmethod
-    def add_tracing(cls, timestamp, score):
-
+    def add_tracing(cls, score):
+        
         data = cls.get_json()
-        data[cls.tracing_game][timestamp] = [
+        data[cls.tracing_game]['income'] = [
+            StatsRate.blue_roles,
+            StatsRate.red_roles,
             score["blue_kills"],
             score["red_kills"],
             score["blue_towers"],
-            score["red_towers"]
+            score["red_towers"],
+            score["blue_gold"],
+            score["red_gold"],
+            score["blue_t1_hp"],
+            score["red_t1_hp"],
+            score["time"]
         ]
         cls.put_to_json(data=data)
-        Validator.tracer[timestamp] = True
+        Validator.tracer = True
 
     @classmethod
     def complete_trace(cls, team, kills, timestamp):
@@ -48,9 +65,7 @@ class Trace:
         data[cls.tracing_game]["result"] = [team, kills, timestamp]
         cls.put_to_json(data)
         cls.tracing_game = ''
-        Validator.tracer["300s"] = False
-        Validator.tracer["420s"] = False
-        Validator.tracer["540s"] = False
+        Validator.tracer = False
 
     @classmethod
     def trace_predicts(cls):
