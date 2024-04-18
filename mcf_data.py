@@ -104,7 +104,6 @@ REGIONS_TUPLE = (
 )
 
 
-
 """
     All pathes for app images
     
@@ -127,10 +126,7 @@ ACTIVE_GAMESCORE_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'activegame_sco
 SCORE_TRACE_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'score_trace.json')
 PREDICTS_TRACE_GLOBAL_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'predicts_trace.json')
 PREDICTS_TRACE_DAILY_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'predicts_trace_daily.json')
-# SCORE_ANSWER_PATH = os.path.join(MCF_BOT_PATH, 'untracking', '')
 
-
-# SCREENSHOT_FILE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'screenshot_PIL.png')
 SCORE_SNIPPET: str = open(os.path.join(MCF_BOT_PATH, 'mcf_lib', 'score_snip.txt'), 'r', encoding='utf-8').read()
 
 """
@@ -201,28 +197,6 @@ class MCFThread(threading.Thread):
         self.name = f"{func.__name__}-Thr"
         if args:
             self._args = args
-
-class Validator:
-    # active_mel_mirror = False
-    # ahead_end = False
-    quick_end = False
-    findgame = 0
-    gametime = False
-    recognition = 0
-    ended_game_characters = None
-    finded_game_characerts = None
-    stats_register = {
-        'W1_res': 0,
-        'W2_res': 0,
-        'W1_pr': 0,
-        'W2_pr': 0,
-    }
-    total_register = {
-        'W1_res': 0,
-        'W2_res': 0,
-        'W1_pr': 0,
-        'W2_pr': 0,
-    }
 
 
 cookies = {

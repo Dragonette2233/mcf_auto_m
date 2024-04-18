@@ -1,7 +1,7 @@
 import json
 import os
-from mcf_data import SCORE_TRACE_PATH, StatsRate
-from global_data import Validator
+from mcf_data import SCORE_TRACE_PATH
+from global_data import Validator, StatsRate
 
 class Trace:
 
