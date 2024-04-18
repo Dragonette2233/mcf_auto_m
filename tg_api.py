@@ -96,9 +96,9 @@ class TGApi:
             score['time'] = ':'.join([str(minutes), str(seconds)])
             score['total_value'] = total_value
             if is_total_opened:
-                open_snip = f'\n\nTotal event: {total_value}: ✅ Opened'
+                open_snip = f'\n\nTotal event {total_value}: ❕ Opened'
             else:
-                open_snip = '\n\nTotal event: ❌ Closed'
+                open_snip = '\n\nTotal event: ❗️ Closed'
             # score['total_value']
             text = cls.active_post_text + SCORE_SNIPPET.format(**score) + open_snip
         else:
