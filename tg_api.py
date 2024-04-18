@@ -2,9 +2,8 @@ import requests
 import os
 import logging
 import time
-from global_data import Validator
+from global_data import Validator, Switches
 from mcf_data import (
-    Switches,
     WINDOWS_USER,
     SCORE_SNIPPET,
 )
