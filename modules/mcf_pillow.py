@@ -14,20 +14,6 @@ def greyshade_array(image_path):
     
     return np.array(Image.open(image_path).convert('L'))
 
-# def pre_cache_games():
-#     from mcf_data import GREYSHADE_mCMP_LOADING
-#     from global_data import Switches
-
-#     if Switches.cache_done:
-#         return
-
-#     np_mcmp_active = np.array(ImageGrab.grab().crop((1648, 245, 1722, 331)).convert('L'))
-
-#     if ssim(np_mcmp_active, GREYSHADE_mCMP_LOADING) > 0.93:
-#         from mcf_api import MCFApi
-#         MCFApi.cache_before_stream()
-#         Switches.cache_done = True
-
 def is_game_started():
     from global_data import Validator
     from global_data import Switches

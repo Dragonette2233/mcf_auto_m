@@ -162,7 +162,7 @@ class Chrome:
         if score['time'] > 660:
             return
         
-        if score['time'] in range(360, 420):
+        if score['time'] in range(360, 420) and not Validator.tracer:
             Trace.add_tracing(score=score)
 
         if Validator.predict_value_flet['main'] and Validator.predict_value_flet['stats']:
