@@ -61,6 +61,8 @@ class Trace:
 
     @classmethod
     def complete_trace(cls, team, kills, timestamp):
+        if not Validator.tracer:
+            return
         data = cls.get_json()
         data[cls.tracing_game]["result"] = [team, kills, timestamp]
         cls.put_to_json(data)
