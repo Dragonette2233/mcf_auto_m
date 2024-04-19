@@ -51,7 +51,7 @@ class RiotAPI:
     @staticmethod
     def get_matches_by_puuid(area: str, puuid: int):
         result = requests.get(RiotAPI.__link_matches_by_puuid.format(area=area, puuid=puuid), 
-                              **RiotAPI.__headers_timeout)
+                              **Headers.riot)
 
         return result.json()
     
@@ -59,7 +59,7 @@ class RiotAPI:
     @staticmethod
     def get_match_by_gameid(area: str, gameid: int, status=False):
         result = requests.get(RiotAPI.__link_match_by_gameid.format(area=area, gameid=gameid), 
-                              **RiotAPI.__headers_timeout)
+                              **Headers.riot)
         
         if status:
             return result
@@ -69,7 +69,7 @@ class RiotAPI:
     @staticmethod
     def get_active_by_summonerid(region: str, summid: int, status=False):
         result = requests.get(RiotAPI.__link_active_by_summid.format(region=region, summid=summid), 
-                              **RiotAPI.__headers_timeout)
+                              **Headers.riot)
         if status:
             return result
         return result.json()
