@@ -202,7 +202,7 @@ class Chrome:
                         time.sleep(2)
 
                         # if Switches.cache_done:
-                        mcf_pillow.pre_cache_games()
+                        # mcf_pillow.pre_cache_games()
 
                         if mcf_pillow.is_game_started():
                             logger.info('Game started: (from comparing stream)')

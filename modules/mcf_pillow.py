@@ -14,22 +14,23 @@ def greyshade_array(image_path):
     
     return np.array(Image.open(image_path).convert('L'))
 
-def pre_cache_games():
-    from mcf_data import GREYSHADE_mCMP_LOADING
-    from global_data import Switches
+# def pre_cache_games():
+#     from mcf_data import GREYSHADE_mCMP_LOADING
+#     from global_data import Switches
 
-    if Switches.cache_done:
-        return
+#     if Switches.cache_done:
+#         return
 
-    np_mcmp_active = np.array(ImageGrab.grab().crop((1648, 245, 1722, 331)).convert('L'))
+#     np_mcmp_active = np.array(ImageGrab.grab().crop((1648, 245, 1722, 331)).convert('L'))
 
-    if ssim(np_mcmp_active, GREYSHADE_mCMP_LOADING) > 0.93:
-        from mcf_api import MCFApi
-        MCFApi.cache_before_stream()
-        Switches.cache_done = True
+#     if ssim(np_mcmp_active, GREYSHADE_mCMP_LOADING) > 0.93:
+#         from mcf_api import MCFApi
+#         MCFApi.cache_before_stream()
+#         Switches.cache_done = True
 
 def is_game_started():
     from global_data import Validator
+    from global_data import Switches
     from mcf_data import (
         # Validator,
         GREYSHADE_CMP_BLUE,
@@ -37,10 +38,18 @@ def is_game_started():
         GREYSHADE_CMP_RIOT,
         GREYSHADE_mCMP_BLUE,
         GREYSHADE_mCMP_RED,
-        GREYSHADE_mCMP_RIOT
+        GREYSHADE_mCMP_RIOT,
+        GREYSHADE_mCMP_LOADING
     )
     # print(bozya)
     image_ = ImageGrab.grab()
+
+    if not Switches.cache_done:
+        np_mcmp_active = np.array(image_.crop((1648, 245, 1722, 331)).convert('L'))
+        if ssim(np_mcmp_active, GREYSHADE_mCMP_LOADING) > 0.93:
+            from mcf_api import MCFApi
+            MCFApi.cache_before_stream()
+            Switches.cache_done = True
     
     # cut_cmp_map = image_.crop((1855, 310, 1872, 320)).convert('L')
     if Validator.active_mel_mirror:
