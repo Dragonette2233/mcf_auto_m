@@ -1,12 +1,7 @@
 import json
 from global_data import Validator
 from mcf_data import (
-    DEBUG_STATS_PATH,
-    JSON_GAMEDATA_PATH,
-    PREVIOUS_GAMEID_PATH,
-    PREDICTS_TRACE_GLOBAL_PATH,
-    PREDICTS_TRACE_DAILY_PATH,
-    
+    PATH,   
 )
 
 import logging
@@ -38,14 +33,14 @@ class MCFStorage:
 
     @classmethod
     def get_gameid(cls):
-        with open(PREVIOUS_GAMEID_PATH, 'r') as file:
+        with open(PATH.PREVIOUS_GAMEID, 'r') as file:
             gameid = file.read()
             return gameid
 
     @classmethod
     def save_gameid(cls, game_id: str):
 
-        with open(PREVIOUS_GAMEID_PATH, 'w+') as file:
+        with open(PATH.PREVIOUS_GAMEID, 'w+') as file:
             file.write(game_id)
 
         # open()
@@ -60,7 +55,7 @@ class MCFStorage:
 
     @classmethod
     def get_selective_data(cls, route: tuple):
-        data = json.load(open(JSON_GAMEDATA_PATH, 'r'))
+        data = json.load(open(PATH.JSON_GAMEDATA, 'r'))
         if isinstance(route, tuple):
             if len(route) > 1:
                 return data[route[0]][route[1]]
@@ -72,18 +67,18 @@ class MCFStorage:
 
     @classmethod
     def get_all_data(cls) -> dict:
-        data = json.load(open(JSON_GAMEDATA_PATH, 'r'))
+        data = json.load(open(PATH.JSON_GAMEDATA, 'r'))
         return data
 
     @classmethod
     def write_data(cls, route: tuple, value):
-        data = json.load(open(JSON_GAMEDATA_PATH, 'r'))
+        data = json.load(open(PATH.JSON_GAMEDATA, 'r'))
         if isinstance(route, tuple):
             if len(route) > 1:
                 data[route[0]][route[1]] = value
             else:
                 data[route[0]] = value
-            json.dump(data, open(JSON_GAMEDATA_PATH, 'w+'), indent=4)
+            json.dump(data, open(PATH.JSON_GAMEDATA, 'w+'), indent=4)
         else:
             raise TypeError('Provide tuple for executing MCFData')
     
@@ -130,7 +125,7 @@ class MCFStorage:
 
         if daily:
             logger.warning('_Something here!_')
-            predicts_path = PREDICTS_TRACE_DAILY_PATH
+            predicts_path = PATH.PREDICTS_TRACE_DAILY
             trace_day = datetime.now().day
 
             if trace_day != cls.TODAY:
@@ -145,7 +140,7 @@ class MCFStorage:
                 cls.TODAY = trace_day
                    
         else:
-            predicts_path = PREDICTS_TRACE_GLOBAL_PATH
+            predicts_path = PATH.PREDICTS_TRACE_GLOBAL
 
         data = SafeJson.load(predicts_path)
 
@@ -197,11 +192,11 @@ class MCFStorage:
                 print('UNDEFINED IN STATS MONITOR. CHECK CODE')
                 return
 
-        stats_register = SafeJson.load(DEBUG_STATS_PATH)
+        stats_register = SafeJson.load(PATH.DEBUG_STATS)
 
         if is_plus:
             stats_register['PLUS'] += 1
         else:
             stats_register['minus'] += 1
 
-        SafeJson.dump(json_path=DEBUG_STATS_PATH, data=stats_register)
+        SafeJson.dump(json_path=PATH.DEBUG_STATS, data=stats_register)

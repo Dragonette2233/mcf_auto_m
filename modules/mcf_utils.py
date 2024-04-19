@@ -1,13 +1,12 @@
 from mcf_data import (
-    MCF_BOT_PATH,
+    PATH,
     ALL_CHAMPIONS_IDs,
     REGIONS_TUPLE,
     FEATURED_GAMES_URL,
     URL_PORO_BY_REGIONS,
     URL_PORO_ADVANCE,
     MCFException,
-    poro_headers,
-    riot_headers,
+    Headers
 )
 import asyncio
 import logging
@@ -24,16 +23,11 @@ import os
 
 logger = logging.getLogger(__name__)
 
-def delete_scoreboard(self):
+def delete_scoreboard():
 
     MCFStorage.save_score(stop_tracking=True)
-    try:
-        # os.remove(os.path.join('images_lib', 'scorecrop.png'))
-        os.remove(os.path.join(MCF_BOT_PATH, 'images_lib', 'buildcrop.png'))
-    except FileNotFoundError:
-        pass
-
-def close_league_of_legends(self):
+    
+def close_league_of_legends():
 
     list_task = os.popen('tasklist /FI "IMAGENAME eq League of Legends*"').readlines()
     if len(list_task) == 1:
@@ -80,7 +74,7 @@ def direct_poro_parsing(red_champion) -> list:
     except:
         raise MCFException('This gamemod is unaccesible')
             
-    result = requests.get(url, headers=poro_headers, timeout=3)
+    result = requests.get(url, headers=Headers.default, timeout=3)
     soup: bs = bs(result.text, "html.parser").find_all('div', class_='cardTeam')
 
     if result.status_code != 200:
@@ -290,7 +284,7 @@ def async_riot_parsing():
         
         async with ClientSession() as session:
             async with session.get(url=FEATURED_GAMES_URL.format(region=region), 
-                                   **riot_headers) as response:
+                                   **Headers.riot) as response:
                 
                 data = await response.json()
                 

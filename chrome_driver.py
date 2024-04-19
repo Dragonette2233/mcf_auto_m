@@ -7,7 +7,7 @@ from modules.mcf_tracing import Trace
 from modules.mcf_predicts import PR
 from global_data import Validator
 from tg_api import TGApi
-from mcf_data import MIRROR_PAGE
+from mcf_data import PATH
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -62,7 +62,7 @@ class Chrome:
         self.driver.get(self.URL + '/' + self.game_index_ended.replace('_', '/') + '?platform_type=mobile')
 
     def open_league_page(self):
-        with open(MIRROR_PAGE, 'r') as ex_url:
+        with open(PATH.MIRROR_PAGE, 'r') as ex_url:
             self.URL = ex_url.read().strip()
         
         if self.URL.startswith('https://mel'):

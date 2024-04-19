@@ -5,7 +5,7 @@ import time
 from global_data import Validator, Switches
 from mcf_data import (
     WINDOWS_USER,
-    SCORE_SNIPPET,
+    PATH
 )
 
 logger = logging.getLogger(__name__)
@@ -99,7 +99,7 @@ class TGApi:
             else:
                 open_snip = '\n\nTotal event: ❗️ Closed'
             # score['total_value']
-            text = cls.active_post_text + SCORE_SNIPPET.format(**score) + open_snip
+            text = cls.active_post_text + PATH.SCORE_SNIPPET.format(**score) + open_snip
         else:
             text = cls.active_post_text
 

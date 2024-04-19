@@ -1,6 +1,6 @@
 from mcf_data import (
     ten_roles_dict,
-    STATISTICS_PATH
+    PATH
 )
 
 def get_aram_statistic(blue_entry: list, red_entry: list):
@@ -39,7 +39,7 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
         }
 
         
-        with open(STATISTICS_PATH, 'r') as stats:
+        with open(PATH.STATISTICS, 'r') as stats:
             list_stats = stats.readlines()
 
         target = None

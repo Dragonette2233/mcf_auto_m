@@ -15,7 +15,8 @@ def greyshade_array(image_path):
     return np.array(Image.open(image_path).convert('L'))
 
 def pre_cache_games():
-    from mcf_data import GREYSHADE_mCMP_LOADING, Switches
+    from mcf_data import GREYSHADE_mCMP_LOADING
+    from global_data import Switches
 
     if Switches.cache_done:
         return

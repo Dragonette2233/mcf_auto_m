@@ -2,13 +2,13 @@ import requests
 import logging
 from mcf_data import (
     MCFException,
-    riot_headers,
+    Headers,
 )
 
 logger = logging.getLogger(__name__)
 
 class RiotAPI:
-    __headers_timeout = riot_headers
+    # __headers_timeout = riot_headers
     __link_summoner_by_name = "https://{region}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{name}"
     __link_matches_by_puuid = "https://{area}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count=2"
     __link_match_by_gameid = "https://{area}.api.riotgames.com/lol/match/v5/matches/{gameid}"
@@ -36,7 +36,7 @@ class RiotAPI:
     @staticmethod
     def get_summoner_puuid(region: str, name: str, puuid=False) -> dict:
         result = requests.get(RiotAPI.__link_summoner_by_name.format(region=region, name=name), 
-                              **RiotAPI.__headers_timeout)
+                              **Headers.riot)
         
         status = result.status_code
         if status in (403, 404):

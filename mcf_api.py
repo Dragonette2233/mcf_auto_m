@@ -11,7 +11,7 @@ from mcf_data import (
     REGIONS_TUPLE,
     ALL_CHAMPIONS_IDs,
     SPECTATOR_MODE,
-    SPECTATOR_FILE_PATH,
+    PATH,
 )
 import os
 import itertools
@@ -305,7 +305,7 @@ class MCFApi:
 
         MCFStorage.write_data(route=("0", ), value=str(args))
 
-        subprocess.call([SPECTATOR_FILE_PATH, *args])
+        subprocess.call([PATH.SPECTATOR_FILE, *args])
 
     @classmethod
     def get_activegame_parametres(cls, nicknames):

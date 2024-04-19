@@ -4,13 +4,7 @@ import os
 from skimage.metrics import structural_similarity as ssim
 from modules.mcf_pillow import greyshade_array
 from mcf_data import (
-    GTIME_DATA_PATH,
-    BLUE_SCORE_PATH,
-    RED_SCORE_PATH,
-    BLUE_TOWER_PATH,
-    RED_TOWER_PATH,
-    BLUE_CUT_PATH,
-    RED_CUT_PATH,
+    PATH,
     BLUE_GREYSHADE_ARRAY,
     RED_GREYSHADE_ARRAY
 
@@ -50,8 +44,8 @@ class RecognizedCharacters:
         )
 
         for a, b in tuple(zip(range(0,5), range(5, 10))):
-            crops[a].save(BLUE_CUT_PATH.format(indx=a))
-            crops[b].save(RED_CUT_PATH.format(indx=a))
+            crops[a].save(PATH.BLUE_CUT.format(indx=a))
+            crops[b].save(PATH.RED_CUT.format(indx=a))
     
     def compare_shorts(self):
 
@@ -110,19 +104,19 @@ class ScoreRecognition:
             case 'gold', pos, None:
                 main_images = [Image.open(os.path.join('.', 'ssim_score_data', 'gold', f'{i}.png')) for i in range(10)]
             case 'gtime', 0, None:
-                main_images = [Image.open(os.path.join(GTIME_DATA_PATH, f'{position}', f'{i}.png')) for i in range(4)]
+                main_images = [Image.open(os.path.join(PATH.GTIME_DATA, f'{position}', f'{i}.png')) for i in range(4)]
             case 'gtime', 1 | 3, None:
-                main_images = [Image.open(os.path.join(GTIME_DATA_PATH, f'{position}', f'{i}.png')) for i in range(10)]
+                main_images = [Image.open(os.path.join(PATH.GTIME_DATA, f'{position}', f'{i}.png')) for i in range(10)]
             case 'gtime', 2, None:
-                main_images = [Image.open(os.path.join(GTIME_DATA_PATH, f'{position}', f'{i}.png')) for i in range(6)]
+                main_images = [Image.open(os.path.join(PATH.GTIME_DATA, f'{position}', f'{i}.png')) for i in range(6)]
             case 'score', pos, 'blue':
-                main_images = [Image.open(os.path.join(BLUE_SCORE_PATH.format(pos=pos), f'{i}.png')) for i in range(10)]
+                main_images = [Image.open(os.path.join(PATH.BLUE_SCORE.format(pos=pos), f'{i}.png')) for i in range(10)]
             case 'score', pos, 'red':
-                main_images = [Image.open(os.path.join(RED_SCORE_PATH.format(pos=pos), f'{i}.png')) for i in range(10)]
+                main_images = [Image.open(os.path.join(PATH.RED_SCORE.format(pos=pos), f'{i}.png')) for i in range(10)]
             case 'towers', pos, 'blue':
-                main_images = [Image.open(os.path.join(BLUE_TOWER_PATH, f'{i}.png')) for i in range(5)]
+                main_images = [Image.open(os.path.join(PATH.BLUE_TOWER, f'{i}.png')) for i in range(5)]
             case 'towers', pos, 'red':
-                main_images = [Image.open(os.path.join(RED_TOWER_PATH, f'{i}.png')) for i in range(5)]
+                main_images = [Image.open(os.path.join(PATH.RED_TOWER, f'{i}.png')) for i in range(5)]
             case _:
                 print(type, team, position)
                 raise ValueError('Undefined value in get_compare()') 

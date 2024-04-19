@@ -103,73 +103,73 @@ REGIONS_TUPLE = (
     ('th', 'th2', 'sea'), ('tw', 'tw2', 'sea')
 )
 
+class PATH:
+    """
+        All pathes for app images
 
-"""
-    All pathes for app images
-    
-"""
+    """
 
-MCF_BOT_PATH = os.environ.get('MCF_BOT')
-JSON_GAMEDATA_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'GameData.json')
-SCREEN_GAMESCORE_PATH = os.path.join(MCF_BOT_PATH, 'images_lib', 'gamescore_PIL.png')
-SPECTATOR_FILE_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'spectate.bat')
-STATISTICS_PATH = os.path.join(MCF_BOT_PATH, 'mcf_lib', 'stats_38.txt')
+    MCF_BOT = os.environ.get('MCF_BOT')
+    JSON_GAMEDATA = os.path.join(MCF_BOT, 'untracking', 'GameData.json')
+    SCREEN_GAMESCORE = os.path.join(MCF_BOT, 'images_lib', 'gamescore_PIL.png')
+    SPECTATOR_FILE = os.path.join(MCF_BOT, 'mcf_lib', 'spectate.bat')
+    STATISTICS = os.path.join(MCF_BOT, 'mcf_lib', 'stats_38.txt')
 
-"""
-    Untracking pathes
+    """
+        Untracking pathes
 
-"""
-JSON_GAMEDATA_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'GameData.json')
-MIRROR_PAGE = os.path.join(MCF_BOT_PATH, 'untracking', 'mirror_page.txt')
-PREVIOUS_GAMEID_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'previous_gameid.txt')
-ACTIVE_GAMESCORE_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'activegame_score.json')
-SCORE_TRACE_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'score_trace.json')
-PREDICTS_TRACE_GLOBAL_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'predicts_trace.json')
-PREDICTS_TRACE_DAILY_PATH = os.path.join(MCF_BOT_PATH, 'untracking', 'predicts_trace_daily.json')
+    """
+    JSON_GAMEDATA = os.path.join(MCF_BOT, 'untracking', 'GameData.json')
+    MIRROR_PAGE = os.path.join(MCF_BOT, 'untracking', 'mirror_page.txt')
+    PREVIOUS_GAMEID = os.path.join(MCF_BOT, 'untracking', 'previous_gameid.txt')
+    ACTIVE_GAMESCORE = os.path.join(MCF_BOT, 'untracking', 'activegame_score.json')
+    SCORE_TRACE = os.path.join(MCF_BOT, 'untracking', 'score_trace.json')
+    PREDICTS_TRACE_GLOBAL = os.path.join(MCF_BOT, 'untracking', 'predicts_trace.json')
+    PREDICTS_TRACE_DAILY = os.path.join(MCF_BOT, 'untracking', 'predicts_trace_daily.json')
 
-SCORE_SNIPPET: str = open(os.path.join(MCF_BOT_PATH, 'mcf_lib', 'score_snip.txt'), 'r', encoding='utf-8').read()
+    SCORE_SNIPPET: str = open(os.path.join(MCF_BOT, 'mcf_lib', 'score_snip.txt'), 'r', encoding='utf-8').read()
 
-"""
-    Data for screen score recognizing (Time, kills, towers)
+    """
+        Data for screen score recognizing (Time, kills, towers)
 
-"""
+    """
 
-GTIME_DATA_PATH = os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'gametime')
-BLUE_SCORE_PATH = os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_blue', 'score_{pos}')
-RED_SCORE_PATH =  os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_red', 'score_{pos}')
-BLUE_TOWER_PATH = os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_blue', 'towers')
-RED_TOWER_PATH = os.path.join(MCF_BOT_PATH, 'ssim_score_data', 'team_red', 'towers')
-DEBUG_STATS_PATH = os.path.join(MCF_BOT_PATH, 'arambot_lib', 'debug_stats.json')
-BLUE_CUT_PATH = os.path.join('.', 
-                        'images_lib', 
-                        'chars',  
-                        'blue', 'char_{indx}.png')
-RED_CUT_PATH = os.path.join('.', 
-                        'images_lib', 
-                        'chars', 
-                        'red', 'char_{indx}.png')
+    GTIME_DATA = os.path.join(MCF_BOT, 'ssim_score_data', 'gametime')
+    BLUE_SCORE = os.path.join(MCF_BOT, 'ssim_score_data', 'team_blue', 'score_{pos}')
+    RED_SCORE =  os.path.join(MCF_BOT, 'ssim_score_data', 'team_red', 'score_{pos}')
+    BLUE_TOWER = os.path.join(MCF_BOT, 'ssim_score_data', 'team_blue', 'towers')
+    RED_TOWER = os.path.join(MCF_BOT, 'ssim_score_data', 'team_red', 'towers')
+    DEBUG_STATS = os.path.join(MCF_BOT, 'arambot_lib', 'debug_stats.json')
+    BLUE_CUT = os.path.join('.', 
+                            'images_lib', 
+                            'chars',  
+                            'blue', 'char_{indx}.png')
+    RED_CUT = os.path.join('.', 
+                            'images_lib', 
+                            'chars', 
+                            'red', 'char_{indx}.png')
 
-BLUEPATH_IMAGES_TO_COMPARE = {
-    char: os.path.join('.', 
-                        'images_lib', 
-                        'chars', 
-                        'origin', 
-                        'blue', f'{char.lower().capitalize()}.png') 
-                        for char in ALL_CHAMPIONS_IDs.values()
-    }
-REDPATH_IMAGES_TO_COMPARE = {
-    char: os.path.join('.', 
-                        'images_lib', 
-                        'chars', 
-                        'origin', 
-                        'red', f'{char.lower().capitalize()}.png') 
-                        for char in ALL_CHAMPIONS_IDs.values()
-    }
+    BLUE_IMAGES_TO_COMPARE = {
+        char: os.path.join('.', 
+                            'images_lib', 
+                            'chars', 
+                            'origin', 
+                            'blue', f'{char.lower().capitalize()}.png') 
+                            for char in ALL_CHAMPIONS_IDs.values()
+        }
+    RED_IMAGES_TO_COMPARE = {
+        char: os.path.join('.', 
+                            'images_lib', 
+                            'chars', 
+                            'origin', 
+                            'red', f'{char.lower().capitalize()}.png') 
+                            for char in ALL_CHAMPIONS_IDs.values()
+        }
 BLUE_GREYSHADE_ARRAY = {
-            char: mcf_pillow.greyshade_array(img) for char, img in BLUEPATH_IMAGES_TO_COMPARE.items()
+            char: mcf_pillow.greyshade_array(img) for char, img in PATH.BLUE_IMAGES_TO_COMPARE.items()
 }
 RED_GREYSHADE_ARRAY = {
-            char: mcf_pillow.greyshade_array(img) for char, img in REDPATH_IMAGES_TO_COMPARE.items()
+            char: mcf_pillow.greyshade_array(img) for char, img in PATH.RED_IMAGES_TO_COMPARE.items()
 }
 
 # GREYSHADE_CMP_MAP = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_map.png'))
@@ -181,10 +181,6 @@ GREYSHADE_mCMP_BLUE = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'm
 GREYSHADE_mCMP_RED = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_red.png'))
 GREYSHADE_mCMP_LOADING = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_loading.png'))
 
-"""
-    Classes for finded game and switches for controling threads and activity 
-
-"""
 
 class MCFException(Exception): ...
 class MCFTimeoutError(Exception): ...
@@ -198,8 +194,30 @@ class MCFThread(threading.Thread):
         if args:
             self._args = args
 
+class Headers:
 
-cookies = {
+    default = {
+        'authority': 'lite.1xbet-new.com',
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+        'cache-control': 'max-age=0',
+        'sec-ch-ua': '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'document',
+        'sec-fetch-mode': 'navigate',
+        'sec-fetch-site': 'same-origin',
+        'sec-fetch-user': '?1',
+        'upgrade-insecure-requests': '1',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+    }
+
+    riot = {
+            'headers': { "X-Riot-Token": open('APIKEY', 'r').read().strip() },
+            'timeout': 3
+        }
+
+COOKIES = {
         'auid': 'LY0LGGVJT9xF3cMHBakaAg==',
         'SESSION': '22fdb02ab99445348a011c35f47c6452',
         'lng': 'ru',
@@ -219,25 +237,3 @@ cookies = {
         '_ga_0NQW4X2MPH': 'GS1.1.1699731283.1.1.1699737050.59.0.0',
         'window_width': '802',
     }
-
-headers = {
-    'authority': 'lite.1xbet-new.com',
-    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-    'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-    'cache-control': 'max-age=0',
-    'sec-ch-ua': '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'sec-fetch-dest': 'document',
-    'sec-fetch-mode': 'navigate',
-    'sec-fetch-site': 'same-origin',
-    'sec-fetch-user': '?1',
-    'upgrade-insecure-requests': '1',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-}
-
-riot_headers = {
-        'headers': { "X-Riot-Token": open('APIKEY', 'r').read().strip() },
-        'timeout': 3
-    }
-poro_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36" }

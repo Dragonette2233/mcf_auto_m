@@ -1,6 +1,6 @@
 import json
 import os
-from mcf_data import SCORE_TRACE_PATH
+from mcf_data import PATH
 from global_data import Validator, StatsRate
 
 class Trace:
@@ -8,11 +8,11 @@ class Trace:
     tracing_game = ''
     # result: dict = {}
     def get_json():
-        with open(SCORE_TRACE_PATH, 'r') as file:
+        with open(PATH.SCORE_TRACE, 'r') as file:
             return json.load(file)
     
     def put_to_json(data):
-        with open(SCORE_TRACE_PATH, 'w+') as file:
+        with open(PATH.SCORE_TRACE, 'w+') as file:
             json.dump(data, file, indent=4)
 
     @classmethod
