@@ -204,14 +204,14 @@ class TelegramStr:
     '''
         Telegram notifictations for predicts
     '''
-    tb_predict_half = '{0} PR 110.5Б FL_0.5 {0}'.format(ARROW_UP)
-    tb_predict_full = '{0} PR 110.5Б FL_1 {0}'.format(ARROW_UP)
-    tl_predict_half = '{0} PR 110.5М FL_0.5 {0}'.format(ARROW_DOWN)
-    tl_predict_middle = '{0} PR 110.5М FL_0.75 {0}'.format(ARROW_DOWN)
-    tl_predict_full = '{0} PR 110.5М FL_1 {0}'.format(ARROW_DOWN)
+    tb_predict_half = '{0}PR 110.5Б FL_0.5{0}'.format(ARROW_UP)
+    tb_predict_full = '{0}PR 110.5Б FL_1{0}'.format(ARROW_UP)
+    tl_predict_half = '{0}PR 110.5М FL_0.5{0}'.format(ARROW_DOWN)
+    tl_predict_middle = '{0}PR 110.5М FL_0.75{0}'.format(ARROW_DOWN)
+    tl_predict_full = '{0}PR 110.5М FL_1{0}'.format(ARROW_DOWN)
 
-    tb_spredict_half = '{0} S_PR 110.5Б FL_0.5 {0}'.format(ARROW_UP)
-    tl_spredict_half = '{0} S_PR 110.5М FL_0.5 {0}'.format(ARROW_DOWN)
+    tb_spredict_half = '{0}S_PR 110.5Б FL_0.5{0}'.format(ARROW_UP)
+    tl_spredict_half = '{0}S_PR 110.5М FL_0.5{0}'.format(ARROW_DOWN)
     
     '''
         Telegram notifications about ended game

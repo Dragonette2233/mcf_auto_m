@@ -90,7 +90,7 @@ def main():
                     if is_opened:
                         TGApi.send_simple_message('🟢 Открыты')
                         break
-                    time.sleep(0.25)
+                    time.sleep(0.5)
             
         else:
             if CF.SW.quick_end.is_active():
