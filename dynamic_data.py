@@ -108,7 +108,6 @@ class Switches():
         self.request = BoolSwitch()
         self.cache_done = BoolSwitch()
         self.tracer = BoolSwitch()
-        # self.active_mel_mirror = BoolSwitch()
         self.quick_end = BoolSwitch()
         self.loop = BoolSwitch()
     
