@@ -1,5 +1,76 @@
 from mcf_asbstract import BoolSwitch, Singleton
-from typing import Any
+
+class StatsRate:
+    def __init__(self) -> None:
+        self.blue_roles = None
+        self.red_roles = None
+
+        self.blue_rate: list[str] = [0, '']
+        self.red_rate: list[str] = [0, '']
+        self.tb_rate: list[str] = [0, '']
+        self.tl_rate: list[str] = [0, '']
+        self.games_all: int = 0
+        self.games_totals: int = 0
+
+        self.WINNER = '🟩'
+        self.LOSER = '🟥'
+
+    def calculate(self, team_blue, team_red):
+        from modules import stats_by_roles
+        stats_result = stats_by_roles.get_aram_statistic(
+                blue_entry=team_blue,
+                red_entry=team_red,
+            )
+        if stats_result is not None:
+            self.blue_roles = stats_result['blue_roles']
+            self.red_roles = stats_result['red_roles']
+            self.blue_rate = stats_result['w1']
+            self.red_rate = stats_result['w2']
+            self.tb_rate = stats_result['tb']
+            self.tl_rate = stats_result['tl']
+            self.games_all = stats_result['all_m']
+            self.games_totals = stats_result['all_ttl']
+    
+    def is_stats_avaliable(self):
+        if self.games_all != 0:
+            return True
+    
+    def _reset(self):
+        self.games_all = 0
+        self.games_totals = 0
+        self.blue_roles = None
+        self.red_roles = None
+
+    def win_blue_accepted(self):
+        if (self.games_all != 0) and (self.blue_rate[1] == self.WINNER):
+            return True
+        
+    def win_red_accepted(self):
+        if (self.games_all != 0) and (self.red_rate[1] == self.WINNER):
+            return True
+
+    def tanks_in_teams(self, one_side=False, both_excluded=False):
+        if self.games_all == 0:
+            return
+
+        tank_in_blue = '8' in self.blue_roles or '9' in self.blue_roles
+        tank_in_red = '8' in self.red_roles or '9' in self.red_roles
+
+        if one_side:
+            return tank_in_blue or tank_in_red
+        
+        if both_excluded:
+            return not tank_in_blue and not tank_in_red
+        
+        return tank_in_blue and tank_in_red
+
+    def tb_accepted(self):
+        if (self.games_all != 0) and (self.tb_rate[1] == self.WINNER):
+            return True
+                    
+    def tl_accepted(self):
+        if (self.games_all != 0) and (self.tl_rate[1] == self.WINNER):
+            return True
 
 class ActiveGameData():
     def __init__(self) -> None:
@@ -84,6 +155,7 @@ class ControlFlow(Singleton):
         self.END = EndedGameData()
         self.ACT = ActiveGameData()
         self.TW_HP = TowersHealth()
+        self.SR = StatsRate()
         
     def reset(self):
         self.SW._reset()
@@ -91,80 +163,6 @@ class ControlFlow(Singleton):
         self.END._reset()
         self.TW_HP._reset()
         self.ACT._reset()
-    # sw = Switches()
+        self.SR._reset()
 
-class StatsRate:
-    blue_roles = None
-    red_roles = None
-
-    blue_rate: list[str] = [0, '']
-    red_rate: list[str] = [0, '']
-    tb_rate: list[str] = [0, '']
-    tl_rate: list[str] = [0, '']
-    games_all: int = 0
-    games_totals: int = 0
-
-    WINNER = '🟩'
-    LOSER = '🟥'
-
-    @classmethod
-    def calculate(cls, team_blue, team_red):
-        from modules import stats_by_roles
-        stats_result = stats_by_roles.get_aram_statistic(
-                blue_entry=team_blue,
-                red_entry=team_red,
-            )
-        if stats_result is not None:
-            cls.blue_roles = stats_result['blue_roles']
-            cls.red_roles = stats_result['red_roles']
-            cls.blue_rate = stats_result['w1']
-            cls.red_rate = stats_result['w2']
-            cls.tb_rate = stats_result['tb']
-            cls.tl_rate = stats_result['tl']
-            cls.games_all = stats_result['all_m']
-            cls.games_totals = stats_result['all_ttl']
-    
-    @classmethod
-    def is_stats_avaliable(cls):
-        if cls.games_all != 0:
-            return True
-    
-    @classmethod
-    def stats_clear(cls):
-        cls.games_all = 0
-
-    @classmethod
-    def win_blue_accepted(cls):
-        if (cls.games_all != 0) and (cls.blue_rate[1] == cls.WINNER):
-            return True
-        
-    @classmethod
-    def win_red_accepted(cls):
-        if (cls.games_all != 0) and (cls.red_rate[1] == cls.WINNER):
-            return True
-
-    @classmethod
-    def tanks_in_teams(cls, one_side=False, both_excluded=False):
-        if cls.games_all == 0:
-            return
-
-        tank_in_blue = '8' in cls.blue_roles or '9' in cls.blue_roles
-        tank_in_red = '8' in cls.red_roles or '9' in cls.red_roles
-
-        if one_side:
-            return tank_in_blue or tank_in_red
-        
-        if both_excluded:
-            return not tank_in_blue and not tank_in_red
-        
-        return tank_in_blue and tank_in_red
-
-    @classmethod
-    def tb_accepted(cls):
-        if (cls.games_all != 0) and (cls.tb_rate[1] == cls.WINNER):
-            return True
-                    
-    @classmethod
-    def tl_accepted(cls):
-        if (cls.games_all != 0) and (cls.tl_rate[1] == cls.WINNER):
-            return True
+CF = ControlFlow()

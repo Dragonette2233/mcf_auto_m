@@ -1,9 +1,6 @@
 import json
-import os
 from static_data import PATH
-from dynamic_data import StatsRate, ControlFlow
-
-CF = ControlFlow()
+from dynamic_data import CF
 
 class Trace:
 
@@ -46,8 +43,8 @@ class Trace:
         
         data = cls.get_json()
         data[cls.tracing_game]['income'] = [
-            StatsRate.blue_roles,
-            StatsRate.red_roles,
+            CF.SR.blue_roles,
+            CF.SR.red_roles,
             score["blue_kills"],
             score["red_kills"],
             score["blue_towers"],
@@ -69,7 +66,3 @@ class Trace:
         data[cls.tracing_game]["result"] = [team, kills, timestamp]
         cls.put_to_json(data)
         cls.tracing_game = ''
-
-    @classmethod
-    def trace_predicts(cls):
-        ...

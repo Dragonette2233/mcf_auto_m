@@ -1,14 +1,11 @@
-import logging
+
 import time
-logging.basicConfig(level=logging.INFO)
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+import logging
 from modules.mcf_storage import MCFStorage
 from modules import mcf_pillow
 from modules import mcf_autogui
-from dynamic_data import StatsRate, ControlFlow
+from dynamic_data import CF
 from chrome_driver import Chrome
-from dynamic_data import ControlFlow
 from static_data import (
     MCFThread,
     TelegramStr
@@ -16,18 +13,20 @@ from static_data import (
 from mcf_api import MCFApi
 from tg_api import TGApi
 
+logging.basicConfig(level=logging.INFO)
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 def main():
 
     MCFApi.delete_scoreboard()
-    StatsRate.stats_clear()
+    # StatsRate.stats_clear()
 
     logger.info('BOT started')
     
     while True:
         
-        chrome = Chrome()
-        CF = ControlFlow()
-        
+        chrome = Chrome()        
         chrome.start()
         chrome.open_league_page()
         chrome.remove_cancel()
@@ -93,9 +92,6 @@ def main():
                         break
                     time.sleep(0.25)
             
-            StatsRate.stats_clear()
-            # ActiveGame.refresh()
-            
         else:
             if CF.SW.quick_end.is_active():
                 status = TelegramStr.game_remake
@@ -119,7 +115,6 @@ def main():
         CF.reset()
         chrome.driver.quit()
         del chrome
-        # del SW
 
 if __name__ == "__main__":
     while True:

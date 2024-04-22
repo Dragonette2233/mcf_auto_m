@@ -1,9 +1,6 @@
 import logging
 import time
-from dynamic_data import (
-    StatsRate,
-    ControlFlow,
-)
+from dynamic_data import CF
 from tg_api import TGApi
 from static_data import (
     REGIONS_TUPLE,
@@ -20,8 +17,6 @@ from modules.mcf_tracing import Trace
 from modules.mcf_riot_api import RiotAPI
 from modules import mcf_utils
 logger = logging.getLogger(__name__)
-
-CF = ControlFlow()
 
 class MCFApi:
     
@@ -51,7 +46,7 @@ class MCFApi:
             if len(set(team_blue.characters)) != 5:
                 return
 
-            StatsRate.calculate(
+            CF.SR.calculate(
                 team_blue=team_blue.characters,
                 team_red=team_red.characters
             )

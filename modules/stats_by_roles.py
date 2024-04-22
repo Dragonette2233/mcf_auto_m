@@ -100,8 +100,8 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
     if ten_roles_rate is None or ten_roles_rate['all_ttl'] < 6:
 
         final_result = {
-            'blue_roles': ten_roles_rate['blue_roles'],
-            'red_roles': ten_roles_rate['red_roles'],
+            'blue_roles': ''.join(teams_by_ten_roles['T1']),
+            'red_roles': ''.join(teams_by_ten_roles['T2']),
             'w1': 0,
             'w2': 0,
             'tb': 0,
@@ -112,15 +112,15 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
 
     else:
         final_result = {
-        'blue_roles': ten_roles_rate['blue_roles'],
-        'red_roles': ten_roles_rate['red_roles'],
-        'w1': _rate_chance_and_color(int(ten_roles_rate['w1']), int(ten_roles_rate['all_m'])),
-        'w2': _rate_chance_and_color(int(ten_roles_rate['w2']), int(ten_roles_rate['all_m'])),
-        'tb': _rate_chance_and_color(int(ten_roles_rate['tb']), int(ten_roles_rate['all_ttl'])),
-        'tl': _rate_chance_and_color(int(ten_roles_rate['tl']), int(ten_roles_rate['all_ttl'])),
-        'all_m': ten_roles_rate['all_m'],
-        'all_ttl': ten_roles_rate['all_ttl']
-    }
+            'blue_roles': ten_roles_rate['blue_roles'],
+            'red_roles': ten_roles_rate['red_roles'],
+            'w1': _rate_chance_and_color(int(ten_roles_rate['w1']), int(ten_roles_rate['all_m'])),
+            'w2': _rate_chance_and_color(int(ten_roles_rate['w2']), int(ten_roles_rate['all_m'])),
+            'tb': _rate_chance_and_color(int(ten_roles_rate['tb']), int(ten_roles_rate['all_ttl'])),
+            'tl': _rate_chance_and_color(int(ten_roles_rate['tl']), int(ten_roles_rate['all_ttl'])),
+            'all_m': ten_roles_rate['all_m'],
+            'all_ttl': ten_roles_rate['all_ttl']
+        }
         
     return final_result
 

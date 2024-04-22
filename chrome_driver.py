@@ -7,7 +7,7 @@ from mcf_asbstract import Singleton
 from modules.mcf_storage import MCFStorage
 from modules.mcf_tracing import Trace
 from modules.mcf_predicts import PR
-from dynamic_data import ControlFlow
+from dynamic_data import CF
 from tg_api import TGApi
 from static_data import PATH, TRACE_RANGE
 from selenium import webdriver
@@ -21,7 +21,6 @@ from selenium.common.exceptions import (
     )
 
 logger = logging.getLogger(__name__)
-CF = ControlFlow()
 
 class Chrome(Singleton):
 

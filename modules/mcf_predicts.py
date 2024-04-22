@@ -1,6 +1,4 @@
-from dynamic_data import (
-    StatsRate as SR,
-)
+from dynamic_data import CF
 from static_data import TelegramStr
 
 class Intense:
@@ -96,8 +94,8 @@ class PR:
         predictions = {
 
                 TelegramStr.tb_predict_half: [
-                    (cls.kills_gold_equals(kills=60, gold=1.2) and cls.towers_hp_more_than(hp=50) and cls.gtime < 480 and SR.tanks_in_teams()),
-                    (cls.kills_gold_equals(kills=80, gold=1.2) and cls.two_towers_destroyed(equals=True) and cls.gtime < 540 and SR.tanks_in_teams()),
+                    (cls.kills_gold_equals(kills=60, gold=1.2) and cls.towers_hp_more_than(hp=50) and cls.gtime < 480 and CF.SR.tanks_in_teams()),
+                    (cls.kills_gold_equals(kills=80, gold=1.2) and cls.two_towers_destroyed(equals=True) and cls.gtime < 540 and CF.SR.tanks_in_teams()),
 
                 ],
                 
@@ -166,13 +164,13 @@ class PR:
         spredictions = {
                 TelegramStr.tl_spredict_half: [
                     
-                    (SR.tl_accepted() and cls.all_kills < 30 and cls.towers_hp_less_than(hp=25) and cls.gtime > 400),
-                    (SR.tl_accepted() and cls.all_kills < 24 and cls.gtime > 400),
-                    (SR.tl_accepted() and cls.all_kills < 35 and SR.tanks_in_teams(both_excluded=True) and cls.gtime > 400)
+                    (CF.SR.tl_accepted() and cls.all_kills < 30 and cls.towers_hp_less_than(hp=25) and cls.gtime > 400),
+                    (CF.SR.tl_accepted() and cls.all_kills < 24 and cls.gtime > 400),
+                    (CF.SR.tl_accepted() and cls.all_kills < 35 and CF.SR.tanks_in_teams(both_excluded=True) and cls.gtime > 400)
                 ],
                 TelegramStr.tb_spredict_half: [
-                    (SR.tb_accepted() and cls.kills_gold_equals(kills=45, gold=1.5) and cls.gtime < 480),
-                    (SR.tb_accepted() and cls.kills_gold_equals(kills=30, gold=1.5) and SR.tanks_in_teams() and cls.gtime < 400),
+                    (CF.SR.tb_accepted() and cls.kills_gold_equals(kills=45, gold=1.5) and cls.gtime < 480),
+                    (CF.SR.tb_accepted() and cls.kills_gold_equals(kills=30, gold=1.5) and CF.SR.tanks_in_teams() and cls.gtime < 400),
                 ]
             }
 

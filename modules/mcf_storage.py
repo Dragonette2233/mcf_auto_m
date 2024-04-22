@@ -1,17 +1,14 @@
 import json
-from dynamic_data import ControlFlow
-from static_data import (
-    PATH,
-)
-
-import logging
 import redis
+import logging
 from datetime import datetime
+from dynamic_data import CF
+from static_data import PATH
 
 logger = logging.getLogger(__name__)
 
 r = redis.Redis(host='localhost', port=6379, decode_responses=True)
-CF = ControlFlow()
+
 
 class SafeJson:
 
@@ -161,8 +158,7 @@ class MCFStorage:
             value, direction, flet = CF.VAL.pr_cache[key]
 
             open('./untracking/reg_debug.txt', 'a+', encoding='utf-8').writelines(
-                    f"{direction}_{flet} #{CF.VAL.pr_debug[key]} | Value: {value} | End_total: {kills} \n"
+                    f"{direction}_{flet} #{CF.VAL.pr_debug[key]} | Val_End: {value}_{kills} | Roles: {CF.SR.blue_roles}_{CF.SR.red_roles}\n"
                 )
-            # CF.VAL.pr_debug[key] = None
         
         SafeJson.dump(json_path=predicts_path, data=data)

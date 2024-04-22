@@ -1,5 +1,5 @@
-from PIL import Image, ImageChops, ImageGrab
-from dynamic_data import ControlFlow
+from PIL import Image, ImageGrab
+from dynamic_data import CF
 
 import os
 import logging
@@ -9,7 +9,6 @@ from skimage.metrics import structural_similarity as ssim
 # from mcf_data import Validator
 
 logger = logging.getLogger(__name__)
-CF = ControlFlow()
 
 def greyshade_array(image_path):
     
@@ -67,9 +66,6 @@ def is_league_stream_active(debug=False):
     if similarity_index > 0.949:
         return True
 
-# def reset_towers_backup():
-#     TowersHealth.reset()
-    
 def generate_scoreboard():
 
     from modules.ssim_recognition import ScoreRecognition
