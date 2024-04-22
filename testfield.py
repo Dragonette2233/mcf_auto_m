@@ -4,14 +4,15 @@ import time
 # import numpy as np
 # from mcf_data import GREYSHADE_CLOCKS_CUT
 from modules import mcf_utils
+from dynamic_data import ControlFlow
 from skimage.metrics import structural_similarity as ssim
 logging.basicConfig(level=logging.INFO)
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
+CF = ControlFlow()
 
 # command: str = input('Enter test command: ')
-command = 'parse'
+command = 'pr_test'
 match command:
     case 'game_find':
         from mcf_api import MCFApi
@@ -20,30 +21,28 @@ match command:
 
     case 'pr_test':
         from modules.mcf_predicts import PR
-        from static_data import StatsRate as SR
-
-        SR.games_all = 1
-        SR.blue_roles = '88888'
-        SR.red_roles = '88888'
-        SR.tl_rate[1] = SR.WINNER
-
-        print(SR.tanks_in_teams())
-        
+        import copy
 
         score = {
-            'time': 318,
-            'blue_kills': 14,
-            'red_kills': 18,
+            'time': 420,
+            'blue_kills': 15,
+            'red_kills': 30,
             'blue_towers': 0,
-            'red_towers': 0,
-            'blue_gold': 22.3,
-            'red_gold': 23.2,
-            'blue_t1_hp': 72,
+            'red_towers': 1,
+            'blue_gold': 27.5,
+            'red_gold': 31.7,
+            'blue_t1_hp': 0,
             'red_t1_hp': 100
         }
         
-        pr = PR.gen_predict(score=score)
-        print(pr)
+        PR.score = copy.deepcopy(score)
+        PR.prepare_predict_values()
+
+        if not CF.VAL.pr_cache['main']:
+            main_predict = PR.gen_main_predict()
+            print(main_predict)
+        
+        print(CF.VAL.pr_cache)
 
     case 'bot':
         from tg_api import TGApi

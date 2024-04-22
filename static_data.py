@@ -228,7 +228,7 @@ class TelegramStr:
     SNIPPET_SCORE = open(PATH.SNIPPET_SCORE, 'r', encoding='utf-8').read()
     SNIPPET_GAMESTART = open(PATH.SNIPPET_GAMESTART, 'r', encoding='utf-8').read()
 
-    game_founded = SUCCESS + '{0}'
+    game_founded = SUCCESS + ' {0}'
     game_not_founded = FAILURE + ' Игра не найдена'
     game_remake = FAILURE + ' Remake'
 

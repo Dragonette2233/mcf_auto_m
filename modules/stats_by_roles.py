@@ -97,11 +97,18 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
     
     ten_roles_rate = _find_games_from_stats(teams_by_ten_roles)
     
-    if ten_roles_rate is None:
-        return None
-    
-    elif ten_roles_rate['all_m'] < 7:
-        return None
+    if ten_roles_rate is None or ten_roles_rate['all_ttl'] < 6:
+
+        final_result = {
+            'blue_roles': ten_roles_rate['blue_roles'],
+            'red_roles': ten_roles_rate['red_roles'],
+            'w1': 0,
+            'w2': 0,
+            'tb': 0,
+            'tl': 0,
+            'all_m': 0,
+            'all_ttl': 0
+        }
 
     else:
         final_result = {

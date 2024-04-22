@@ -1,7 +1,7 @@
 import json
 from dynamic_data import ControlFlow
 from static_data import (
-    PATH,   
+    PATH,
 )
 
 import logging
