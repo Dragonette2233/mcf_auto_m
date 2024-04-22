@@ -1,6 +1,6 @@
 import requests
 import logging
-from mcf_data import (
+from static_data import (
     MCFException,
     Headers,
 )

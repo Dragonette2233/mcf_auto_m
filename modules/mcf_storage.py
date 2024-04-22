@@ -1,6 +1,6 @@
 import json
-from global_data import Validator
-from mcf_data import (
+from dynamic_data import ControlFlow
+from static_data import (
     PATH,   
 )
 
@@ -11,6 +11,7 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+CF = ControlFlow()
 
 class SafeJson:
 
@@ -84,7 +85,6 @@ class MCFStorage:
     
     @classmethod
     def rgs_predicts_monitor(cls, message: str, key: str, idx: int):
-        # print(message)
         try:
             _tmp = message.split()
             predict_type = _tmp[0][1:]
@@ -93,23 +93,21 @@ class MCFStorage:
             flet = _tmp[2].split('_')[1][:-1]
             if predict_type.split('_')[0] == 'S':
                 direction = '_'.join(['S', direction])
-            # print('here')
-            Validator.predict_value_flet[key] = (value, direction, flet)
-            Validator.predicts_debug[key] = idx
-            # print(Validator.predict_value_flet[key])
-            # print(key)
+
+            CF.VAL.pr_cache[key] = (value, direction, flet)
+            CF.VAL.pr_debug[key] = idx
+
         except Exception as ex_:
             logger.warning(ex_)
 
-        # print(Validator.predict_value_flet[key])
 
     @classmethod
     def predicts_debug(cls, conditions: tuple, key: str):
-        # print(conditions)
+
         try:
             for i, con in enumerate(conditions):
                 if con:
-                    Validator.predicts_debug[key] = i
+                    CF.VAL.pr_debug[key] = i
                     break
         except Exception as ex_:
             logger.warning(ex_)
@@ -117,10 +115,8 @@ class MCFStorage:
 
     @classmethod
     def predicts_monitor(cls, kills: int, key: str, daily=False):
-        
-        # print(Validator.predict_value_flet[key])
 
-        if Validator.predict_value_flet[key] is None or Validator.predict_value_flet[key] == 'closed':
+        if CF.VAL.pr_cache[key] is None or CF.VAL.pr_cache[key] == 'closed':
             return
 
         if daily:
@@ -145,7 +141,7 @@ class MCFStorage:
         data = SafeJson.load(predicts_path)
 
         # # sample of predicts_value_flet = ('96.5', 'ТМ', '0.5')
-        match Validator.predict_value_flet[key]:
+        match CF.VAL.pr_cache[key]:
             case (value, 'ТБ' | 'S_ТБ' as direction, flet):
                 if kills > float(value):
                     data[f"{direction} (FL {flet})"][0] += 1
@@ -160,43 +156,13 @@ class MCFStorage:
             case _:
                 ...
 
-        if Validator.predicts_debug[key] is not None:
+        if CF.VAL.predicts_debug[key] is not None:
             
-            value, direction, flet = Validator.predict_value_flet[key]
+            value, direction, flet = CF.VAL.pr_cache[key]
 
             open('./untracking/reg_debug.txt', 'a+', encoding='utf-8').writelines(
-                    f"{direction}_{flet} #{Validator.predicts_debug[key]} | Value: {value} | End_total: {kills} \n"
+                    f"{direction}_{flet} #{CF.VAL.pr_debug[key]} | Value: {value} | End_total: {kills} \n"
                 )
-            Validator.predicts_debug[key] = None
+            # CF.VAL.pr_debug[key] = None
         
         SafeJson.dump(json_path=predicts_path, data=data)
-
-    @classmethod
-    def stats_monitor(cls, validor):
-
-        is_plus = True
-
-        match list(validor.values()):
-            case [_, __, 0, 0]:
-                return
-            case [1, 0, 1, 0]:
-                is_plus = True
-            case [0, 1, 0, 1]:
-                is_plus = True
-            case [0, 1, 1, 0]:
-                is_plus = False
-            case [1, 0, 0, 1]:
-                is_plus = False
-            case _:
-                # print(list(Validator.stats_register.values()))
-                print('UNDEFINED IN STATS MONITOR. CHECK CODE')
-                return
-
-        stats_register = SafeJson.load(PATH.DEBUG_STATS)
-
-        if is_plus:
-            stats_register['PLUS'] += 1
-        else:
-            stats_register['minus'] += 1
-
-        SafeJson.dump(json_path=PATH.DEBUG_STATS, data=stats_register)

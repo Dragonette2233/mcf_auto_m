@@ -1,8 +1,7 @@
-import copy
-from global_data import (
+from dynamic_data import (
     StatsRate as SR,
 )
-from global_data import Validator
+from static_data import TelegramStr
 
 class Intense:
 
@@ -36,12 +35,18 @@ class PR:
     @classmethod
     def straigh_leader(cls, gold_value, towers_hp: tuple):
 
-        blue_gold_winner = cls.score['blue_gold'] > cls.score['red_gold'] and cls.module_gold > gold_value
-        red_gold_winner = cls.score['red_gold'] > cls.score['blue_gold'] and cls.module_gold > gold_value
+        blue_kills_lead = cls.score['blue_kills'] > cls.score['red_kills'] and cls.module_kills > 5
+        red_kills_lead = cls.score['red_kills'] > cls.score['blue_kills'] and cls.module_kills > 5
 
-        blue_leader = cls.score['blue_t1_hp'] > towers_hp[0] and cls.score['red_t1_hp'] < towers_hp[1] and blue_gold_winner
-        red_leader = cls.score['red_t1_hp'] > towers_hp[0] and cls.score['blue_t1_hp'] < towers_hp[1] and red_gold_winner
-        
+        blue_gold_lead = cls.score['blue_gold'] > cls.score['red_gold'] and cls.module_gold > gold_value
+        red_gold_lead = cls.score['red_gold'] > cls.score['blue_gold'] and cls.module_gold > gold_value
+
+        blue_towers_lead = cls.score['blue_t1_hp'] > towers_hp[0] and cls.score['red_t1_hp'] < towers_hp[1]#  and blue_gold_winner
+        red_towers_lead = cls.score['red_t1_hp'] > towers_hp[0] and cls.score['blue_t1_hp'] < towers_hp[1]#  and red_gold_winner
+
+        blue_leader = blue_kills_lead and blue_gold_lead and blue_towers_lead
+        red_leader = red_kills_lead and red_gold_lead and red_towers_lead
+
         return blue_leader or red_leader
     
     @classmethod
@@ -86,52 +91,22 @@ class PR:
         return (None, None, None)
     
     @classmethod
-    def gen_predict(cls, score):
+    def gen_main_predict(cls):
 
-        possible_predicts = []
+        predictions = {
 
-        cls.score = copy.deepcopy(score)
-        cls.prepare_predict_values()
-
-        if not Validator.predict_value_flet['stats']:
-
-            spredictions = {
-                '🔽S_PR 110.5М FL_0.5🔽': [
-                    (SR.tl_accepted() and cls.all_kills < 30 and cls.towers_hp_less_than(hp=25) and cls.gtime > 400),
-                    (SR.tl_accepted() and cls.all_kills < 24 and cls.gtime > 400),
-                ],
-                '🔼S_PR 110.5Б FL_0.5🔼': [
-                    (SR.tb_accepted() and cls.kills_gold_equals(kills=45, gold=1.5) and cls.gtime < 360),
-                    (SR.tb_accepted() and cls.kills_gold_equals(kills=30, gold=1.5) and SR.tanks_in_teams() and cls.gtime < 400),
-                ]
-            }
-
-            possible_predicts.append(cls.predict_possible(predictions=spredictions, key='stats'))
-        
-        else:
-            possible_predicts.append((None, None, None))
-
-        if not Validator.predict_value_flet['main']:
-            
-            predictions = {
-                '🔼PR 110.5Б FL_1🔼': [
-                    (cls.kills_gold_equals(kills=60, gold=1.2) and cls.towers_hp_more_than(hp=65) and cls.gtime < 480 and SR.tanks_in_teams()),
+                TelegramStr.tb_predict_half: [
+                    (cls.kills_gold_equals(kills=60, gold=1.2) and cls.towers_hp_more_than(hp=50) and cls.gtime < 480 and SR.tanks_in_teams()),
                     (cls.kills_gold_equals(kills=80, gold=1.2) and cls.two_towers_destroyed(equals=True) and cls.gtime < 540 and SR.tanks_in_teams()),
 
                 ],
-                '🔼PR 110.5Б FL_0.5🔼': [
-                    (cls.kills_gold_equals(kills=50, gold=1.5) and cls.towers_hp_more_than(hp=65) and cls.gtime < 540 and SR.tanks_in_teams(one_side=True)),
-                    (cls.kills_gold_equals(kills=46, gold=1.3) and cls.towers_hp_more_than(hp=70) and cls.gtime < 420 and SR.tanks_in_teams(one_side=True)),
-                    (cls.kills_gold_equals(kills=40, gold=1.0) and cls.towers_hp_more_than(hp=75) and cls.gtime < 420 and SR.tanks_in_teams(one_side=True)),
-                    (cls.kills_gold_equals(kills=36, gold=0.8) and cls.towers_hp_more_than(hp=80) and cls.gtime < 360 and SR.tanks_in_teams(one_side=True)),
-                ],
+                
+                TelegramStr.tl_predict_full: [
 
-                '🔽PR 110.5М FL_1🔽': [
-
-                    (cls.all_kills < 18 and cls.straigh_leader(gold_value=2.0, towers_hp=(75, 30)) and cls.gtime > 240),
-                    (cls.all_kills < 24 and cls.straigh_leader(gold_value=2.0, towers_hp=(65, 25)) and cls.gtime > 300),
-                    (cls.all_kills < 30 and cls.straigh_leader(gold_value=2.2, towers_hp=(60, 20)) and cls.gtime > 360),
-                    (cls.all_kills < 36 and cls.straigh_leader(gold_value=2.2, towers_hp=(55, 15)) and cls.gtime > 420),
+                    (cls.all_kills < 16 and cls.straigh_leader(gold_value=2.0, towers_hp=(75, 30)) and cls.gtime > 250),
+                    (cls.all_kills < 22 and cls.straigh_leader(gold_value=2.0, towers_hp=(65, 25)) and cls.gtime > 310),
+                    (cls.all_kills < 28 and cls.straigh_leader(gold_value=2.2, towers_hp=(60, 20)) and cls.gtime > 360),
+                    (cls.all_kills < 33 and cls.straigh_leader(gold_value=2.2, towers_hp=(55, 15)) and cls.gtime > 420),
                     (cls.all_kills < 42 and cls.straigh_leader(gold_value=2.5, towers_hp=(50, 10)) and cls.gtime > 540),
                     (cls.all_kills < 50 and cls.straigh_leader(gold_value=2.5, towers_hp=(45, 5)) and cls.module_kills > 13 and cls.gtime > 540),
 
@@ -139,10 +114,10 @@ class PR:
                     # (cls.all_kills < 39 and cls.straigh_leader(gold_value=0.8, towers_hp=(80, 10)) and cls.gtime > 400),
                     
                 ],
-                '🔽PR 110.5М FL_0.75🔽': [
+                TelegramStr.tl_predict_middle: [
 
-                    (cls.all_kills < 14 and cls.towers_hp_less_than(30) and cls.gtime > 240),
-                    (cls.all_kills < 20 and cls.towers_hp_less_than(25) and cls.gtime > 300),
+                    (cls.all_kills < 14 and cls.towers_hp_less_than(30) and cls.gtime > 250),
+                    (cls.all_kills < 20 and cls.towers_hp_less_than(25) and cls.gtime > 310),
                     (cls.all_kills < 26 and cls.towers_hp_less_than(20) and cls.gtime > 360),
                     (cls.all_kills < 32 and cls.towers_hp_less_than(15) and cls.gtime > 420),
                     (cls.all_kills < 38 and cls.towers_hp_less_than(10) and cls.gtime > 480),
@@ -156,11 +131,11 @@ class PR:
 
                     
                 ],
-                '🔽PR 110.5М FL_0.5🔽': [
+                TelegramStr.tl_predict_half: [
                     
-                    (cls.all_kills < 10 and cls.towers_hp_less_than(90) and cls.gtime > 240),
-                    (cls.all_kills < 16 and cls.towers_hp_less_than(85) and cls.gtime > 300),
-                    (cls.all_kills < 20 and cls.towers_hp_less_than(80) and cls.gtime > 360),
+                    (cls.all_kills < 10 and cls.towers_hp_less_than(90) and cls.gtime > 250),
+                    (cls.all_kills < 16 and cls.towers_hp_less_than(85) and cls.gtime > 310),
+                    (cls.all_kills < 20 and cls.towers_hp_less_than(80) and cls.gtime > 370),
                     (cls.all_kills < 22 and cls.towers_hp_less_than(75) and cls.gtime > 420),
                     (cls.all_kills < 28 and cls.towers_hp_less_than(70) and cls.gtime > 480),
 
@@ -183,10 +158,22 @@ class PR:
 
             }
 
-            possible_predicts.append(cls.predict_possible(predictions=predictions, key='main'))
+        return cls.predict_possible(predictions=predictions, key='main')
 
-        else:
-            possible_predicts.append((None, None, None))
+    @classmethod
+    def gen_stats_predict(cls):
 
+        spredictions = {
+                TelegramStr.tl_spredict_half: [
+                    
+                    (SR.tl_accepted() and cls.all_kills < 30 and cls.towers_hp_less_than(hp=25) and cls.gtime > 400),
+                    (SR.tl_accepted() and cls.all_kills < 24 and cls.gtime > 400),
+                    (SR.tl_accepted() and cls.all_kills < 35 and SR.tanks_in_teams(both_excluded=True) and cls.gtime > 400)
+                ],
+                TelegramStr.tb_spredict_half: [
+                    (SR.tb_accepted() and cls.kills_gold_equals(kills=45, gold=1.5) and cls.gtime < 480),
+                    (SR.tb_accepted() and cls.kills_gold_equals(kills=30, gold=1.5) and SR.tanks_in_teams() and cls.gtime < 400),
+                ]
+            }
 
-        return possible_predicts
+        return cls.predict_possible(predictions=spredictions, key='stats')

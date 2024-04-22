@@ -3,10 +3,9 @@ import numpy as np
 import os
 from skimage.metrics import structural_similarity as ssim
 from modules.mcf_pillow import greyshade_array
-from mcf_data import (
+from static_data import (
     PATH,
-    BLUE_GREYSHADE_ARRAY,
-    RED_GREYSHADE_ARRAY
+    GREYSHADE
 
 )
 
@@ -62,9 +61,9 @@ class RecognizedCharacters:
         best_character = None
 
         if self.team_color == 'blue':
-            arr_images_compare = BLUE_GREYSHADE_ARRAY
+            arr_images_compare = GREYSHADE.BLUE_ARRAY
         else:
-            arr_images_compare = RED_GREYSHADE_ARRAY
+            arr_images_compare = GREYSHADE.RED_ARRAY
 
         for main_img_arr in main_images_arr:
 

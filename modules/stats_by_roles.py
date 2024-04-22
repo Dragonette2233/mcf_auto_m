@@ -1,4 +1,4 @@
-from mcf_data import (
+from static_data import (
     ten_roles_dict,
     PATH
 )

@@ -1,7 +1,9 @@
 import json
 import os
-from mcf_data import PATH
-from global_data import Validator, StatsRate
+from static_data import PATH
+from dynamic_data import StatsRate, ControlFlow
+
+CF = ControlFlow()
 
 class Trace:
 
@@ -57,17 +59,16 @@ class Trace:
             score["time"]
         ]
         cls.put_to_json(data=data)
-        Validator.tracer = True
+        CF.SW.tracer.activate()
 
     @classmethod
     def complete_trace(cls, team, kills, timestamp):
-        if not Validator.tracer:
+        if not CF.SW.tracer.is_active():
             return
         data = cls.get_json()
         data[cls.tracing_game]["result"] = [team, kills, timestamp]
         cls.put_to_json(data)
         cls.tracing_game = ''
-        Validator.tracer = False
 
     @classmethod
     def trace_predicts(cls):

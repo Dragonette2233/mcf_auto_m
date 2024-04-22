@@ -2,17 +2,14 @@ import requests
 import os
 import logging
 import time
-from global_data import Validator, Switches
-from mcf_data import (
-    WINDOWS_USER,
-    PATH
+from static_data import (
+    TelegramStr
 )
 
 logger = logging.getLogger(__name__)
 
 class TGApi:
 
-    # test_run = False
     active_post_id = 0
     active_post_text = ''
     token = os.getenv('BOT_TOKEN')
@@ -46,11 +43,8 @@ class TGApi:
             data={'chat_id': chat_id, 'text': message }, timeout=2
         )
 
-        # print(resp.json())
         return resp.json()
-            
-
-        
+             
     @classmethod
     def post_request(cls, message: str, save_post_result=False):
         
@@ -65,25 +59,7 @@ class TGApi:
         time.sleep(2)
         cls.post_send(message=message, chat_id=cls.CHAT_ID_TRIAL)
 
-    @classmethod
-    def run_score_updating(cls):
-        
-        while Switches.request:
-
-            score = {
-                'time': 
-                'blue_kills'
-                'red_kills'
-                'blue_towers'
-                'red_towers'
-                'blue_gold'
-                'red_gold'
-                'blue_t1_hp'
-                'red_t1_hp'
-            }
-            
-
-
+   
     @classmethod
     def update_score(cls, score, is_total_opened=False, total_value=0):
         
@@ -95,11 +71,11 @@ class TGApi:
             score['time'] = ':'.join([str(minutes), str(seconds)])
             score['total_value'] = total_value
             if is_total_opened:
-                open_snip = f'\n\nTotal event {total_value}: ❕ Opened'
+                open_snip = TelegramStr.events_opened.format(total_value=total_value)
             else:
-                open_snip = '\n\nTotal event: ❗️ Closed'
+                open_snip = TelegramStr.events_closed
             # score['total_value']
-            text = cls.active_post_text + PATH.SCORE_SNIPPET.format(**score) + open_snip
+            text = cls.active_post_text + TelegramStr.SNIPPET_SCORE.format(**score) + open_snip
         else:
             text = cls.active_post_text
 
@@ -122,9 +98,9 @@ class TGApi:
     @classmethod
     def gamestart_notification(cls, team_blue: list, team_red: list, status_message=''):
 
-        sample_message: str = open('mcf_lib/tg_start_notification.txt', 'r', encoding='utf-8').read()
+        # sample_message: str = open('mcf_lib/tg_start_notification.txt', 'r', encoding='utf-8').read()
         
-        full_message = sample_message.format(
+        full_message = TelegramStr.SNIPPET_GAMESTART.format(
             team_blue=team_blue,
             team_red=team_red,
             status_message=status_message
@@ -141,13 +117,13 @@ class TGApi:
         
         match team, opened:
             case 'blue', True:
-                message = f'🟢🔵 П1 -- {kills} -- {timestamp}'
+                message = TelegramStr.winner_blue_opened.format(kills, timestamp)
             case 'blue', False:
-                message = f'🔵 П1 -- {kills} -- {timestamp}'
+                message = TelegramStr.winner_blue.format(kills, timestamp)
             case 'red', True:
-                message = f'🟢🔴 П2 -- {kills} -- {timestamp}'
+                message = TelegramStr.winner_red_opened.format(kills, timestamp)
             case 'red', False:
-                message = f'🔴 П2 -- {kills} -- {timestamp}'
+                message = TelegramStr.winner_red.format(kills, timestamp)
             case _:
                 pass
 

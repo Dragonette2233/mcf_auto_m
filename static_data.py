@@ -86,6 +86,7 @@ ten_roles_dict = {
 
 
 WINDOWS_USER = getpass.getuser()
+TRACE_RANGE = range(360, 420)
 TODAY = datetime.now().day
 SPECTATOR_MODE = 'spectator.{reg}.lol.pvp.net:8080'
 FEATURED_GAMES_URL = "https://{region}.api.riotgames.com/lol/spectator/v5/featured-games"
@@ -127,7 +128,8 @@ class PATH:
     PREDICTS_TRACE_GLOBAL = os.path.join(MCF_BOT, 'untracking', 'predicts_trace.json')
     PREDICTS_TRACE_DAILY = os.path.join(MCF_BOT, 'untracking', 'predicts_trace_daily.json')
 
-    SCORE_SNIPPET: str = open(os.path.join(MCF_BOT, 'mcf_lib', 'score_snip.txt'), 'r', encoding='utf-8').read()
+    SNIPPET_SCORE = os.path.join(MCF_BOT, 'mcf_lib', 'score_snip.txt')
+    SNIPPET_GAMESTART = os.path.join(MCF_BOT, 'mcf_lib', 'tg_start_notification.txt')
 
     """
         Data for screen score recognizing (Time, kills, towers)
@@ -165,22 +167,73 @@ class PATH:
                             'red', f'{char.lower().capitalize()}.png') 
                             for char in ALL_CHAMPIONS_IDs.values()
         }
-BLUE_GREYSHADE_ARRAY = {
-            char: mcf_pillow.greyshade_array(img) for char, img in PATH.BLUE_IMAGES_TO_COMPARE.items()
-}
-RED_GREYSHADE_ARRAY = {
-            char: mcf_pillow.greyshade_array(img) for char, img in PATH.RED_IMAGES_TO_COMPARE.items()
-}
+    
+class GREYSHADE:
 
-# GREYSHADE_CMP_MAP = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_map.png'))
-GREYSHADE_CMP_RIOT = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_riot.png'))
-GREYSHADE_CMP_BLUE = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_blue.png'))
-GREYSHADE_CMP_RED = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_red.png'))
-GREYSHADE_mCMP_RIOT = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_riot.png'))
-GREYSHADE_mCMP_BLUE = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_blue.png'))
-GREYSHADE_mCMP_RED = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_red.png'))
-GREYSHADE_mCMP_LOADING = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_loading.png'))
+    BLUE_ARRAY = {
+                char: mcf_pillow.greyshade_array(img) for char, img in PATH.BLUE_IMAGES_TO_COMPARE.items()
+    }
+    RED_ARRAY = {
+                char: mcf_pillow.greyshade_array(img) for char, img in PATH.RED_IMAGES_TO_COMPARE.items()
+    }
 
+    # GREYSHADE_CMP_MAP = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_map.png'))
+    CMP_RIOT = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_riot.png'))
+    CMP_BLUE = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_blue.png'))
+    CMP_RED = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_red.png'))
+    mCMP_RIOT = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_riot.png'))
+    mCMP_BLUE = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_blue.png'))
+    mCMP_RED = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_red.png'))
+    mCMP_LOADING = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'mcmp_loading.png'))
+
+
+class TelegramStr:
+    FAILURE = '❌'
+    SUCCESS = '✅'
+    SHARK = '🐳'
+    OCTUPUS = '🐙'
+    GREEN_CIRCLE = '🟢'
+    BLUE_CIRCLE = '🔵'
+    RED_CIRCLE = '🔴'
+    EXCLAM_RED = '❗️'
+    EXCLAM_WHITE = '❕'
+    ARROW_UP = '🔼'
+    ARROW_DOWN = '🔽'
+    CLOCK = '⏳'
+
+    '''
+        Telegram notifictations for predicts
+    '''
+    tb_predict_half = '{0} PR 110.5Б FL_0.5 {0}'.format(ARROW_UP)
+    tb_predict_full = '{0} PR 110.5Б FL_1 {0}'.format(ARROW_UP)
+    tl_predict_half = '{0} PR 110.5М FL_0.5 {0}'.format(ARROW_DOWN)
+    tl_predict_middle = '{0} PR 110.5М FL_0.75 {0}'.format(ARROW_DOWN)
+    tl_predict_full = '{0} PR 110.5М FL_1 {0}'.format(ARROW_DOWN)
+
+    tb_spredict_half = '{0} S_PR 110.5Б FL_0.5 {0}'.format(ARROW_UP)
+    tl_spredict_half = '{0} S_PR 110.5М FL_0.75 {0}'.format(ARROW_DOWN)
+    
+    '''
+        Telegram notifications about ended game
+        First argument - kills, second argument - time
+    '''
+    winner_blue = BLUE_CIRCLE + ' П1 -- {0} -- {1}'
+    winner_red = RED_CIRCLE + ' П2 -- {0} -- {1}'
+    winner_blue_opened = GREEN_CIRCLE + BLUE_CIRCLE + ' П1 -- {0} -- {1}'
+    winner_red_opened = GREEN_CIRCLE + RED_CIRCLE + ' П2 -- {0} -- {1}'
+
+    '''
+        Telegram notification for started game
+    '''
+    SNIPPET_SCORE = open(PATH.SNIPPET_SCORE, 'r', encoding='utf-8').read()
+    SNIPPET_GAMESTART = open(PATH.SNIPPET_GAMESTART, 'r', encoding='utf-8').read()
+
+    game_founded = SUCCESS + '{0}'
+    game_not_founded = FAILURE + ' Игра не найдена'
+    game_remake = FAILURE + ' Remake'
+
+    events_opened = '\n\nTotal event {total_value}: ' + EXCLAM_WHITE + 'Opened'
+    events_closed = '\n\nTotal event: ' + EXCLAM_RED + 'Closed'
 
 class MCFException(Exception): ...
 class MCFTimeoutError(Exception): ...

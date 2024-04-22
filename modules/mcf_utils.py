@@ -1,4 +1,4 @@
-from mcf_data import (
+from static_data import (
     PATH,
     ALL_CHAMPIONS_IDs,
     REGIONS_TUPLE,
@@ -37,8 +37,6 @@ def close_league_of_legends():
     list_task[3] = list_task[3].replace(' ', '')
     process_pid = list_task[3].split('exe')[1].split('Console')[0]
     os.popen(f'taskkill /PID {process_pid} /F')
-    # app_blueprint.delete_screenscore()
-    # self.info_view.success('League of Legends closed')
 
 def advance_poro_search():
     ...

@@ -1,13 +1,11 @@
 import logging
 import time
-from global_data import (
-    ActiveGame,
-    Validator,
+from dynamic_data import (
     StatsRate,
-    Switches
+    ControlFlow,
 )
 from tg_api import TGApi
-from mcf_data import (
+from static_data import (
     REGIONS_TUPLE,
     ALL_CHAMPIONS_IDs,
     SPECTATOR_MODE,
@@ -15,7 +13,6 @@ from mcf_data import (
 )
 import os
 import itertools
-import modules.mcf_autogui as mcf_autogui
 from chrome_driver import Chrome
 from modules.ssim_recognition import RecognizedCharacters as SsimReco
 from modules.mcf_storage import MCFStorage
@@ -24,6 +21,7 @@ from modules.mcf_riot_api import RiotAPI
 from modules import mcf_utils
 logger = logging.getLogger(__name__)
 
+CF = ControlFlow()
 
 class MCFApi:
     
@@ -40,7 +38,7 @@ class MCFApi:
     def get_characters(cls):
 
         while True:
-            if not ActiveGame.nick_region:
+            if not CF.ACT.nick_region:
                 logger.info('Comparing icons...')
                 team_blue = SsimReco(team_color='blue')
                 team_red = SsimReco(team_color='red')
@@ -148,7 +146,7 @@ class MCFApi:
 
         team_cycle = itertools.cycle(zip(teams['blue'], teams['red']))
 
-        Validator.finded_game_characerts = teams['blue'].copy()
+        CF.ACT.finded_chars = teams['blue'].copy()
 
         for char_b, char_r in team_cycle:
             
@@ -158,31 +156,31 @@ class MCFApi:
             for charlist in games_by_character:
                 nicknames = charlist.split('-|-')[1].split('_|_')
                 characters = charlist.split('-|-')[0].split(' | ')
-                common_elements = cls.count_of_common(sequence_1=characters, sequence_2=Validator.finded_game_characerts)
+                common_elements = cls.count_of_common(sequence_1=characters, sequence_2=CF.ACT.finded_chars)
 
                 if common_elements >= 4:
                     return nicknames
             else:
                 logger.warning('No games for {char_r} -- {char_b}. CD 3s'.format(char_r=char_r, char_b=char_b))
-                Validator.findgame += 1
+                CF.VAL.findgame += 1
 
-                if Validator.findgame == 15:
-                    Validator.findgame = 0
+                if CF.VAL.findgame == 15:
+                    CF.VAL.findgame = 0
                     return None
                 time.sleep(2)
     
     @classmethod
     def show_lastgame_info(cls):
         
-        games_list = RiotAPI.get_matches_by_puuid(area=ActiveGame.area, 
-                                                  puuid=ActiveGame.puuid)
+        games_list = RiotAPI.get_matches_by_puuid(area=CF.ACT.area, 
+                                                  puuid=CF.ACT.puuid)
         
         if len(games_list) == 0:
 
             logger.warning('No games for this summoner')
             return
 
-        lastgame = RiotAPI.get_match_by_gameid(area=ActiveGame.area, gameid=games_list[0])
+        lastgame = RiotAPI.get_match_by_gameid(area=CF.ACT.area, gameid=games_list[0])
         
         # currentGameData.players_count = lastgame['info']['participants'] # [0] {}, [1] {}, 2 {}, ... [10] {}
         
@@ -203,11 +201,11 @@ class MCFApi:
         timestamp = list(divmod(lastgame['info']['gameDuration'], 60))
         if timestamp[1] < 10: 
             timestamp[1] = f"0{timestamp[1]}"
-        Validator.ended_blue_characters = champions_names[0:5].copy()
-        Validator.ended_red_characters = champions_names[5:].copy()
-        Validator.ended_kills = sum(lastgame['info']['participants'][k]['kills'] for k in range(10))
-        Validator.ended_winner = 'blue' if teams_info[0]['win'] else 'red'
-        Validator.ended_time = f"{timestamp[0]}:{timestamp[1]}"
+        CF.END.blue_chars = champions_names[0:5].copy()
+        CF.END.red_chars = champions_names[5:].copy()
+        CF.END.kills = sum(lastgame['info']['participants'][k]['kills'] for k in range(10))
+        CF.END.winner = 'blue' if teams_info[0]['win'] else 'red'
+        CF.END.time = f"{timestamp[0]}:{timestamp[1]}"
 
     @classmethod
     def get_aram_statistic(cls, blue: list, red: list):
@@ -225,8 +223,8 @@ class MCFApi:
         
         for short, code, area in REGIONS_TUPLE:
             if summoner_name[1].lower() == short or summoner_name[1].lower() == code:
-                ActiveGame.region = code
-                ActiveGame.area = area
+                CF.ACT.region = code
+                CF.ACT.area = area
                 break
 
     
@@ -234,7 +232,8 @@ class MCFApi:
 
         print(summoner_name[0].split('#')[0])
 
-        summoner_data = RiotAPI.get_summoner_puuid(region=ActiveGame.region, name=summoner_name[0].split('#')[0])
+        summoner_data = RiotAPI.get_summoner_puuid(region=CF.ACT.region, 
+                                                   name=summoner_name[0].split('#')[0])
 
        
         if summoner_data == 404:
@@ -243,8 +242,8 @@ class MCFApi:
         elif summoner_data == 403:
             logger.error('API key wrong or exipred')
         
-        ActiveGame.puuid = summoner_data['puuid']
-        response_activegame = RiotAPI.get_active_by_summonerid(region=ActiveGame.region, 
+        CF.ACT.puuid = summoner_data['puuid']
+        response_activegame = RiotAPI.get_active_by_summonerid(region=CF.ACT.region,
                                                                summid=summoner_data['puuid'],
                                                                status=True)
             
@@ -263,26 +262,26 @@ class MCFApi:
                 return False
             
             game_id = str(response['gameId']) # 1237890
-            ActiveGame.match_id = ActiveGame.region.upper() + '_' + game_id # EUW_12378912
+            CF.ACT.match_id = CF.ACT.region.upper() + '_' + game_id # EUW_12378912
             champions_ids = [response['participants'][p]['championId'] for p in 
                                              range(10)]
             
             champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
 
-            ActiveGame.encryptionKey = response['observers']['encryptionKey']
-            ActiveGame.blue_team = champions_names[0:5]
-            ActiveGame.red_team = champions_names[5:]
-            ActiveGame.is_game_founded = True
-            ActiveGame.nick_region = nick_region
+            CF.ACT.encryptionKey = response['observers']['encryptionKey']
+            CF.ACT.blue_team = champions_names[0:5]
+            CF.ACT.red_team = champions_names[5:]
+            CF.ACT.is_game_founded = True
+            CF.ACT.nick_region = nick_region
 
             common_check = cls.count_of_common(
-                sequence_1=ActiveGame.blue_team,
-                sequence_2=Validator.finded_game_characerts
+                sequence_1=CF.ACT.blue_team,
+                sequence_2=CF.ACT.finded_chars
             )
 
             if common_check != 5:
-                logger.info(f'Active game characters: {ActiveGame.blue_team}')
-                logger.info(f'Finded game characters: {Validator.finded_game_characerts}')
+                logger.info(f'Active game characters: {CF.ACT.blue_team}')
+                logger.info(f'Finded game characters: {CF.ACT.finded_chars}')
                 return False
             
         return True
@@ -299,39 +298,39 @@ class MCFApi:
         
         logger.info('Launching spectator...')
 
-        enc_key = ActiveGame.encryptionKey
-        spectator = SPECTATOR_MODE.format(reg=ActiveGame.region)
-        args = spectator, enc_key, str(ActiveGame.match_id.split('_')[1]), ActiveGame.region.upper()
+        enc_key = CF.ACT.encryptionKey
+        spectator = SPECTATOR_MODE.format(reg=CF.ACT.region)
+        args = spectator, enc_key, str(CF.ACT.match_id.split('_')[1]), CF.ACT.region.upper()
 
         MCFStorage.write_data(route=("0", ), value=str(args))
 
         subprocess.call([PATH.SPECTATOR_FILE, *args])
 
     @classmethod
-    def get_activegame_parametres(cls, nicknames):
+    def get_activegame_parametres(cls, nicknames: list) -> bool:
 
         for nick in nicknames:
             try:
                 cls.search_game(nick_region=nick)
 
-                if Validator.ended_blue_characters is not None:
+                if CF.END.blue_chars is not None:
                     
                     common_elements = cls.count_of_common(
-                        sequence_1=Validator.ended_blue_characters,
-                        sequence_2=Validator.finded_game_characerts
+                        sequence_1=CF.END.blue_chars,
+                        sequence_2=CF.ACT.finded_chars
                     )
                     
                     if common_elements == 5:
                         # logger.info('Game ended! Restarting bot in 120s')
-                        Validator.ended_blue_characters = None
-                        Validator.finded_game_characerts = None
-                        Validator.quick_end = True
+                        # Validator.ended_blue_characters = None
+                        # Validator.finded_game_characerts = None
+                        CF.SW.quick_end.activate()
 
                         return False
 
 
-                if ActiveGame.is_game_founded:
-                    Trace.create_new_trace(gameid=ActiveGame.match_id)
+                if CF.ACT.is_game_founded:
+                    Trace.create_new_trace(gameid=CF.ACT.match_id)
                     return True
                     
             except Exception as ex:
@@ -339,13 +338,14 @@ class MCFApi:
     
     @classmethod
     def awaiting_game_end(cls, chrome: Chrome = None):
-        Switches.request = True
-        while Switches.request:
+        CF.SW.request.activate()
+
+        while CF.SW.request.is_active():
             
 
             try:
-                finished_game = RiotAPI.get_match_by_gameid(area=ActiveGame.area, 
-                                                    gameid=ActiveGame.match_id, 
+                finished_game = RiotAPI.get_match_by_gameid(area=CF.ACT.area, 
+                                                    gameid=CF.ACT.match_id, 
                                                     status=True)
             except Exception:
                 logger.warning('Connection lose, reconnection..')
@@ -364,7 +364,7 @@ class MCFApi:
                 if chrome is not None:
                     is_opened = chrome.is_total_coeff_opened(end_check=True)
                     if is_opened:
-                        Switches.coeff_opened = True
+                        CF.SW.coeff_opened.activate()
                 else:
                     is_opened = False
 
@@ -380,11 +380,11 @@ class MCFApi:
                 MCFStorage.predicts_monitor(kills=kills, key='stats')
                 MCFStorage.predicts_monitor(kills=kills, key='main', daily=True)
                 MCFStorage.predicts_monitor(kills=kills, key='stats', daily=True)
-                Validator.predict_value_flet['main'] = None
-                Validator.predict_value_flet['stats'] = None
-                chrome.ACTIVE_TOTAL_VALUE = 0
-                ActiveGame.is_game_founded = False
-                Switches.request = False
+                # Validator.predict_value_flet['main'] = None
+                # Validator.predict_value_flet['stats'] = None
+                # chrome.ACTIVE_TOTAL_VALUE = 0
+                # CF.ACT.is_game_founded = False
+                CF.SW.request.deactivate()
 
                 finished_game.close()
                 break

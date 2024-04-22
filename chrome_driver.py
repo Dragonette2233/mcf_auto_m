@@ -1,13 +1,15 @@
 import time
+import copy
 import logging
 import modules.mcf_autogui as mcf_autogui
 import modules.mcf_pillow as mcf_pillow
+from mcf_asbstract import Singleton
 from modules.mcf_storage import MCFStorage
 from modules.mcf_tracing import Trace
 from modules.mcf_predicts import PR
-from global_data import Validator
+from dynamic_data import ControlFlow
 from tg_api import TGApi
-from mcf_data import PATH
+from static_data import PATH, TRACE_RANGE
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -19,8 +21,9 @@ from selenium.common.exceptions import (
     )
 
 logger = logging.getLogger(__name__)
+CF = ControlFlow()
 
-class Chrome:
+class Chrome(Singleton):
 
     def __init__(self) -> None:
         self.CSS_BTN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
@@ -65,12 +68,6 @@ class Chrome:
         with open(PATH.MIRROR_PAGE, 'r') as ex_url:
             self.URL = ex_url.read().strip()
         
-        if self.URL.startswith('https://mel'):
-            Validator.active_mel_mirror = True
-        else:
-            Validator.active_mel_mirror = False
-        
-        
         try:
             self.driver.get(url=self.URL + '?platform_type=desktop')
             time.sleep(5)
@@ -96,10 +93,7 @@ class Chrome:
         mcf_autogui.close_league_stream()
 
     def stream_fullscreen(self):
-        if Validator.active_mel_mirror:
-            mcf_autogui.click(x=1871, y=361)
-        else:
-            mcf_autogui.click(x=1871, y=325)
+        mcf_autogui.click(x=1871, y=361)
         time.sleep(2.5)
 
     def is_total_coeff_opened(self, end_check=False):
@@ -132,7 +126,7 @@ class Chrome:
         predict_direction = message.split()[1][-1]
         active_total = float(self.ACTIVE_TOTAL_VALUE)
 
-        if predict_direction == 'Б' and active_total < 119.5:
+        if predict_direction == 'Б' and active_total < 120.5:
             return True
 
         if predict_direction == 'М' and active_total > 95.5:
@@ -154,27 +148,29 @@ class Chrome:
             if self.is_total_coeff_opened():
                 MCFStorage.rgs_predicts_monitor(message=message, key=key, idx=idx)
             else:
-                Validator.predict_value_flet[key] = 'closed'
-                
+                CF.VAL.pr_cache[key] = 'closed'
+       
 
     def generate_predict(self, score):
 
         if score['time'] > 660:
             return
         
-        if score['time'] in range(360, 420) and not Validator.tracer:
+        if score['time'] in TRACE_RANGE and not CF.SW.tracer.is_active():
             Trace.add_tracing(score=score)
 
-        if Validator.predict_value_flet['main'] and Validator.predict_value_flet['stats']:
-            return
-        
-        s_predict, main_predict = PR.gen_predict(score=score)
+        PR.score = copy.deepcopy(score)
+        PR.prepare_predict_values()
 
-        if s_predict[0]:
-            self.send_predict(message=s_predict[0], key=s_predict[1], idx=s_predict[2])
+        if not CF.VAL.pr_cache['main']:
+            main_predict = PR.gen_main_predict()
+            if main_predict[0]:
+                self.send_predict(message=main_predict[0], key=main_predict[1], idx=main_predict[2])
         
-        if main_predict[0]:
-            self.send_predict(message=main_predict[0], key=main_predict[1], idx=main_predict[2])
+        if not CF.VAL.pr_cache['stats']:
+            s_predict = PR.gen_stats_predict()
+            if s_predict[0]:
+                self.send_predict(message=s_predict[0], key=s_predict[1], idx=s_predict[2])
 
     def notify_when_starts(self):
 
@@ -200,9 +196,6 @@ class Chrome:
                         stream_btn = games[0].find_element(By.CSS_SELECTOR, 'span.dashboard-game-action-bar__group')
                         stream_btn.find_element(By.CSS_SELECTOR, self.CSS_BTN_STREAM).click()
                         time.sleep(2)
-
-                        # if Switches.cache_done:
-                        # mcf_pillow.pre_cache_games()
 
                         if mcf_pillow.is_game_started():
                             logger.info('Game started: (from comparing stream)')

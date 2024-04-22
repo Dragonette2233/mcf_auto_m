@@ -6,11 +6,12 @@ logger = logging.getLogger(__name__)
 from modules.mcf_storage import MCFStorage
 from modules import mcf_pillow
 from modules import mcf_autogui
-from global_data import ActiveGame, Switches, StatsRate
+from dynamic_data import StatsRate, ControlFlow
 from chrome_driver import Chrome
-from global_data import Validator
-from mcf_data import (
+from dynamic_data import ControlFlow
+from static_data import (
     MCFThread,
+    TelegramStr
 )
 from mcf_api import MCFApi
 from tg_api import TGApi
@@ -25,6 +26,8 @@ def main():
     while True:
         
         chrome = Chrome()
+        CF = ControlFlow()
+        
         chrome.start()
         chrome.open_league_page()
         chrome.remove_cancel()
@@ -52,7 +55,7 @@ def main():
             TGApi.gamestart_notification(
                 team_blue=' '.join(teams['blue']),
                 team_red=' '.join(teams['red']),
-                status_message=f'✅ {ActiveGame.nick_region}'
+                status_message=TelegramStr.game_founded.format(CF.ACT.nick_region)
             )
 
             MCFThread(func=MCFApi.awaiting_game_end, args=(chrome, )).start()
@@ -63,7 +66,7 @@ def main():
             logger.info('Spectator activated')
             mcf_autogui.open_score_tab()
 
-            while Switches.request:
+            while CF.SW.request.is_active():
                 mcf_autogui.doubleClick(x=658, y=828)
                 score = mcf_pillow.generate_scoreboard()
                 chrome.generate_predict(score)
@@ -78,11 +81,11 @@ def main():
             TGApi.update_score(score=False)
             MCFApi.delete_scoreboard()
             MCFApi.close_league_of_legends()
-            mcf_pillow.reset_towers_backup()
+            # mcf_pillow.reset_towers_backup()
 
             logger.info('Game ended.')
             
-            if Switches.coeff_opened is False:
+            if not CF.SW.coeff_opened.is_active():
                 for _ in range(120):
                     is_opened = chrome.is_total_coeff_opened(end_check=True)
                     if is_opened:
@@ -90,16 +93,14 @@ def main():
                         break
                     time.sleep(0.25)
             
-            Switches.coeff_opened = False
-            Switches.cache_done = False
             StatsRate.stats_clear()
-            ActiveGame.refresh()
-            # time.sleep(300)
+            # ActiveGame.refresh()
+            
         else:
-            if Validator.quick_end:
-                status = '❌ Remake'
+            if CF.SW.quick_end.is_active():
+                status = TelegramStr.game_remake
             else:
-                status = '❌ Игра не найдена'
+                status = TelegramStr.game_not_founded
             
             TGApi.gamestart_notification(
                 team_blue=' '.join(teams['blue']),
@@ -107,19 +108,18 @@ def main():
                 status_message=status
             )
 
-            if Validator.quick_end:
+            if CF.SW.quick_end.is_active():
                 TGApi.winner_is(
-                            team=Validator.ended_winner,
-                            kills=Validator.ended_kills,
-                            timestamp=Validator.ended_time
+                            team=CF.END.winner,
+                            kills=CF.END.kills,
+                            timestamp=CF.END.time
                         )
-                Validator.quick_end = False
-
-
             
         logger.info('Bot restarting')
+        CF.reset()
         chrome.driver.quit()
         del chrome
+        # del SW
 
 if __name__ == "__main__":
     while True:

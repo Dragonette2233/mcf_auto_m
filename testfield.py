@@ -20,7 +20,7 @@ match command:
 
     case 'pr_test':
         from modules.mcf_predicts import PR
-        from mcf_data import StatsRate as SR
+        from static_data import StatsRate as SR
 
         SR.games_all = 1
         SR.blue_roles = '88888'
@@ -53,7 +53,7 @@ match command:
 
     case 'sim_start':
         from modules.mcf_pillow import is_game_started
-        from global_data import Validator
+        from dynamic_data import Validator
 
         if is_game_started():
             
@@ -87,8 +87,8 @@ match command:
         ImageGrab.grab().crop((862, 2, 951, 22)).save('spectator_compare.png')
         # ImageGrab.grab().save('screenshot.png')
     case 'last':
-            from global_data import ActiveGame
-            from mcf_data import Switches
+            from dynamic_data import ActiveGame
+            from static_data import Switches
             import mcf_api
             logger.info('Debugging last game')
             ActiveGame.area = 'europe'
@@ -129,10 +129,10 @@ match command:
 
     case 'force':
         from mcf_api import MCFApi
-        from mcf_data import MCFThread, Switches
+        from static_data import MCFThread, Switches
         from modules import mcf_pillow
         from modules import mcf_autogui
-        from global_data import ActiveGame
+        from dynamic_data import ActiveGame
     
         nickname = input('Enter nickname:region: ')
         # maitretays#EUW:EUW
