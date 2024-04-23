@@ -12,12 +12,12 @@ logger = logging.getLogger(__name__)
 CF = ControlFlow()
 
 # command: str = input('Enter test command: ')
-command = 'pr_test'
+command = 'parse'
 match command:
     case 'game_find':
         from mcf_api import MCFApi
 
-        MCFApi.search_game(nick_region='Jotv#LAS:LAS')
+        MCFApi.search_game(nick_region='Losseheli#EUNE:EUNE')
 
     case 'pr_test':
         from modules.mcf_predicts import PR
@@ -67,9 +67,9 @@ match command:
         ImageGrab.grab().save('x_full.png')
     case 'parse':
         from mcf_api import MCFApi
-        MCFApi.parse_from_all_sources(char_r='DrMundo')
-        featured: list[str] = MCFApi.get_games_by_character(character='Ahri')
-        finded_game_characerts = 'Blitzcrank Pyke Ahri Quinn Teemo'.split()
+        MCFApi.parse_from_all_sources(char_r='Darius')
+        featured: list[str] = MCFApi.get_games_by_character(character='Vayne')
+        finded_game_characerts = 'Karthus Zilean Vayne Gragas Trundle'.split()
         # print(featured)
         for charlist in featured:
             nicknames = charlist.split('-|-')[1].split('_|_')

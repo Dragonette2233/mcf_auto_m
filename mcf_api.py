@@ -227,19 +227,22 @@ class MCFApi:
 
         print(summoner_name[0].split('#')[0])
 
-        summoner_data = RiotAPI.get_summoner_puuid(region=CF.ACT.region, 
-                                                   name=summoner_name[0].split('#')[0])
+        summoner_data = RiotAPI.get_summoner_puuid(area=CF.ACT.area, 
+                                                   name=summoner_name[0])
 
-       
+        print(summoner_data)
+        input('AWAITING...')
         if summoner_data == 404:
             logger.warning('Summoner not found')
             return
         elif summoner_data == 403:
             logger.error('API key wrong or exipred')
         
-        CF.ACT.puuid = summoner_data['puuid']
+        # logger.info(summoner_data)
+
+        CF.ACT.puuid = summoner_data
         response_activegame = RiotAPI.get_active_by_summonerid(region=CF.ACT.region,
-                                                               summid=summoner_data['puuid'],
+                                                               summid=CF.ACT.puuid,
                                                                status=True)
             
         if response_activegame.status_code != 200:

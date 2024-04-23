@@ -10,6 +10,11 @@ class Intense:
         'middle_2': range(420, 480)
     }
 
+class RNG:
+    KILLS = range(11, 42)
+    TW_HP = ...
+
+# class PredictsConstants:
 
 class PR:
 
@@ -89,6 +94,10 @@ class PR:
         return (None, None, None)
     
     @classmethod
+    def total_lower_half_flet(cls):
+        ...
+
+    @classmethod
     def gen_main_predict(cls):
 
         predictions = {
@@ -114,7 +123,7 @@ class PR:
                 ],
                 TelegramStr.tl_predict_middle: [
 
-                    (cls.all_kills < 14 and cls.towers_hp_less_than(30) and cls.gtime > 250),
+                    (cls.all_kills < 14 and cls.towers_hp_less_than(30) and cls.gtime > 250), # 25 cf
                     (cls.all_kills < 20 and cls.towers_hp_less_than(25) and cls.gtime > 310),
                     (cls.all_kills < 26 and cls.towers_hp_less_than(20) and cls.gtime > 360),
                     (cls.all_kills < 32 and cls.towers_hp_less_than(15) and cls.gtime > 420),
@@ -131,14 +140,14 @@ class PR:
                 ],
                 TelegramStr.tl_predict_half: [
                     
-                    (cls.all_kills < 11 and cls.towers_hp_less_than(90) and cls.gtime > 250),
+                    (cls.all_kills < 11 and cls.towers_hp_less_than(90) and cls.gtime > 250), # 43 cf
                     (cls.all_kills < 17 and cls.towers_hp_less_than(85) and cls.gtime > 310),
                     (cls.all_kills < 21 and cls.towers_hp_less_than(80) and cls.gtime > 370),
                     (cls.all_kills < 26 and cls.towers_hp_less_than(75) and cls.gtime > 420),
                     (cls.all_kills < 31 and cls.towers_hp_less_than(70) and cls.gtime > 480),
 
 
-                    (cls.all_kills < 7 and cls.gtime > 240),
+                    (cls.all_kills < 7 and cls.gtime > 240), # 16 cf w/o !towers
                     (cls.all_kills < 10 and cls.gtime > 300),
                     (cls.all_kills < 13 and cls.gtime > 360),
                     (cls.all_kills < 16 and cls.gtime > 420),

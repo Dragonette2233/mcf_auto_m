@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 class RiotAPI:
     # __headers_timeout = riot_headers
     __link_summoner_by_name = "https://{region}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{name}"
+    __link_summoner_by_riotId = "https://{area}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{nickName}/{tagLine}"
     __link_matches_by_puuid = "https://{area}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count=2"
     __link_match_by_gameid = "https://{area}.api.riotgames.com/lol/match/v5/matches/{gameid}"
     __link_active_by_summid = "https://{region}.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/{summid}"
@@ -34,19 +35,16 @@ class RiotAPI:
 
     @connection_handler
     @staticmethod
-    def get_summoner_puuid(region: str, name: str, puuid=False) -> dict:
-        result = requests.get(RiotAPI.__link_summoner_by_name.format(region=region, name=name), 
+    def get_summoner_puuid(area: str, name: str, puuid=False) -> dict:
+        nickName, tagLine = name.split('#')
+        result = requests.get(RiotAPI.__link_summoner_by_riotId.format(area=area, nickName=nickName, tagLine=tagLine), 
                               **Headers.riot)
-        
+        # print('im here', result.text)
         status = result.status_code
         if status in (403, 404):
             return status
         
-        return {
-            'puuid': result.json()['puuid'],
-            'id': result.json()['id']
-        }
-    
+        return result.json()['puuid']
     @connection_handler
     @staticmethod
     def get_matches_by_puuid(area: str, puuid: int):
