@@ -131,11 +131,11 @@ class PR:
                 ],
                 TelegramStr.tl_predict_half: [
                     
-                    (cls.all_kills < 10 and cls.towers_hp_less_than(90) and cls.gtime > 250),
-                    (cls.all_kills < 16 and cls.towers_hp_less_than(85) and cls.gtime > 310),
-                    (cls.all_kills < 20 and cls.towers_hp_less_than(80) and cls.gtime > 370),
-                    (cls.all_kills < 22 and cls.towers_hp_less_than(75) and cls.gtime > 420),
-                    (cls.all_kills < 28 and cls.towers_hp_less_than(70) and cls.gtime > 480),
+                    (cls.all_kills < 11 and cls.towers_hp_less_than(90) and cls.gtime > 250),
+                    (cls.all_kills < 17 and cls.towers_hp_less_than(85) and cls.gtime > 310),
+                    (cls.all_kills < 21 and cls.towers_hp_less_than(80) and cls.gtime > 370),
+                    (cls.all_kills < 26 and cls.towers_hp_less_than(75) and cls.gtime > 420),
+                    (cls.all_kills < 31 and cls.towers_hp_less_than(70) and cls.gtime > 480),
 
 
                     (cls.all_kills < 7 and cls.gtime > 240),

@@ -243,6 +243,7 @@ class MCFApi:
                                                                status=True)
             
         if response_activegame.status_code != 200:
+            logger.info(response_activegame.status_code)
             logger.info('Loading last game')
             cls.show_lastgame_info()
         else:

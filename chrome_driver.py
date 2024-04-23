@@ -3,7 +3,6 @@ import copy
 import logging
 import modules.mcf_autogui as mcf_autogui
 import modules.mcf_pillow as mcf_pillow
-from mcf_asbstract import Singleton
 from modules.mcf_storage import MCFStorage
 from modules.mcf_tracing import Trace
 from modules.mcf_predicts import PR
@@ -22,7 +21,7 @@ from selenium.common.exceptions import (
 
 logger = logging.getLogger(__name__)
 
-class Chrome(Singleton):
+class Chrome():
 
     def __init__(self) -> None:
         self.CSS_BTN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
