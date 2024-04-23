@@ -225,13 +225,13 @@ class MCFApi:
     
         logger.info('Searching...')
 
-        print(summoner_name[0].split('#')[0])
+        logger.info(summoner_name[0].split('#')[0])
 
         summoner_data = RiotAPI.get_summoner_puuid(area=CF.ACT.area, 
                                                    name=summoner_name[0])
 
-        print(summoner_data)
-        input('AWAITING...')
+        # print(summoner_data)
+        # input('AWAITING...')
         if summoner_data == 404:
             logger.warning('Summoner not found')
             return
