@@ -242,9 +242,6 @@ class MCFApi:
                                                                summid=summoner_data['puuid'],
                                                                status=True)
             
-
-        # print(response_activegame.json())
-
         if response_activegame.status_code != 200:
             logger.info('Loading last game')
             cls.show_lastgame_info()
@@ -316,11 +313,7 @@ class MCFApi:
                     )
                     
                     if common_elements == 5:
-                        # logger.info('Game ended! Restarting bot in 120s')
-                        # Validator.ended_blue_characters = None
-                        # Validator.finded_game_characerts = None
                         CF.SW.quick_end.activate()
-
                         return False
 
 

@@ -75,16 +75,16 @@ class StatsRate:
 class ActiveGameData():
     def __init__(self) -> None:
         self.cache_parse = None
-        self.nick_region = None
-        self.region = None
-        self.area = None
-        self.puuid = None
+        self.nick_region: str = None
+        self.region: str = None
+        self.area: str = None
+        self.puuid: str = None
         self.blue_team = None
         self.red_team = None
         self.finded_chars = None
-        self.match_id = None
-        self.is_game_founded = False
-        self.encryptionKey = None
+        self.match_id: str = None
+        self.is_game_founded: bool = False
+        self.encryptionKey: str = None
 
     def _reset(self):
         for attr in vars(self):

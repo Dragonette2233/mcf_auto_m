@@ -153,7 +153,7 @@ class MCFStorage:
             case _:
                 ...
 
-        if CF.VAL.predicts_debug[key] is not None:
+        if CF.VAL.pr_debug[key] is not None:
             
             value, direction, flet = CF.VAL.pr_cache[key]
 
