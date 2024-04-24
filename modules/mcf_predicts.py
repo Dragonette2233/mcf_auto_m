@@ -11,10 +11,13 @@ class Intense:
     }
 
 class PRstatic:
-    KTT_KILLS_1 = 0.045
-    KTT_KILLS_2 = 0.057
-    KTT_TOWERS_1 = 0.06
-    TW_HP = ...
+    KTT_HALF_IDX = 10.9
+    KTT_T_HALF_IDX = 11.5
+    KTT_MIDDLE_IDX = 12.1
+    KTT_FULL_IDX = ...
+    # KTT_KILLS_2 = 0.057
+    # KTT_TOWERS_1 = 0.06
+    # TW_HP = ...
 
 # class PredictsConstants:
 
@@ -96,20 +99,29 @@ class PR:
         return (None, None, None)
     
     @classmethod
-    def ktt_corr_index(cls, kills=False, towers=False) -> float:
-        
-        if kills:
-            """
-                Lower value is higher predict change (Only for TM)
-            """
-            return cls.all_kills / cls.gtime
-        
-        if towers:
-            """
-                Higher value is higher predict chance (Only for TM)
-            """
-            wretchet_tower = min(cls.score['blue_t1_hp'], cls.score['red_t1_hp'])
-            return (100 - wretchet_tower) / cls.gtime
+    def ktt_tl(cls, fl='half'):
+
+        income_idx = ( 1200 - cls.gtime ) / ( 95 - cls.all_kills )
+        wretchet_tower = min(cls.score['blue_t1_hp'], cls.score['red_t1_hp'])
+        # towers_idx = ( 100 - min(cls.score['blue_t1_hp'], cls.score['red_t1_hp']) ) / cls.gtime
+        # print(income_idx)
+        match fl:
+            case 'half':
+                if income_idx < PRstatic.KTT_HALF_IDX:
+                    return True
+            case 'half_towers':
+                towers_idx = ( 100 - wretchet_tower ) / cls.gtime
+                # print(towers_idx)
+                if income_idx < PRstatic.KTT_T_HALF_IDX and towers_idx >= 0.06:
+                    return True
+            case 'middle_towers':
+                # income_idx = (660-time)/(100-thp)
+                towers_idx = ( 660 - cls.gtime ) / ( 0.1 + wretchet_tower)
+                if income_idx < PRstatic.KTT_MIDDLE_IDX and towers_idx >= 12:
+                    return True
+            case _:
+                ...
+
     @classmethod
     def gen_main_predict(cls):
 
@@ -135,29 +147,31 @@ class PR:
                     
                 ],
                 TelegramStr.tl_predict_middle: [
+                    
+                    (cls.gtime > 249 and cls.ktt_tl(fl='middle_towers')),
 
+                    # temp deprecated predicts
                     (cls.all_kills < 14 and cls.towers_hp_less_than(30) and cls.gtime > 250), # 25 cf
                     (cls.all_kills < 20 and cls.towers_hp_less_than(25) and cls.gtime > 310),
                     (cls.all_kills < 26 and cls.towers_hp_less_than(20) and cls.gtime > 360),
                     (cls.all_kills < 32 and cls.towers_hp_less_than(15) and cls.gtime > 420),
                     (cls.all_kills < 38 and cls.towers_hp_less_than(10) and cls.gtime > 480),
 
+                    # Optional predicts
+                    (cls.all_kills < 25 and cls.straigh_leader(gold_value=2.8, towers_hp=(70, 0)) and cls.gtime > 240),
                     (cls.all_kills < 38 and cls.two_towers_destroyed() and cls.gtime > 480),
                     (cls.all_kills < 55 and cls.two_towers_destroyed(one_side=True)),
                     (cls.all_kills < 50 and cls.two_towers_destroyed(some_side=True)),
-
-                    # Optional predicts
-                    (cls.all_kills < 25 and cls.straigh_leader(gold_value=2.8, towers_hp=(70, 0)) and cls.gtime > 240),
 
                     
                 ],
                 TelegramStr.tl_predict_half: [
                     
                     # KTT predicts
-                    # (cls.gtime > 249 and cls.ktt_corr_index(kills=True) < 0.057 and cls.ktt_corr_index(towers=True) > 0.06),
-                    # (cls.gtime > 249 and cls.ktt_corr_index(kills=True) < 0.045),
+                    (cls.gtime > 249 and cls.ktt_tl(fl='half_towers')),
+                    (cls.gtime > 249 and cls.ktt_tl(fl='half')),
                     
-                    
+                    # temp deprecated predicts
                     (cls.all_kills < 11 and cls.towers_hp_less_than(90) and cls.gtime > 250), # 43 cf ## 42
                     (cls.all_kills < 17 and cls.towers_hp_less_than(85) and cls.gtime > 310), ## 44
                     (cls.all_kills < 21 and cls.towers_hp_less_than(80) and cls.gtime > 370), ## 46

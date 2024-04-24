@@ -24,21 +24,23 @@ match command:
         import copy
 
         score = {
-            'time': 540,
-            'blue_kills': 4,
-            'red_kills': 2,
+            'time': 370,
+            'blue_kills': 10,
+            'red_kills': 12,
             'blue_towers': 0,
             'red_towers': 0,
-            'blue_gold': 27.5,
-            'red_gold': 31.7,
-            'blue_t1_hp': 0,
-            'red_t1_hp': 100
+            'blue_gold': 22.8,
+            'red_gold': 22.3,
+            'blue_t1_hp': 90,
+            'red_t1_hp': 43
         }
         
         PR.score = copy.deepcopy(score)
         PR.prepare_predict_values()
 
-        print(PR.ktt_сorr_index())
+        pr = PR.gen_main_predict()
+
+        print(pr)
 
     case 'bot':
         from tg_api import TGApi
