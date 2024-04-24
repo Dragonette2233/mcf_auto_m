@@ -147,7 +147,7 @@ class PR:
                     
                     (cls.gtime > 249 and cls.ktt_tl(fl='middle_towers')),
 
-                    # temp deprecated predicts
+                    # deprecated predicts
                     # (cls.all_kills < 14 and cls.towers_hp_less_than(30) and cls.gtime > 250), # 25 cf
                     # (cls.all_kills < 20 and cls.towers_hp_less_than(25) and cls.gtime > 310),
                     # (cls.all_kills < 26 and cls.towers_hp_less_than(20) and cls.gtime > 360),
@@ -168,7 +168,7 @@ class PR:
                     (cls.gtime > 249 and cls.ktt_tl(fl='half_towers')),
                     (cls.gtime > 249 and cls.ktt_tl(fl='half')),
                     
-                    # temp deprecated predicts
+                    # deprecated predicts
                     # (cls.all_kills < 11 and cls.towers_hp_less_than(90) and cls.gtime > 250), # 43 cf ## 42
                     # (cls.all_kills < 17 and cls.towers_hp_less_than(85) and cls.gtime > 310), ## 44
                     # (cls.all_kills < 21 and cls.towers_hp_less_than(80) and cls.gtime > 370), ## 46
