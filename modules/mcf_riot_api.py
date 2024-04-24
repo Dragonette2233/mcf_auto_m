@@ -36,15 +36,21 @@ class RiotAPI:
     @connection_handler
     @staticmethod
     def get_summoner_puuid(area: str, name: str, puuid=False) -> dict:
+
+        if area == 'sea':
+            area = 'asia'
+
         nickName, tagLine = name.split('#')
         result = requests.get(RiotAPI.__link_summoner_by_riotId.format(area=area, nickName=nickName, tagLine=tagLine), 
                               **Headers.riot)
         # print('im here', result.text)
-        status = result.status_code
-        if status in (403, 404):
-            return status
         
-        return result.json()['puuid']
+        status = result.status_code
+        if status != 200:
+            logger.warning(result.json())
+            return status
+        else:
+            return result.json()['puuid']
     @connection_handler
     @staticmethod
     def get_matches_by_puuid(area: str, puuid: int):

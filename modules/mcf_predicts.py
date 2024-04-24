@@ -10,8 +10,10 @@ class Intense:
         'middle_2': range(420, 480)
     }
 
-class RNG:
-    KILLS = range(11, 42)
+class PRstatic:
+    KTT_KILLS_1 = 0.045
+    KTT_KILLS_2 = 0.057
+    KTT_TOWERS_1 = 0.06
     TW_HP = ...
 
 # class PredictsConstants:
@@ -94,9 +96,20 @@ class PR:
         return (None, None, None)
     
     @classmethod
-    def total_lower_half_flet(cls):
-        ...
-
+    def ktt_corr_index(cls, kills=False, towers=False) -> float:
+        
+        if kills:
+            """
+                Lower value is higher predict change (Only for TM)
+            """
+            return cls.all_kills / cls.gtime
+        
+        if towers:
+            """
+                Higher value is higher predict chance (Only for TM)
+            """
+            wretchet_tower = min(cls.score['blue_t1_hp'], cls.score['red_t1_hp'])
+            return (100 - wretchet_tower) / cls.gtime
     @classmethod
     def gen_main_predict(cls):
 
@@ -140,23 +153,21 @@ class PR:
                 ],
                 TelegramStr.tl_predict_half: [
                     
-                    (cls.all_kills < 11 and cls.towers_hp_less_than(90) and cls.gtime > 250), # 43 cf
-                    (cls.all_kills < 17 and cls.towers_hp_less_than(85) and cls.gtime > 310),
-                    (cls.all_kills < 21 and cls.towers_hp_less_than(80) and cls.gtime > 370),
-                    (cls.all_kills < 26 and cls.towers_hp_less_than(75) and cls.gtime > 420),
-                    (cls.all_kills < 31 and cls.towers_hp_less_than(70) and cls.gtime > 480),
+                    # KTT predicts
+                    # (cls.gtime > 249 and cls.ktt_corr_index(kills=True) < 0.057 and cls.ktt_corr_index(towers=True) > 0.06),
+                    # (cls.gtime > 249 and cls.ktt_corr_index(kills=True) < 0.045),
+                    
+                    
+                    (cls.all_kills < 11 and cls.towers_hp_less_than(90) and cls.gtime > 250), # 43 cf ## 42
+                    (cls.all_kills < 17 and cls.towers_hp_less_than(85) and cls.gtime > 310), ## 44
+                    (cls.all_kills < 21 and cls.towers_hp_less_than(80) and cls.gtime > 370), ## 46
+                    (cls.all_kills < 26 and cls.towers_hp_less_than(75) and cls.gtime > 420), ## 47
+                    (cls.all_kills < 31 and cls.towers_hp_less_than(70) and cls.gtime > 480), ## 49
 
-
-                    (cls.all_kills < 7 and cls.gtime > 240), # 16 cf w/o !towers
-                    (cls.all_kills < 10 and cls.gtime > 300),
-                    (cls.all_kills < 13 and cls.gtime > 360),
-                    (cls.all_kills < 16 and cls.gtime > 420),
-                    (cls.all_kills < 19 and cls.gtime > 480),
-
+                    
+                    # Optional predicts
                     (cls.all_kills <= 30 and cls.module_kills >= 15 and cls.gtime > 420),
                     (cls.all_kills <= 38 and cls.module_kills >= 20 and cls.gtime > 420),
-
-                    # Optional predicts
                     (cls.all_kills < 18 and cls.towers_hp_less_than(15) and cls.module_gold > 0.6 and cls.gtime > 240),
                     (cls.all_kills < 31 and cls.towers_hp_less_than(5) and cls.module_gold > 3.0 and cls.gtime > 380),
                     
@@ -184,3 +195,6 @@ class PR:
             }
 
         return cls.predict_possible(predictions=spredictions, key='stats')
+    
+
+# PR.ktt_corr_index

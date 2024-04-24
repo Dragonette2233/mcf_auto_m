@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 CF = ControlFlow()
 
 # command: str = input('Enter test command: ')
-command = 'parse'
+command = 'pr_test'
 match command:
     case 'game_find':
         from mcf_api import MCFApi
@@ -24,11 +24,11 @@ match command:
         import copy
 
         score = {
-            'time': 420,
-            'blue_kills': 15,
-            'red_kills': 30,
+            'time': 540,
+            'blue_kills': 4,
+            'red_kills': 2,
             'blue_towers': 0,
-            'red_towers': 1,
+            'red_towers': 0,
             'blue_gold': 27.5,
             'red_gold': 31.7,
             'blue_t1_hp': 0,
@@ -38,11 +38,7 @@ match command:
         PR.score = copy.deepcopy(score)
         PR.prepare_predict_values()
 
-        if not CF.VAL.pr_cache['main']:
-            main_predict = PR.gen_main_predict()
-            print(main_predict)
-        
-        print(CF.VAL.pr_cache)
+        print(PR.ktt_сorr_index())
 
     case 'bot':
         from tg_api import TGApi
