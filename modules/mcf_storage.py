@@ -154,7 +154,7 @@ class MCFStorage:
                 ...
 
         if CF.VAL.pr_debug[key] is not None:
-            
+            CF.VAL.pr_debug[key] = None
             value, direction, flet = CF.VAL.pr_cache[key]
 
             open('./untracking/reg_debug.txt', 'a+', encoding='utf-8').writelines(
