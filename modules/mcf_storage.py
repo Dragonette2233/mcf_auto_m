@@ -154,11 +154,12 @@ class MCFStorage:
                 ...
 
         if CF.VAL.pr_debug[key] is not None:
-            CF.VAL.pr_debug[key] = None
+            
             value, direction, flet = CF.VAL.pr_cache[key]
 
             open('./untracking/reg_debug.txt', 'a+', encoding='utf-8').writelines(
                     f"{direction}_{flet} #{CF.VAL.pr_debug[key]} | Val_End: {value}_{kills} | Roles: {CF.SR.blue_roles}_{CF.SR.red_roles}\n"
                 )
+            CF.VAL.pr_debug[key] = None
         
         SafeJson.dump(json_path=predicts_path, data=data)
