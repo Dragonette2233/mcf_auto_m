@@ -11,7 +11,7 @@ class Intense:
     }
 
 class PRstatic:
-    
+
     KTT_HALF_IDX = 10.9
     KTT_T_HALF_IDX = 11.5
     KTT_MIDDLE_IDX = 12.1
@@ -27,6 +27,9 @@ class PR:
     module_gold = 0
     gold_equals = 0
 
+    income_ktt_idx = 0
+    wretched_tower = 0
+
     @classmethod
     def prepare_predict_values(cls):
 
@@ -35,6 +38,8 @@ class PR:
         cls.module_kills = abs(cls.sc['blue_kills'] - cls.sc['red_kills'])
         cls.module_gold = abs(cls.sc['blue_gold'] - cls.sc['red_gold'])
         cls.gold_equals = cls.module_gold < 1.5
+        cls.income_ktt_idx = ( 1200 - cls.gtime ) / ( 95 - cls.all_kills )
+        cls.wretched_tower = min(cls.sc['blue_t1_hp'], cls.sc['red_t1_hp'])
 
     @classmethod
     def straigh_leader(cls, gold_value, towers_hp: tuple):
@@ -115,23 +120,20 @@ class PR:
     @classmethod
     def ktt_tl(cls, fl='half'):
 
-        income_idx = ( 1200 - cls.gtime ) / ( 95 - cls.all_kills )
-        wretchet_tower = min(cls.sc['blue_t1_hp'], cls.sc['red_t1_hp'])
-        print(income_idx)
         match fl:
             case 'half':
-                if income_idx < PRstatic.KTT_HALF_IDX:
+                if cls.income_idx < PRstatic.KTT_HALF_IDX:
                     return True
             case 'half_towers':
-                towers_idx = ( 100 - wretchet_tower ) / cls.gtime
-                if income_idx < PRstatic.KTT_T_HALF_IDX and towers_idx >= 0.06:
+                towers_idx = ( 100 - cls.wretchet_tower ) / cls.gtime
+                if cls.income_idx < PRstatic.KTT_T_HALF_IDX and towers_idx >= 0.06:
                     return True
             case 'middle_towers':
-                towers_idx = ( 660 - cls.gtime ) / ( 0.1 + wretchet_tower)
-                if income_idx < PRstatic.KTT_MIDDLE_IDX and towers_idx >= 12:
+                towers_idx = ( 660 - cls.gtime ) / ( 0.1 + cls.wretchet_tower)
+                if cls.income_idx < PRstatic.KTT_MIDDLE_IDX and towers_idx >= 12:
                     return True
             case 'full':
-                if income_idx < PRstatic.KTT_FULL_IDX and cls.ktt_straigh_leader():
+                if cls.income_idx < PRstatic.KTT_FULL_IDX and cls.ktt_straigh_leader():
                     return True
                 ...
 
