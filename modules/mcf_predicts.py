@@ -125,11 +125,11 @@ class PR:
                 if cls.income_ktt_idx < PRstatic.KTT_HALF_IDX:
                     return True
             case 'half_towers':
-                towers_idx = ( 100 - cls.wretchet_tower ) / cls.gtime
+                towers_idx = ( 100 - cls.wretched_tower ) / cls.gtime
                 if cls.income_ktt_idx < PRstatic.KTT_T_HALF_IDX and towers_idx >= 0.06:
                     return True
             case 'middle_towers':
-                towers_idx = ( 660 - cls.gtime ) / ( 0.1 + cls.wretchet_tower)
+                towers_idx = ( 660 - cls.gtime ) / ( 0.1 + cls.wretched_tower)
                 if cls.income_ktt_idx < PRstatic.KTT_MIDDLE_IDX and towers_idx >= 12:
                     return True
             case 'full':
