@@ -11,19 +11,15 @@ class Intense:
     }
 
 class PRstatic:
+    
     KTT_HALF_IDX = 10.9
     KTT_T_HALF_IDX = 11.5
     KTT_MIDDLE_IDX = 12.1
-    KTT_FULL_IDX = ...
-    # KTT_KILLS_2 = 0.057
-    # KTT_TOWERS_1 = 0.06
-    # TW_HP = ...
-
-# class PredictsConstants:
+    KTT_FULL_IDX = 12.8
 
 class PR:
 
-    score = None
+    sc = None
 
     gtime = 0
     all_kills = 0
@@ -34,23 +30,41 @@ class PR:
     @classmethod
     def prepare_predict_values(cls):
 
-        cls.gtime = cls.score['time']
-        cls.all_kills = cls.score['blue_kills'] + cls.score['red_kills']
-        cls.module_kills = abs(cls.score['blue_kills'] - cls.score['red_kills'])
-        cls.module_gold = abs(cls.score['blue_gold'] - cls.score['red_gold'])
+        cls.gtime = cls.sc['time']
+        cls.all_kills = cls.sc['blue_kills'] + cls.sc['red_kills']
+        cls.module_kills = abs(cls.sc['blue_kills'] - cls.sc['red_kills'])
+        cls.module_gold = abs(cls.sc['blue_gold'] - cls.sc['red_gold'])
         cls.gold_equals = cls.module_gold < 1.5
 
     @classmethod
     def straigh_leader(cls, gold_value, towers_hp: tuple):
 
-        blue_kills_lead = cls.score['blue_kills'] > cls.score['red_kills'] and cls.module_kills > 5
-        red_kills_lead = cls.score['red_kills'] > cls.score['blue_kills'] and cls.module_kills > 5
+        blue_kills_lead = cls.sc['blue_kills'] > cls.sc['red_kills'] and cls.module_kills > 5
+        red_kills_lead = cls.sc['red_kills'] > cls.sc['blue_kills'] and cls.module_kills > 5
 
-        blue_gold_lead = cls.score['blue_gold'] > cls.score['red_gold'] and cls.module_gold > gold_value
-        red_gold_lead = cls.score['red_gold'] > cls.score['blue_gold'] and cls.module_gold > gold_value
+        blue_gold_lead = cls.sc['blue_gold'] > cls.sc['red_gold'] and cls.module_gold > gold_value
+        red_gold_lead = cls.sc['red_gold'] > cls.sc['blue_gold'] and cls.module_gold > gold_value
 
-        blue_towers_lead = cls.score['blue_t1_hp'] > towers_hp[0] and cls.score['red_t1_hp'] < towers_hp[1]#  and blue_gold_winner
-        red_towers_lead = cls.score['red_t1_hp'] > towers_hp[0] and cls.score['blue_t1_hp'] < towers_hp[1]#  and red_gold_winner
+        blue_towers_lead = cls.sc['blue_t1_hp'] > towers_hp[0] and cls.sc['red_t1_hp'] < towers_hp[1]#  and blue_gold_winner
+        red_towers_lead = cls.sc['red_t1_hp'] > towers_hp[0] and cls.sc['blue_t1_hp'] < towers_hp[1]#  and red_gold_winner
+
+        blue_leader = blue_kills_lead and blue_gold_lead and blue_towers_lead
+        red_leader = red_kills_lead and red_gold_lead and red_towers_lead
+
+        return blue_leader or red_leader
+    
+    @classmethod
+    def ktt_straigh_leader(cls):
+
+        # kills coeff 0.52 | gold coeff 0.9
+        blue_kills_lead = cls.sc['blue_kills'] > cls.sc['red_kills'] and cls.sc['red_kills'] / cls.sc['blue_kills'] < 0.52
+        red_kills_lead = cls.sc['red_kills'] > cls.sc['blue_kills'] and cls.sc['blue_kills'] / cls.sc['red_kills'] < 0.52
+
+        blue_gold_lead = cls.sc['blue_gold'] > cls.sc['red_gold'] and cls.sc['red_gold'] / cls.sc['blue_gold'] < 0.9
+        red_gold_lead = cls.sc['red_gold'] > cls.sc['blue_gold'] and cls.sc['red_gold'] / cls.sc['blue_gold'] < 0.9
+
+        blue_towers_lead = cls.sc['blue_t1_hp'] > 45 and cls.sc['red_t1_hp'] < 30
+        red_towers_lead = cls.sc['red_t1_hp'] > 45 and cls.sc['blue_t1_hp'] < 30
 
         blue_leader = blue_kills_lead and blue_gold_lead and blue_towers_lead
         red_leader = red_kills_lead and red_gold_lead and red_towers_lead
@@ -66,27 +80,27 @@ class PR:
     def two_towers_destroyed(cls, one_side=False, some_side=False, equals=False):
 
         if some_side:
-            return cls.score['blue_towers'] > 1 or cls.score['red_towers'] > 1
+            return cls.sc['blue_towers'] > 1 or cls.sc['red_towers'] > 1
         
         if one_side:
-            blue_leader = cls.score['blue_towers'] > 1 and cls.score['red_towers'] == 0
-            red_leader = cls.score['red_towers'] > 1 and cls.score['blue_towers'] == 0
+            blue_leader = cls.sc['blue_towers'] > 1 and cls.sc['red_towers'] == 0
+            red_leader = cls.sc['red_towers'] > 1 and cls.sc['blue_towers'] == 0
             return blue_leader or red_leader
 
         if equals:
-            return cls.score['blue_towers'] == 1 and cls.score['red_towers'] == 1
+            return cls.sc['blue_towers'] == 1 and cls.sc['red_towers'] == 1
 
-        return cls.score['blue_towers'] + cls.score['red_towers'] > 1
+        return cls.sc['blue_towers'] + cls.sc['red_towers'] > 1
 
     @classmethod
     def towers_hp_more_than(cls, hp: int):
 
-        return cls.score['blue_t1_hp'] > hp and cls.score['red_t1_hp'] > hp
+        return cls.sc['blue_t1_hp'] > hp and cls.sc['red_t1_hp'] > hp
     
     @classmethod
     def towers_hp_less_than(cls, hp: int):
 
-        return cls.score['blue_t1_hp'] < hp or cls.score['red_t1_hp'] < hp
+        return cls.sc['blue_t1_hp'] < hp or cls.sc['red_t1_hp'] < hp
 
     @classmethod
     def predict_possible(cls, predictions: dict, key: str):
@@ -102,8 +116,8 @@ class PR:
     def ktt_tl(cls, fl='half'):
 
         income_idx = ( 1200 - cls.gtime ) / ( 95 - cls.all_kills )
-        wretchet_tower = min(cls.score['blue_t1_hp'], cls.score['red_t1_hp'])
-    
+        wretchet_tower = min(cls.sc['blue_t1_hp'], cls.sc['red_t1_hp'])
+        print(income_idx)
         match fl:
             case 'half':
                 if income_idx < PRstatic.KTT_HALF_IDX:
@@ -116,7 +130,9 @@ class PR:
                 towers_idx = ( 660 - cls.gtime ) / ( 0.1 + wretchet_tower)
                 if income_idx < PRstatic.KTT_MIDDLE_IDX and towers_idx >= 12:
                     return True
-            case _:
+            case 'full':
+                if income_idx < PRstatic.KTT_FULL_IDX and cls.ktt_straigh_leader():
+                    return True
                 ...
 
     @classmethod
@@ -131,16 +147,15 @@ class PR:
                 ],
                 
                 TelegramStr.tl_predict_full: [
+                    
+                    (cls.gtime > 249 and cls.ktt_tl(fl='full')),
 
-                    (cls.all_kills < 16 and cls.straigh_leader(gold_value=2.0, towers_hp=(75, 30)) and cls.gtime > 250),
-                    (cls.all_kills < 22 and cls.straigh_leader(gold_value=2.0, towers_hp=(65, 25)) and cls.gtime > 310),
-                    (cls.all_kills < 28 and cls.straigh_leader(gold_value=2.2, towers_hp=(60, 20)) and cls.gtime > 360),
-                    (cls.all_kills < 33 and cls.straigh_leader(gold_value=2.2, towers_hp=(55, 15)) and cls.gtime > 420),
-                    (cls.all_kills < 42 and cls.straigh_leader(gold_value=2.5, towers_hp=(50, 10)) and cls.gtime > 540),
-                    (cls.all_kills < 50 and cls.straigh_leader(gold_value=2.5, towers_hp=(45, 5)) and cls.module_kills > 13 and cls.gtime > 540),
-
-                    # Optional predicts
-                    # (cls.all_kills < 39 and cls.straigh_leader(gold_value=0.8, towers_hp=(80, 10)) and cls.gtime > 400),
+                    # (cls.all_kills < 16 and cls.straigh_leader(gold_value=2.0, towers_hp=(75, 30)) and cls.gtime > 250),
+                    # (cls.all_kills < 22 and cls.straigh_leader(gold_value=2.0, towers_hp=(65, 25)) and cls.gtime > 310),
+                    # (cls.all_kills < 28 and cls.straigh_leader(gold_value=2.2, towers_hp=(60, 20)) and cls.gtime > 360),
+                    # (cls.all_kills < 33 and cls.straigh_leader(gold_value=2.2, towers_hp=(55, 15)) and cls.gtime > 420),
+                    # (cls.all_kills < 42 and cls.straigh_leader(gold_value=2.5, towers_hp=(50, 10)) and cls.gtime > 540),
+                    # (cls.all_kills < 50 and cls.straigh_leader(gold_value=2.5, towers_hp=(45, 5)) and cls.module_kills > 13 and cls.gtime > 540),
                     
                 ],
                 TelegramStr.tl_predict_middle: [
@@ -152,15 +167,8 @@ class PR:
                     # (cls.all_kills < 20 and cls.towers_hp_less_than(25) and cls.gtime > 310),
                     # (cls.all_kills < 26 and cls.towers_hp_less_than(20) and cls.gtime > 360),
                     # (cls.all_kills < 32 and cls.towers_hp_less_than(15) and cls.gtime > 420),
-                    # (cls.all_kills < 38 and cls.towers_hp_less_than(10) and cls.gtime > 480),
-
-                    # Optional predicts
-                    (cls.all_kills < 25 and cls.straigh_leader(gold_value=2.8, towers_hp=(70, 0)) and cls.gtime > 240),
-                    (cls.all_kills < 38 and cls.two_towers_destroyed() and cls.gtime > 480),
-                    (cls.all_kills < 55 and cls.two_towers_destroyed(one_side=True)),
-                    (cls.all_kills < 50 and cls.two_towers_destroyed(some_side=True)),
-
-                    
+                    # (cls.all_kills < 38 and cls.towers_hp_less_than(10) and cls.gtime > 480)
+                                        
                 ],
                 TelegramStr.tl_predict_half: [
                     
@@ -181,6 +189,10 @@ class PR:
                     (cls.all_kills <= 38 and cls.module_kills >= 20 and cls.gtime > 420),
                     (cls.all_kills < 18 and cls.towers_hp_less_than(15) and cls.module_gold > 0.6 and cls.gtime > 240),
                     (cls.all_kills < 31 and cls.towers_hp_less_than(5) and cls.module_gold > 3.0 and cls.gtime > 380),
+                    (cls.all_kills < 25 and cls.straigh_leader(gold_value=2.8, towers_hp=(70, 0)) and cls.gtime > 240),
+                    (cls.all_kills < 38 and cls.two_towers_destroyed() and cls.gtime > 480),
+                    (cls.all_kills < 55 and cls.two_towers_destroyed(one_side=True)),
+                    (cls.all_kills < 50 and cls.two_towers_destroyed(some_side=True)),
                     
 
                 ]

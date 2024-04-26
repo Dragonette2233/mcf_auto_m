@@ -24,18 +24,18 @@ match command:
         import copy
 
         score = {
-            'time': 600,
-            'blue_kills': 17,
-            'red_kills': 12,
+            'time': 251,
+            'blue_kills': 12,
+            'red_kills': 11,
             'blue_towers': 0,
             'red_towers': 0,
             'blue_gold': 24.8,
-            'red_gold': 22.3,
-            'blue_t1_hp': 100,
-            'red_t1_hp': 100
+            'red_gold': 23.6,
+            'blue_t1_hp': 70,
+            'red_t1_hp': 0
         }
         
-        PR.score = copy.deepcopy(score)
+        PR.sc = copy.deepcopy(score)
         PR.prepare_predict_values()
 
         pr = PR.gen_main_predict()
