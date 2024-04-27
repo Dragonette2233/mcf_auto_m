@@ -114,7 +114,7 @@ class PATH:
     JSON_GAMEDATA = os.path.join(MCF_BOT, 'untracking', 'GameData.json')
     SCREEN_GAMESCORE = os.path.join(MCF_BOT, 'images_lib', 'gamescore_PIL.png')
     SPECTATOR_FILE = os.path.join(MCF_BOT, 'mcf_lib', 'spectate.bat')
-    STATISTICS = os.path.join(MCF_BOT, 'mcf_lib', 'stats_38.txt')
+    STATISTICS = os.path.join(MCF_BOT, 'mcf_lib', 'stats_425.txt')
 
     """
         Untracking pathes
