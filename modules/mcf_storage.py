@@ -1,5 +1,5 @@
 import json
-import redis
+# import redis
 import logging
 from datetime import datetime
 from dynamic_data import CF
@@ -7,7 +7,7 @@ from static_data import PATH
 
 logger = logging.getLogger(__name__)
 
-r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+# r = redis.Redis(host='localhost', port=6379, decode_responses=True)
 
 
 class SafeJson:
@@ -44,12 +44,12 @@ class MCFStorage:
         # open()
     @classmethod
     def save_score(cls, score: dict = None, stop_tracking=False):
-
-        if stop_tracking:
-            r.set('is_active', 0)
-        else:
-            for key, value in score.items():
-                r.set(key, value)
+        ...
+        # if stop_tracking:
+        #     r.set('is_active', 0)
+        # else:
+        #     for key, value in score.items():
+        #         r.set(key, value)
 
     @classmethod
     def get_selective_data(cls, route: tuple):

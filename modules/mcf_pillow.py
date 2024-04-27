@@ -15,13 +15,8 @@ def greyshade_array(image_path):
     return np.array(Image.open(image_path).convert('L'))
 
 def is_game_started():
-    from dynamic_data import Validator
-    from dynamic_data import Switches
-    from static_data import (
-        # Validator,
-        GREYSHADE
-    )
-    # print(bozya)
+    from static_data import GREYSHADE
+
     image_ = ImageGrab.grab()
 
     if not CF.SW.cache_done.is_active():
@@ -84,7 +79,7 @@ def generate_scoreboard():
         time.sleep(0.05)
         blue_shot = ImageGrab.grab()
         blue_t1_health = ScoreRecognition.towers_healh_recognition(image=blue_shot)
-        if not blue_t1_health:
+        if not blue_t1_health or blue_t1_health > CF.TW_HP.blue_backup:
             blue_t1_health = CF.TW_HP.blue_backup
         else:
             CF.TW_HP.blue_backup = blue_t1_health
@@ -98,7 +93,7 @@ def generate_scoreboard():
         time.sleep(0.05)
         red_shot = ImageGrab.grab()
         red_t1_health = ScoreRecognition.towers_healh_recognition(image=red_shot)
-        if not red_t1_health:
+        if not red_t1_health or red_t1_health > CF.TW_HP.red_backup:
             red_t1_health = CF.TW_HP.red_backup
         else:
             CF.TW_HP.red_backup = red_t1_health
@@ -108,6 +103,6 @@ def generate_scoreboard():
     score['blue_t1_hp'] = blue_t1_health
     score['red_t1_hp'] = red_t1_health
 
-    MCFStorage.save_score(score=score)
+    # MCFStorage.save_score(score=score)
 
     return score
