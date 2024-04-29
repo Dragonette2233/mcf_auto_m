@@ -43,8 +43,8 @@ class Trace:
         
         data = cls.get_json()
         data[cls.tracing_game]['income'] = [
-            CF.SR.blue_roles,
-            CF.SR.red_roles,
+            f'{CF.SR.blue_roles}__{CF.SR.blue_characters}',
+            f'{CF.SR.red_roles}__{CF.SR.red_characters}',
             score["blue_kills"],
             score["red_kills"],
             score["blue_towers"],

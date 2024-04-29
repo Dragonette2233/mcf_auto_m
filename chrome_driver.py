@@ -157,8 +157,9 @@ class Chrome():
         if score['time'] in TRACE_RANGE and not CF.SW.tracer.is_active():
             Trace.add_tracing(score=score)
 
-        PR.sc = copy.deepcopy(score)
-        PR.prepare_predict_values()
+        if not CF.VAL.pr_collected():
+            PR.sc = copy.deepcopy(score)
+            PR.prepare_predict_values()
 
         if not CF.VAL.pr_cache['main']:
             main_predict = PR.gen_main_predict()

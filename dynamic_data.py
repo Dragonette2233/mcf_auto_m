@@ -2,6 +2,9 @@ from mcf_asbstract import BoolSwitch, Singleton
 
 class StatsRate:
     def __init__(self) -> None:
+        self.blue_characters = ''
+        self.red_characters = ''
+
         self.blue_roles = None
         self.red_roles = None
 
@@ -21,15 +24,17 @@ class StatsRate:
                 blue_entry=team_blue,
                 red_entry=team_red,
             )
-        if stats_result is not None:
-            self.blue_roles = stats_result['blue_roles']
-            self.red_roles = stats_result['red_roles']
-            self.blue_rate = stats_result['w1']
-            self.red_rate = stats_result['w2']
-            self.tb_rate = stats_result['tb']
-            self.tl_rate = stats_result['tl']
-            self.games_all = stats_result['all_m']
-            self.games_totals = stats_result['all_ttl']
+       
+        self.blue_characters = ' '.join(team_blue)
+        self.red_characters = ' '.join(team_red)
+        self.blue_roles = stats_result['blue_roles']
+        self.red_roles = stats_result['red_roles']
+        self.blue_rate = stats_result['w1']
+        self.red_rate = stats_result['w2']
+        self.tb_rate = stats_result['tb']
+        self.tl_rate = stats_result['tl']
+        self.games_all = stats_result['all_m']
+        self.games_totals = stats_result['all_ttl']
     
     def is_stats_avaliable(self):
         if self.games_all != 0:
@@ -145,6 +150,10 @@ class Validator():
         self.pr_debug['stats'] = 0
         self.findgame = 0
         self.recognition = 0
+
+    def pr_collected(self):
+        return all([self.pr_cache['main'], self.pr_cache['stats']])
+    
 
 class ControlFlow(Singleton):
     def init(self) -> None:
