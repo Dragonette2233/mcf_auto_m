@@ -24,7 +24,7 @@ match command:
         import copy
 
         score = {
-            'time': 251,
+            'time': 360,
             'blue_kills': 12,
             'red_kills': 11,
             'blue_towers': 0,
@@ -32,7 +32,7 @@ match command:
             'blue_gold': 24.8,
             'red_gold': 23.6,
             'blue_t1_hp': 70,
-            'red_t1_hp': 0
+            'red_t1_hp': 20
         }
         
         PR.sc = copy.deepcopy(score)

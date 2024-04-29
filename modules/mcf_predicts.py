@@ -14,7 +14,7 @@ class PRstatic:
 
     KTT_HALF_IDX = 10.9
     KTT_T_HALF_IDX = 11.5
-    KTT_MIDDLE_IDX = 12.1
+    KTT_MIDDLE_IDX = 11.9
     KTT_FULL_IDX = 12.8
 
     KTT_TW_HALF = 4.8
