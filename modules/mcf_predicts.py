@@ -118,8 +118,6 @@ class PR:
     @classmethod
     def ktt_tb(cls, pr_type):
         
-        
-
         match pr_type:
             case 'main':
                 if cls.tb_ktt_idx <= 8.45 and cls.tb_towers_idx <= 3.6 and cls.module_kills_idx >= 0.75:
