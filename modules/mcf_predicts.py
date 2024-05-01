@@ -30,7 +30,7 @@ class PR:
     module_gold = 0
     gold_equals = 0
 
-    income_ktt_idx = 0
+    tl_ktt_idx = 0
     wretched_tower = 0
     towers_idx = 0 
 
@@ -43,10 +43,15 @@ class PR:
         cls.module_gold = abs(cls.sc['blue_gold'] - cls.sc['red_gold'])
         cls.gold_equals = cls.module_gold < 1.5
 
-        cls.income_ktt_idx = ( 1200 - cls.gtime ) / ( 95 - cls.all_kills )
+        cls.tl_ktt_idx = ( 1200 - cls.gtime ) / ( 95 - cls.all_kills )
+        cls.tb_ktt_idx = ( 1000 + cls.gtime ) / ( 120 + cls.all_kills )
         cls.wretched_tower = min(cls.sc['blue_t1_hp'], cls.sc['red_t1_hp'])
+
         cls.towers_idx = ( 660 - cls.gtime ) / ( 0.1 + cls.wretched_tower)
-    
+        cls.tb_towers_idx = ( 900 - cls.gtime ) / ( 100 + cls.wretched_tower)
+
+        cls.module_kills_idx = min(cls.sc['blue_kills'], cls.sc['red_kills']) / max(cls.sc['blue_kills'], cls.sc['red_kills'])
+
     @classmethod
     def ktt_straigh_leader(cls):
 
@@ -65,6 +70,10 @@ class PR:
 
         return blue_leader or red_leader
     
+    @classmethod
+    def gold_not_equals(cls):
+        return abs(cls.sc['blue_gold'] - cls.sc['red_gold']) > 1.3
+
     @classmethod
     def kills_gold_equals(cls, kills, gold):
 
@@ -107,22 +116,35 @@ class PR:
         return (None, None, None)
     
     @classmethod
+    def ktt_tb(cls, pr_type):
+        
+        
+
+        match pr_type:
+            case 'main':
+                if cls.tb_ktt_idx <= 8.45 and cls.tb_towers_idx <= 3.6 and cls.module_kills_idx >= 0.75:
+                    return True
+            case 'stats':
+                if cls.tb_ktt_idx <= 8.8 and cls.tb_towers_idx <= 3.9 and cls.module_kills_idx >= 0.75:
+                    return True
+        
+    @classmethod
     def ktt_tl(cls, fl='half'):
 
         match fl:
             case 'half':
-                if cls.income_ktt_idx < PRstatic.KTT_T_HALF_IDX and cls.towers_idx >= PRstatic.KTT_TW_HALF: # >= 4.8
+                if cls.tl_ktt_idx < PRstatic.KTT_T_HALF_IDX and cls.towers_idx >= PRstatic.KTT_TW_HALF: # >= 4.8
                     return True
                 
-                if cls.income_ktt_idx < PRstatic.KTT_HALF_IDX:
+                if cls.tl_ktt_idx < PRstatic.KTT_HALF_IDX:
                     return True
             
             case 'middle':
-                if cls.income_ktt_idx < PRstatic.KTT_MIDDLE_IDX and cls.towers_idx >= PRstatic.KTT_TW_MIDDLE:
+                if cls.tl_ktt_idx < PRstatic.KTT_MIDDLE_IDX and cls.towers_idx >= PRstatic.KTT_TW_MIDDLE:
                     return True
                 
             case 'full':
-                if cls.income_ktt_idx < PRstatic.KTT_FULL_IDX and cls.ktt_straigh_leader():
+                if cls.tl_ktt_idx < PRstatic.KTT_FULL_IDX and cls.ktt_straigh_leader():
                     return True
                 ...
 
@@ -132,8 +154,7 @@ class PR:
         predictions = {
 
                 TelegramStr.tb_predict_half: [
-                    (cls.kills_gold_equals(kills=60, gold=1.2) and cls.towers_hp_more_than(hp=50) and cls.gtime < 480 and CF.SR.tanks_in_teams()),
-                    (cls.kills_gold_equals(kills=80, gold=1.2) and cls.two_towers_destroyed(equals=True) and cls.gtime < 540 and CF.SR.tanks_in_teams()),
+                    (cls.gtime > 360 and cls.ktt_tb(pr_type='main')),
                 ],
                 
                 TelegramStr.tl_predict_full: [    
@@ -173,8 +194,8 @@ class PR:
                     (CF.SR.tl_accepted() and cls.all_kills < 35 and CF.SR.tanks_in_teams(both_excluded=True) and cls.gtime > 400)
                 ],
                 TelegramStr.tb_spredict_half: [
-                    (CF.SR.tb_accepted() and cls.kills_gold_equals(kills=45, gold=1.5) and cls.gtime < 480),
-                    (CF.SR.tb_accepted() and cls.kills_gold_equals(kills=30, gold=1.5) and CF.SR.tanks_in_teams() and cls.gtime < 400),
+                    (CF.SR.tb_accepted() and cls.gtime > 360 and cls.ktt_tb(pr_type='stats')),
+                    (CF.SR.tb_accepted() and False),
                 ]
             }
 

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 CF = ControlFlow()
 
 # command: str = input('Enter test command: ')
-command = 'spectate'
+command = 'pr_test'
 match command:
     case 'spectate':
         from mcf_api import MCFApi
@@ -43,24 +43,29 @@ match command:
         from modules.mcf_predicts import PR
         import copy
 
+        CF.SR.tb_rate[1] = CF.SR.WINNER
+        CF.SR.games_all = 1
+
         score = {
-            'time': 360,
-            'blue_kills': 12,
-            'red_kills': 11,
+            'time': 362,
+            'blue_kills': 10,
+            'red_kills': 12,
             'blue_towers': 0,
             'red_towers': 0,
             'blue_gold': 24.8,
             'red_gold': 23.6,
             'blue_t1_hp': 70,
-            'red_t1_hp': 20
+            'red_t1_hp': 50
         }
         
         PR.sc = copy.deepcopy(score)
         PR.prepare_predict_values()
 
         pr = PR.gen_main_predict()
+        pr_2 = PR.gen_stats_predict()
 
         print(pr)
+        print(pr_2)
 
 
     case 'bot':
