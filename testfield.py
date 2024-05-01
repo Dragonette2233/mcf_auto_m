@@ -12,8 +12,28 @@ logger = logging.getLogger(__name__)
 CF = ControlFlow()
 
 # command: str = input('Enter test command: ')
-command = 'pr_test'
+command = 'spectate'
 match command:
+    case 'spectate':
+        from mcf_api import MCFApi
+        
+        spec_file = open('stats_field/LoG.bat').readlines()
+        g_data = spec_file[-21].split()
+        rg = g_data[9][:-1]
+        
+
+        CF.ACT.encryptionKey = g_data[7]
+        CF.ACT.region = rg.lower()
+        CF.ACT.match_id =f"{rg}_{g_data[8]}"
+        
+        print(CF.ACT.encryptionKey)
+        print(CF.ACT.region)
+        print(CF.ACT.match_id)
+        # input()
+
+        MCFApi.spectate_active_game()
+
+
     case 'game_find':
         from mcf_api import MCFApi
 

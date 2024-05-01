@@ -292,7 +292,7 @@ class MCFApi:
         enc_key = CF.ACT.encryptionKey
         spectator = SPECTATOR_MODE.format(reg=CF.ACT.region)
         args = spectator, enc_key, str(CF.ACT.match_id.split('_')[1]), CF.ACT.region.upper()
-
+        
         MCFStorage.write_data(route=("0", ), value=str(args))
 
         subprocess.call([PATH.SPECTATOR_FILE, *args])
