@@ -64,7 +64,7 @@ def is_league_stream_active(debug=False):
 def generate_scoreboard():
 
     from modules.ssim_recognition import ScoreRecognition
-    from modules.mcf_storage import MCFStorage
+    # from modules.mcf_storage import MCFStorage
     from modules import mcf_autogui
 
     blue_shot = None
