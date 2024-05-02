@@ -50,7 +50,7 @@ class PR:
         cls.towers_idx = ( 660 - cls.gtime ) / ( 0.1 + cls.wretched_tower)
         cls.tb_towers_idx = ( 900 - cls.gtime ) / ( 100 + cls.wretched_tower)
 
-        cls.module_kills_idx = min(cls.sc['blue_kills'], cls.sc['red_kills']) / max(cls.sc['blue_kills'], cls.sc['red_kills'])
+        cls.module_kills_idx = min(cls.sc['blue_kills'], cls.sc['red_kills']) / (max(cls.sc['blue_kills'], cls.sc['red_kills']) + 0.01)
 
     @classmethod
     def ktt_straigh_leader(cls):
