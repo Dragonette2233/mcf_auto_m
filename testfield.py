@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 CF = ControlFlow()
 
 # command: str = input('Enter test command: ')
-command = 'pr_test'
+command = 'spectate'
 match command:
     case 'spectate':
         from mcf_api import MCFApi
