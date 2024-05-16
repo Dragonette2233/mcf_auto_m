@@ -112,8 +112,8 @@ class TGApi:
 
                 all_kills = score['blue_kills'] + score['red_kills']
 
-                if abs(all_kills - int(total_value)) < 20:
-                    ...
+                # if abs(all_kills - int(total_value)) < 20:
+                    # ...
                     # alert about possible bet
                     # message: ⚠️ Текущий тотал: all_kills | На сайте: total_value | Время игры: score['time']
 
