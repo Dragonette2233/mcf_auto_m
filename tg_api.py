@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 class TGApi:
 
+    active_pr_id = 0
+    active_pr_text = ''
     active_post_id = 0
     active_post_text = ''
     token = os.getenv('BOT_TOKEN')
@@ -38,6 +40,16 @@ class TGApi:
         return wrapper
 
     @timeout_handler
+    def post_edit(message: str, chat_id: int, post_id: int):
+
+        requests.post(
+            url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_edit),
+            data={'chat_id': chat_id, 
+                'message_id': post_id,
+                'text': message }, timeout=2
+            )
+
+    @timeout_handler
     def post_send(message: str, chat_id: int):
 
         resp = requests.post(
@@ -57,7 +69,10 @@ class TGApi:
                 chars_red = CF.SR.red_characters,
             )
 
-            cls.post_send(message=message_pr, chat_id=cls.CHAT_ID_PR)
+            result = cls.post_send(message=message_pr, chat_id=cls.CHAT_ID_PR)
+            cls.active_pr_id = result['result']['message_id']
+            cls.active_pr_text = result['result']['text']
+
         
         if message_type == 'winner_opened':
             cls.post_send(message=message, chat_id=cls.CHAT_ID_PR)
@@ -69,6 +84,19 @@ class TGApi:
             cls.active_post_id = request['result']['message_id']
             cls.active_post_text = request['result']['text']
 
+    @classmethod
+    def update_predict_result(cls, state=None):
+        
+        if state == 'plus':
+            result = '✅' + cls.active_pr_text
+        elif state == 'minus':
+            result = '❌' + cls.active_pr_text
+        
+        cls.post_edit(
+            message=result,
+            chat_id=cls.CHAT_ID_PR,
+            post_id=cls.active_pr_id,
+        )
 
     @classmethod
     def update_score(cls, score, is_total_opened=False, total_value=0):

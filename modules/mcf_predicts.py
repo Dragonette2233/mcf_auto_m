@@ -101,7 +101,6 @@ class PR:
     
     @classmethod
     def ktt_tb(cls, fl):
-        # print("..")
         match fl:
             case 'half':
                 if cls.tb_ktt_idx <= 8.45 and cls.tb_towers_idx <= 3.6 and cls.module_kills_idx >= 0.75:
@@ -112,7 +111,6 @@ class PR:
         
     @classmethod
     def ktt_tl(cls, fl='half'):
-
         match fl:
             case 'half':
                 
@@ -161,8 +159,7 @@ class PR:
                     # Optional predicts
                     (cls.all_kills <= 30 and cls.module_kills >= 15 and cls.gtime > 420),
                     (cls.all_kills <= 38 and cls.module_kills >= 20 and cls.gtime > 420),
-                    (cls.all_kills < 18 and cls.towers_hp_less_than(15) and cls.module_gold > 0.6 and cls.gtime > 240),
-                    (cls.all_kills < 31 and cls.towers_hp_less_than(5) and cls.module_gold > 3.0 and cls.gtime > 380),
+                    
                     (cls.all_kills < 38 and cls.two_towers_destroyed() and cls.gtime > 480),
                     (cls.all_kills < 48 and cls.two_towers_destroyed(one_side=True)),
                     (cls.all_kills < 35 and cls.two_towers_destroyed(some_side=True)),

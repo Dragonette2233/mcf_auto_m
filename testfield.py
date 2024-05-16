@@ -67,13 +67,15 @@ match command:
         if pr:
 
             MCFStorage.rgs_predicts_monitor(message=pr[0], idx=pr[1])
-            MCFStorage.predicts_monitor(kills=102)
-        
+            
         
             CF.SR.blue_characters = 'Gnar Pyke Leblanc Darius Vayne'
             CF.SR.red_characters = 'Rengar Illaoi Jinx Smolder Morgana'
 
             TGApi.post_request(message=pr[0], message_type='predict')
+
+            time.sleep(4)
+            MCFStorage.predicts_monitor(kills=110)
         # print(pr_2)
 
 

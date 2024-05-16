@@ -4,6 +4,7 @@ import logging
 from datetime import datetime
 from dynamic_data import CF
 from static_data import PATH
+from tg_api import TGApi
 
 logger = logging.getLogger(__name__)
 
@@ -127,14 +128,18 @@ class MCFStorage:
             case (value, 'ТБ' as direction, flet):
                 if kills > float(value):
                     data[f"{direction} (FL {flet})"][0] += 1
+                    TGApi.update_predict_result(state='plus')
                 else:
                     data[f"{direction} (FL {flet})"][1] += 1
+                    TGApi.update_predict_result(state='minus')
 
             case (value, 'ТМ' as direction, flet):
                 if kills < float(value):
                     data[f"{direction} (FL {flet})"][0] += 1
+                    TGApi.update_predict_result(state='plus')
                 else:
                     data[f"{direction} (FL {flet})"][1] += 1
+                    TGApi.update_predict_result(state='minus')
             case _:
                 ...
 
