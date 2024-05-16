@@ -112,11 +112,9 @@ class TGApi:
 
                 all_kills = score['blue_kills'] + score['red_kills']
 
-                # if abs(all_kills - int(total_value)) < 20:
-                    # ...
-                    # alert about possible bet
-                    # message: ⚠️ Текущий тотал: all_kills | На сайте: total_value | Время игры: score['time']
-
+                if abs(all_kills - int(float(total_value))) < 20:
+                    alert = f"⚠️ Тотал: {all_kills} | На сайте: {total_value} | Время: {score['time']}"
+                    cls.post_send(message=alert, chat_id=cls.CHAT_ID_PR)
 
             else:
                 open_snip = TelegramStr.events_closed

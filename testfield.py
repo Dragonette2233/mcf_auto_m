@@ -76,6 +76,10 @@ match command:
 
             time.sleep(4)
             MCFStorage.predicts_monitor(kills=110)
+
+            
+            alert = f"⚠️ Тотал: 98 | На сайте: 110.5 | Время: {PR.sc['time']}"
+            TGApi.post_send(message=alert, chat_id=TGApi.CHAT_ID_PR)
         # print(pr_2)
 
 
