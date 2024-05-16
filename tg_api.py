@@ -70,14 +70,13 @@ class TGApi:
             )
 
             result = cls.post_send(message=message_pr, chat_id=cls.CHAT_ID_PR)
+            logger.info(result)
             cls.active_pr_id = result['result']['message_id']
             cls.active_pr_text = result['result']['text']
 
-        
         if message_type == 'winner_opened':
             cls.post_send(message=message, chat_id=cls.CHAT_ID_PR)
-
-
+        
         request = cls.post_send(message=message, chat_id=cls.CHAT_ID_PUB)
 
         if save_post_result:
@@ -110,6 +109,15 @@ class TGApi:
             score['total_value'] = total_value
             if is_total_opened:
                 open_snip = TelegramStr.events_opened.format(total_value=total_value)
+
+                all_kills = score['blue_kills'] + score['red_kills']
+
+                if abs(all_kills - int(total_value)) < 20:
+                    ...
+                    # alert about possible bet
+                    # message: ⚠️ Текущий тотал: all_kills | На сайте: total_value | Время игры: score['time']
+
+
             else:
                 open_snip = TelegramStr.events_closed
             # score['total_value']
