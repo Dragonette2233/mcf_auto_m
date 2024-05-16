@@ -164,8 +164,8 @@ class PR:
                     (cls.all_kills < 18 and cls.towers_hp_less_than(15) and cls.module_gold > 0.6 and cls.gtime > 240),
                     (cls.all_kills < 31 and cls.towers_hp_less_than(5) and cls.module_gold > 3.0 and cls.gtime > 380),
                     (cls.all_kills < 38 and cls.two_towers_destroyed() and cls.gtime > 480),
-                    (cls.all_kills < 55 and cls.two_towers_destroyed(one_side=True)),
-                    (cls.all_kills < 40 and cls.two_towers_destroyed(some_side=True)),
+                    (cls.all_kills < 48 and cls.two_towers_destroyed(one_side=True)),
+                    (cls.all_kills < 35 and cls.two_towers_destroyed(some_side=True)),
                     
 
                 ]
