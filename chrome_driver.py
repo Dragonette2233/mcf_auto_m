@@ -124,29 +124,29 @@ class Chrome():
         predict_direction = message.split()[1][-1]
         active_total = float(self.ACTIVE_TOTAL_VALUE)
 
-        if predict_direction == 'Б' and active_total < 116.5:
+        if predict_direction == 'Б' and active_total < 117.5:
             return True
 
-        if predict_direction == 'М' and active_total > 95.5:
+        if predict_direction == 'М' and active_total > 96.5:
             return True
             
 
-    def send_predict(self, message: str, key: str, idx: int):
+    def send_predict(self, message: str, idx: int):
 
         if self.is_total_coeff_opened():
             if not self.predicts_is_accepted(message=message):
                 return
             message: str = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
 
-            TGApi.send_simple_message(message)
+            TGApi.post_request(message=message, message_type='predict')
             logger.info(message)
 
             time.sleep(5)
 
             if self.is_total_coeff_opened():
-                MCFStorage.rgs_predicts_monitor(message=message, key=key, idx=idx)
+                MCFStorage.rgs_predicts_monitor(message=message, idx=idx)
             else:
-                CF.VAL.pr_cache[key] = 'closed'
+                CF.VAL.pr_cache = 'closed'
        
 
     def generate_predict(self, score):
@@ -157,20 +157,13 @@ class Chrome():
         if score['time'] in TRACE_RANGE and not CF.SW.tracer.is_active():
             Trace.add_tracing(score=score)
 
-        if not CF.VAL.pr_collected():
+        if not CF.VAL.pr_cache:
             PR.sc = copy.deepcopy(score)
             PR.prepare_predict_values()
-
-        if not CF.VAL.pr_cache['main']:
             main_predict = PR.gen_main_predict()
-            if main_predict[0]:
-                self.send_predict(message=main_predict[0], key=main_predict[1], idx=main_predict[2])
+            if main_predict:
+                self.send_predict(message=main_predict[0], idx=main_predict[1])
         
-        if not CF.VAL.pr_cache['stats']:
-            s_predict = PR.gen_stats_predict()
-            if s_predict[0]:
-                self.send_predict(message=s_predict[0], key=s_predict[1], idx=s_predict[2])
-
     def notify_when_starts(self):
 
         while True:

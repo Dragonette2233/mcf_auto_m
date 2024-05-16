@@ -1,15 +1,6 @@
 from dynamic_data import CF
 from static_data import TelegramStr
 
-class Intense:
-
-    time_targets = {
-        'early_1': range(240, 300),
-        'early_2': range(300, 360),
-        'middle_1': range(360, 420),
-        'middle_2': range(420, 480)
-    }
-
 class PRstatic:
 
     KTT_HALF_IDX = 10.9
@@ -48,19 +39,22 @@ class PR:
         cls.wretched_tower = min(cls.sc['blue_t1_hp'], cls.sc['red_t1_hp'])
 
         cls.towers_idx = ( 660 - cls.gtime ) / ( 0.1 + cls.wretched_tower)
-        cls.tb_towers_idx = ( 900 - cls.gtime ) / ( 100 + cls.wretched_tower)
+
+        if cls.sc['blue_towers'] < 2 and cls.sc['red_towers'] < 2:
+            cls.tb_towers_idx = ( 900 - cls.gtime ) / ( 100 + cls.wretched_tower)
+        else:
+            cls.tb_towers_idx = 4
 
         cls.module_kills_idx = min(cls.sc['blue_kills'], cls.sc['red_kills']) / (max(cls.sc['blue_kills'], cls.sc['red_kills']) + 0.01)
 
     @classmethod
     def ktt_straigh_leader(cls):
 
-        # kills coeff 0.52 | gold coeff 0.9
         blue_kills_lead = cls.sc['blue_kills'] > cls.sc['red_kills'] and cls.sc['red_kills'] / cls.sc['blue_kills'] < 0.52
         red_kills_lead = cls.sc['red_kills'] > cls.sc['blue_kills'] and cls.sc['blue_kills'] / cls.sc['red_kills'] < 0.52
 
         blue_gold_lead = cls.sc['blue_gold'] > cls.sc['red_gold'] and cls.sc['red_gold'] / cls.sc['blue_gold'] < 0.9
-        red_gold_lead = cls.sc['red_gold'] > cls.sc['blue_gold'] and cls.sc['red_gold'] / cls.sc['blue_gold'] < 0.9
+        red_gold_lead = cls.sc['red_gold'] > cls.sc['blue_gold'] and cls.sc['blue_gold'] / cls.sc['red_gold'] < 0.9
 
         blue_towers_lead = cls.sc['blue_t1_hp'] > 45 and cls.sc['red_t1_hp'] < 30
         red_towers_lead = cls.sc['red_t1_hp'] > 45 and cls.sc['blue_t1_hp'] < 30
@@ -104,26 +98,16 @@ class PR:
     def towers_hp_less_than(cls, hp: int):
 
         return cls.sc['blue_t1_hp'] < hp or cls.sc['red_t1_hp'] < hp
-
-    @classmethod
-    def predict_possible(cls, predictions: dict, key: str):
-
-        for mess, pr in predictions.items():
-            for i, p in enumerate(pr):
-                if p:
-                    return (mess, key, i)
-        # else:
-        return (None, None, None)
     
     @classmethod
-    def ktt_tb(cls, pr_type):
-        
-        match pr_type:
-            case 'main':
+    def ktt_tb(cls, fl):
+        # print("..")
+        match fl:
+            case 'half':
                 if cls.tb_ktt_idx <= 8.45 and cls.tb_towers_idx <= 3.6 and cls.module_kills_idx >= 0.75:
                     return True
-            case 'stats':
-                if cls.tb_ktt_idx <= 8.8 and cls.tb_towers_idx <= 3.9 and cls.module_kills_idx >= 0.75:
+            case 's_half':
+                if cls.tb_ktt_idx <= 8.8 and cls.tb_towers_idx <= 3.9 and cls.module_kills_idx >= 0.7:
                     return True
         
     @classmethod
@@ -131,12 +115,18 @@ class PR:
 
         match fl:
             case 'half':
-                if cls.tl_ktt_idx < PRstatic.KTT_T_HALF_IDX and cls.towers_idx >= PRstatic.KTT_TW_HALF: # >= 4.8
-                    return True
                 
-                if cls.tl_ktt_idx < PRstatic.KTT_HALF_IDX:
+                if any([
+                    cls.tl_ktt_idx < PRstatic.KTT_T_HALF_IDX and cls.towers_idx >= PRstatic.KTT_TW_HALF,
+                    cls.tl_ktt_idx < PRstatic.KTT_HALF_IDX
+                ]):
                     return True
-            
+            case 's_half':
+                if any([
+                    cls.tl_ktt_idx < PRstatic.KTT_MIDDLE_IDX,
+                    cls.tl_ktt_idx < PRstatic.KTT_FULL_IDX and cls.towers_idx >= PRstatic.KTT_TW_HALF,
+                ]):
+                    return True
             case 'middle':
                 if cls.tl_ktt_idx < PRstatic.KTT_MIDDLE_IDX and cls.towers_idx >= PRstatic.KTT_TW_MIDDLE:
                     return True
@@ -144,7 +134,9 @@ class PR:
             case 'full':
                 if cls.tl_ktt_idx < PRstatic.KTT_FULL_IDX and cls.ktt_straigh_leader():
                     return True
+            case _:
                 ...
+
 
     @classmethod
     def gen_main_predict(cls):
@@ -152,52 +144,37 @@ class PR:
         predictions = {
 
                 TelegramStr.tb_predict_half: [
-                    (cls.gtime > 360 and cls.ktt_tb(pr_type='main')),
+                    (cls.gtime > 360 and cls.ktt_tb(fl='half')),
+                    (cls.gtime > 400 and cls.ktt_tb(fl="s_half") and CF.SR.tb_accepted()),
                 ],
                 
                 TelegramStr.tl_predict_full: [    
-                    (cls.gtime > 249 and cls.ktt_tl(fl='full')),
+                    (cls.gtime > 239 and cls.ktt_tl(fl='full')),
                 ],
                 TelegramStr.tl_predict_middle: [   
-                    (cls.gtime > 249 and cls.ktt_tl(fl='middle')),                 
+                    (cls.gtime > 239 and cls.ktt_tl(fl='middle')),
                 ],
                 TelegramStr.tl_predict_half: [
-                    (cls.gtime > 249 and cls.ktt_tl(fl='half')),
+                    (cls.gtime > 239 and cls.ktt_tl(fl='half')),
+                    (cls.gtime > 300 and cls.ktt_tl(fl="s_half") and CF.SR.tl_accepted()),
        
                     # Optional predicts
                     (cls.all_kills <= 30 and cls.module_kills >= 15 and cls.gtime > 420),
                     (cls.all_kills <= 38 and cls.module_kills >= 20 and cls.gtime > 420),
                     (cls.all_kills < 18 and cls.towers_hp_less_than(15) and cls.module_gold > 0.6 and cls.gtime > 240),
                     (cls.all_kills < 31 and cls.towers_hp_less_than(5) and cls.module_gold > 3.0 and cls.gtime > 380),
-                    
                     (cls.all_kills < 38 and cls.two_towers_destroyed() and cls.gtime > 480),
                     (cls.all_kills < 55 and cls.two_towers_destroyed(one_side=True)),
-                    (cls.all_kills < 50 and cls.two_towers_destroyed(some_side=True)),
+                    (cls.all_kills < 40 and cls.two_towers_destroyed(some_side=True)),
                     
 
                 ]
 
             }
 
-        return cls.predict_possible(predictions=predictions, key='main')
-
-    @classmethod
-    def gen_stats_predict(cls):
-
-        spredictions = {
-                TelegramStr.tl_spredict_half: [
-                    
-                    (CF.SR.tl_accepted() and cls.all_kills < 30 and cls.towers_hp_less_than(hp=25) and cls.gtime > 400),
-                    (CF.SR.tl_accepted() and cls.all_kills < 24 and cls.gtime > 400),
-                    (CF.SR.tl_accepted() and cls.all_kills < 35 and CF.SR.tanks_in_teams(both_excluded=True) and cls.gtime > 400)
-                ],
-                TelegramStr.tb_spredict_half: [
-                    (CF.SR.tb_accepted() and cls.gtime > 360 and cls.ktt_tb(pr_type='stats')),
-                    (CF.SR.tb_accepted() and False),
-                ]
-            }
-
-        return cls.predict_possible(predictions=spredictions, key='stats')
-    
-
-# PR.ktt_corr_index
+        for mess, pr in predictions.items():
+            for i, p in enumerate(pr):
+                if p:
+                    return (mess, i)
+                
+        return False

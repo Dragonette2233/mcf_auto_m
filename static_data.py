@@ -104,13 +104,21 @@ REGIONS_TUPLE = (
     ('th', 'th2', 'sea'), ('tw', 'tw2', 'sea')
 )
 
+class URL:
+
+    FEATURED_GAMES = "https://{region}.api.riotgames.com/lol/spectator/v5/featured-games"
+    PORO_BY_REGIONS = "https://porofessor.gg/current-games/{champion}/{region}/queue-450"
+    PORO_ADVANCE = "https://porofessor.gg/current-games/{champion}/{region}/{elo}/queue-450"
+
+
 class PATH:
+    
     """
         All pathes for app images
 
     """
 
-    MCF_BOT = os.environ.get('MCF_BOT')
+    MCF_BOT: str = os.environ.get('MCF_BOT')
     JSON_GAMEDATA = os.path.join(MCF_BOT, 'untracking', 'GameData.json')
     SCREEN_GAMESCORE = os.path.join(MCF_BOT, 'images_lib', 'gamescore_PIL.png')
     SPECTATOR_FILE = os.path.join(MCF_BOT, 'mcf_lib', 'spectate.bat')
@@ -142,11 +150,11 @@ class PATH:
     BLUE_TOWER = os.path.join(MCF_BOT, 'ssim_score_data', 'team_blue', 'towers')
     RED_TOWER = os.path.join(MCF_BOT, 'ssim_score_data', 'team_red', 'towers')
     DEBUG_STATS = os.path.join(MCF_BOT, 'arambot_lib', 'debug_stats.json')
-    BLUE_CUT = os.path.join('.', 
-                            'images_lib', 
+    BLUE_CUT = os.path.join(MCF_BOT, 
+                            'images_lib',
                             'chars',  
                             'blue', 'char_{indx}.png')
-    RED_CUT = os.path.join('.', 
+    RED_CUT = os.path.join(MCF_BOT, 
                             'images_lib', 
                             'chars', 
                             'red', 'char_{indx}.png')
@@ -206,13 +214,11 @@ class TelegramStr:
     '''
     tb_predict_half = '{0}PR 110.5Б FL_0.5{0}'.format(ARROW_UP)
     tb_predict_full = '{0}PR 110.5Б FL_1{0}'.format(ARROW_UP)
+    
     tl_predict_half = '{0}PR 110.5М FL_0.5{0}'.format(ARROW_DOWN)
     tl_predict_middle = '{0}PR 110.5М FL_0.75{0}'.format(ARROW_DOWN)
     tl_predict_full = '{0}PR 110.5М FL_1{0}'.format(ARROW_DOWN)
 
-    tb_spredict_half = '{0}S_PR 110.5Б FL_0.5{0}'.format(ARROW_UP)
-    tl_spredict_half = '{0}S_PR 110.5М FL_0.5{0}'.format(ARROW_DOWN)
-    
     '''
         Telegram notifications about ended game
         First argument - kills, second argument - time
@@ -234,6 +240,12 @@ class TelegramStr:
 
     events_opened = '\n\nTotal event {total_value}: ' + EXCLAM_WHITE + 'Opened'
     events_closed = '\n\nTotal event: ' + EXCLAM_RED + 'Closed'
+
+    '''
+        Only predicts message
+    '''
+
+    only_pr_message = open('untracking/only_pr_message.txt', 'r', encoding='utf-8').read()
 
 class MCFException(Exception): ...
 class MCFTimeoutError(Exception): ...

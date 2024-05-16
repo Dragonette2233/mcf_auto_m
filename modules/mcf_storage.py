@@ -81,39 +81,24 @@ class MCFStorage:
             raise TypeError('Provide tuple for executing MCFData')
     
     @classmethod
-    def rgs_predicts_monitor(cls, message: str, key: str, idx: int):
+    def rgs_predicts_monitor(cls, message: str, idx: int):
         try:
             _tmp = message.split()
-            predict_type = _tmp[0][1:]
             value = _tmp[1][0:-1]
             direction = 'Т' + _tmp[1][-1]
             flet = _tmp[2].split('_')[1][:-1]
-            if predict_type.split('_')[0] == 'S':
-                direction = '_'.join(['S', direction])
-
-            CF.VAL.pr_cache[key] = (value, direction, flet)
-            CF.VAL.pr_debug[key] = idx
+            
+            CF.VAL.pr_cache = (value, direction, flet)
+            CF.VAL.pr_debug = idx
 
         except Exception as ex_:
             logger.warning(ex_)
 
 
     @classmethod
-    def predicts_debug(cls, conditions: tuple, key: str):
+    def predicts_monitor(cls, kills: int, daily=False):
 
-        try:
-            for i, con in enumerate(conditions):
-                if con:
-                    CF.VAL.pr_debug[key] = i
-                    break
-        except Exception as ex_:
-            logger.warning(ex_)
-            logger.warning('mcf_storage:119')
-
-    @classmethod
-    def predicts_monitor(cls, kills: int, key: str, daily=False):
-
-        if CF.VAL.pr_cache[key] is None or CF.VAL.pr_cache[key] == 'closed':
+        if CF.VAL.pr_cache in (None, 'closed'):
             return
 
         if daily:
@@ -138,14 +123,14 @@ class MCFStorage:
         data = SafeJson.load(predicts_path)
 
         # # sample of predicts_value_flet = ('96.5', 'ТМ', '0.5')
-        match CF.VAL.pr_cache[key]:
-            case (value, 'ТБ' | 'S_ТБ' as direction, flet):
+        match CF.VAL.pr_cache:
+            case (value, 'ТБ' as direction, flet):
                 if kills > float(value):
                     data[f"{direction} (FL {flet})"][0] += 1
                 else:
                     data[f"{direction} (FL {flet})"][1] += 1
 
-            case (value, 'ТМ' | 'S_ТМ' as direction, flet):
+            case (value, 'ТМ' as direction, flet):
                 if kills < float(value):
                     data[f"{direction} (FL {flet})"][0] += 1
                 else:
@@ -153,13 +138,13 @@ class MCFStorage:
             case _:
                 ...
 
-        if CF.VAL.pr_debug[key] is not None:
+        if CF.VAL.pr_debug is not None:
             
-            value, direction, flet = CF.VAL.pr_cache[key]
+            value, direction, flet = CF.VAL.pr_cache
 
             open('./untracking/reg_debug.txt', 'a+', encoding='utf-8').writelines(
-                    f"{direction}_{flet} #{CF.VAL.pr_debug[key]} | Val_End: {value}_{kills} | Roles: {CF.SR.blue_roles}_{CF.SR.red_roles}\n"
+                    f"{direction}_{flet} #{CF.VAL.pr_debug} | Val_End: {value}_{kills} | Roles: {CF.SR.blue_roles}_{CF.SR.red_roles}\n"
                 )
-            CF.VAL.pr_debug[key] = None
+            CF.VAL.pr_debug = None
         
         SafeJson.dump(json_path=predicts_path, data=data)

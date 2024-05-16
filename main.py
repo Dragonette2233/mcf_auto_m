@@ -78,9 +78,7 @@ def main():
                 time.sleep(3.5)
 
             TGApi.update_score(score=False)
-            # MCFApi.delete_scoreboard()
             MCFApi.close_league_of_legends()
-            # mcf_pillow.reset_towers_backup()
 
             logger.info('Game ended.')
             

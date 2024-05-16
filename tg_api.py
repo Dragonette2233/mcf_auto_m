@@ -5,6 +5,7 @@ import time
 from static_data import (
     TelegramStr
 )
+from dynamic_data import CF
 
 logger = logging.getLogger(__name__)
 
@@ -17,9 +18,10 @@ class TGApi:
     method_edit = 'editMessageText'
     tg_api_url = 'https://api.telegram.org/bot{token}/{method}'
     RES_FOR_PREDICT = False
-    CHAT_ID = os.getenv('CHAT_ID')
+    # CHAT_ID = os.getenv('CHAT_ID')
     CHAT_ID_PUB = os.getenv('CHAT_ID_PUB')
-    CHAT_ID_TRIAL = os.getenv('CHAT_ID_TRIAL')
+    CHAT_ID_PR = os.getenv('CHAT_ID_PR')
+    # CHAT_ID_TRIAL = os.getenv('CHAT_ID_TRIAL')
 
     
     def timeout_handler(func):
@@ -36,7 +38,7 @@ class TGApi:
         return wrapper
 
     @timeout_handler
-    def post_send(message: str, chat_id):
+    def post_send(message: str, chat_id: int):
 
         resp = requests.post(
             url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_send),
@@ -46,20 +48,28 @@ class TGApi:
         return resp.json()
              
     @classmethod
-    def post_request(cls, message: str, save_post_result=False):
+    def post_request(cls, message: str, save_post_result=False, message_type=None):
         
+        if message_type == 'predict':
+            message_pr = TelegramStr.only_pr_message.format(
+                pr_message = message,
+                chars_blue = CF.SR.blue_characters,
+                chars_red = CF.SR.red_characters,
+            )
+
+            cls.post_send(message=message_pr, chat_id=cls.CHAT_ID_PR)
+        
+        if message_type == 'winner_opened':
+            cls.post_send(message=message, chat_id=cls.CHAT_ID_PR)
+
+
         request = cls.post_send(message=message, chat_id=cls.CHAT_ID_PUB)
-        # print(request)
+
         if save_post_result:
             cls.active_post_id = request['result']['message_id']
             cls.active_post_text = request['result']['text']
 
-            # print(cls.active_post_id, cls.active_post_text)
 
-        time.sleep(2)
-        cls.post_send(message=message, chat_id=cls.CHAT_ID_TRIAL)
-
-   
     @classmethod
     def update_score(cls, score, is_total_opened=False, total_value=0):
         
@@ -93,13 +103,9 @@ class TGApi:
             logger.warning(ex_)
             pass
         
-
-
     @classmethod
     def gamestart_notification(cls, team_blue: list, team_red: list, status_message=''):
 
-        # sample_message: str = open('mcf_lib/tg_start_notification.txt', 'r', encoding='utf-8').read()
-        
         full_message = TelegramStr.SNIPPET_GAMESTART.format(
             team_blue=team_blue,
             team_red=team_red,
@@ -107,10 +113,6 @@ class TGApi:
         )
 
         cls.post_request(message=full_message, save_post_result=True)
-
-    @classmethod
-    def send_simple_message(cls, message: str):        
-        cls.post_request(message=message)
     
     @classmethod
     def winner_is(cls, team, kills, timestamp, opened=False):
@@ -118,10 +120,12 @@ class TGApi:
         match team, opened:
             case 'blue', True:
                 message = TelegramStr.winner_blue_opened.format(kills, timestamp)
+                cls.post_request(message=message, message_type='winner_opened')
             case 'blue', False:
                 message = TelegramStr.winner_blue.format(kills, timestamp)
             case 'red', True:
                 message = TelegramStr.winner_red_opened.format(kills, timestamp)
+                cls.post_request(message=message, message_type='winner_opened')
             case 'red', False:
                 message = TelegramStr.winner_red.format(kills, timestamp)
             case _:

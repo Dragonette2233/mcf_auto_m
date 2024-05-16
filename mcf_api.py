@@ -11,7 +11,7 @@ from static_data import (
 import os
 import itertools
 from chrome_driver import Chrome
-from modules.ssim_recognition import RecognizedCharacters as SsimReco
+from modules.ssim_recognition import CharsRecognition as CharsRecog
 from modules.mcf_storage import MCFStorage
 from modules.mcf_tracing import Trace
 from modules.mcf_riot_api import RiotAPI
@@ -34,26 +34,25 @@ class MCFApi:
 
         while True:
             if not CF.ACT.nick_region:
+                CharsRecog.cut_from_screenshot()
                 logger.info('Comparing icons...')
-                team_blue = SsimReco(team_color='blue')
-                team_red = SsimReco(team_color='red')
-                team_blue.run()
-                team_red.run()
-
-            logger.info(team_blue.characters)
-            logger.info(team_red.characters)
+                team_blue = CharsRecog.get_recognized_characters(team_color='blue')
+                team_red = CharsRecog.get_recognized_characters(team_color='red')
+                
+            logger.info(team_blue)
+            logger.info(team_red)
             
-            if len(set(team_blue.characters)) != 5:
+            if len(set(team_blue)) != 5:
                 return
 
             CF.SR.calculate(
-                team_blue=team_blue.characters,
-                team_red=team_red.characters
+                team_blue=team_blue,
+                team_red=team_red
             )
-
+            
             return {
-                'blue': team_blue.characters,
-                'red': team_red.characters
+                'blue': team_blue,
+                'red': team_red
             }
 
     @classmethod   
@@ -363,10 +362,8 @@ class MCFApi:
                 timestamp = f"[{time_stamp[0]}:{time_stamp[1]}]"
                 TGApi.winner_is(team=winner, kills=kills, timestamp=timestamp, opened=is_opened)
                 Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
-                MCFStorage.predicts_monitor(kills=kills, key='main')
-                MCFStorage.predicts_monitor(kills=kills, key='stats')
-                MCFStorage.predicts_monitor(kills=kills, key='main', daily=True)
-                MCFStorage.predicts_monitor(kills=kills, key='stats', daily=True)
+                MCFStorage.predicts_monitor(kills=kills)
+                MCFStorage.predicts_monitor(kills=kills, daily=True)
                 # Validator.predict_value_flet['main'] = None
                 # Validator.predict_value_flet['stats'] = None
                 # chrome.ACTIVE_TOTAL_VALUE = 0

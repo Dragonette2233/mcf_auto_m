@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 CF = ControlFlow()
 
 # command: str = input('Enter test command: ')
-command = 'spectate'
+command = 'pr_test'
 match command:
     case 'spectate':
         from mcf_api import MCFApi
@@ -40,6 +40,8 @@ match command:
         MCFApi.search_game(nick_region='Losseheli#EUNE:EUNE')
 
     case 'pr_test':
+        from modules.mcf_storage import MCFStorage
+        from tg_api import TGApi
         from modules.mcf_predicts import PR
         import copy
 
@@ -47,25 +49,32 @@ match command:
         CF.SR.games_all = 1
 
         score = {
-            'time': 362,
-            'blue_kills': 10,
-            'red_kills': 12,
+            'time': 370,
+            'blue_kills': 40,
+            'red_kills': 40,
             'blue_towers': 0,
             'red_towers': 0,
             'blue_gold': 24.8,
-            'red_gold': 23.6,
+            'red_gold': 27.6,
             'blue_t1_hp': 70,
-            'red_t1_hp': 50
+            'red_t1_hp': 100
         }
         
         PR.sc = copy.deepcopy(score)
         PR.prepare_predict_values()
 
         pr = PR.gen_main_predict()
-        pr_2 = PR.gen_stats_predict()
+        if pr:
 
-        print(pr)
-        print(pr_2)
+            MCFStorage.rgs_predicts_monitor(message=pr[0], idx=pr[1])
+            MCFStorage.predicts_monitor(kills=102)
+        
+        
+            CF.SR.blue_characters = 'Gnar Pyke Leblanc Darius Vayne'
+            CF.SR.red_characters = 'Rengar Illaoi Jinx Smolder Morgana'
+
+            TGApi.post_request(message=pr[0], message_type='predict')
+        # print(pr_2)
 
 
     case 'bot':

@@ -132,22 +132,14 @@ class TowersHealth:
 
 class Validator():
     def __init__(self) -> None:
-        self.pr_cache: dict[str, tuple] = {
-            'main': None,
-            'stats': None,
-        }
-        self.pr_debug: dict[str, int] = {
-            'main': 0,
-            'stats': 0
-        }
+        self.pr_cache: tuple = None
+        self.pr_debug: int = None
         self.findgame = 0
         self.recognition = 0
 
     def _reset(self):
-        self.pr_cache['main'] = None
-        self.pr_cache['stats'] = None
-        self.pr_debug['main'] = 0
-        self.pr_debug['stats'] = 0
+        self.pr_cache = None
+        self.pr_debug = None
         self.findgame = 0
         self.recognition = 0
 

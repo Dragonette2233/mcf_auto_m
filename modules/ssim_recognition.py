@@ -9,16 +9,15 @@ from static_data import (
 
 )
 
-class RecognizedCharacters:
-    def __init__(self, team_color: str) -> None:
+class CharsRecognition:
+    
+    @classmethod    
+    def cut_from_screenshot(cls):
         """
-            Team color should be 'blue' or 'red'
+        This method cuts characters from left and right side on stream screen, then
+        saving it to images lib
 
         """
-        self.characters = []
-        self.team_color = team_color
-                                
-    def cut_from_screenshot(self):
 
         y = [160, 263, 366, 469, 572, 194, 297, 400, 503, 606]
         x = [45, 58, 1858, 1873]
@@ -35,7 +34,7 @@ class RecognizedCharacters:
             im.crop((x[0], y[3], x[1], y[8])),
             im.crop((x[0], y[4], x[1], y[9])),
 
-            im.crop((x[2], y[0], x[3], y[5])), 
+            im.crop((x[2], y[0], x[3], y[5])),
             im.crop((x[2], y[1], x[3], y[6])),
             im.crop((x[2], y[2], x[3], y[7])), 
             im.crop((x[2], y[3], x[3], y[8])),
@@ -46,12 +45,15 @@ class RecognizedCharacters:
             crops[a].save(PATH.BLUE_CUT.format(indx=a))
             crops[b].save(PATH.RED_CUT.format(indx=a))
     
-    def compare_shorts(self):
+    @classmethod
+    def get_recognized_characters(cls, team_color):
+
+        characters = []
 
         main_images = [os.path.join('.', 
                                 'images_lib', 
                                 'chars', 
-                                self.team_color, 
+                                team_color, 
                                 f'char_{i}.png') for i in range(5)] # Путь к основному изображению (35x35)
         
         # Подготовка массива основного изображения для последующего сравнения
@@ -60,7 +62,7 @@ class RecognizedCharacters:
         best_similarity = 0
         best_character = None
 
-        if self.team_color == 'blue':
+        if team_color == 'blue':
             arr_images_compare = GREYSHADE.BLUE_ARRAY
         else:
             arr_images_compare = GREYSHADE.RED_ARRAY
@@ -76,15 +78,12 @@ class RecognizedCharacters:
 
             if best_character == 'Kayn_b':
                 best_character = 'Kayn'
-            self.characters.append(best_character)
+            characters.append(best_character)
 
             best_similarity = 0 
             best_character = None
         
-    def run(self):
-        self.cut_from_screenshot()
-        self.compare_shorts()
-
+        return characters
         
 class ScoreRecognition:
     @classmethod
