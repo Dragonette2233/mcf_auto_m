@@ -115,6 +115,7 @@ class Switches():
         self.tracer = BoolSwitch()
         self.quick_end = BoolSwitch()
         self.loop = BoolSwitch()
+        self.total_diff = BoolSwitch()
     
     def _reset(self):
         for switch_name in self.__dict__:

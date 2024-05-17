@@ -11,6 +11,10 @@ from modules import (
 
 """
 
+RISK_AREA_CHARACTERS = (
+    'Sion', 'Viego', 'Shaco', 'Teemo'
+)
+
 ALL_CHAMPIONS_IDs = {
     1: 'Annie', 2: 'Olaf', 3: 'Galio', 4: 'TwistedFate',
     5: 'XinZhao', 6: 'Urgot', 7: 'LeBlanc', 8: 'Vladimir',
