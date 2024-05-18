@@ -137,16 +137,14 @@ class Validator():
         self.pr_debug: int = None
         self.findgame = 0
         self.recognition = 0
+        self.tb_approve = 0
 
     def _reset(self):
         self.pr_cache = None
         self.pr_debug = None
         self.findgame = 0
         self.recognition = 0
-
-    def pr_collected(self):
-        return all([self.pr_cache['main'], self.pr_cache['stats']])
-    
+        self.tb_approve = 0
 
 class ControlFlow(Singleton):
     def init(self) -> None:

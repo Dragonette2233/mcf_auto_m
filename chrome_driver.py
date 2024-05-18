@@ -125,6 +125,11 @@ class Chrome():
         active_total = float(self.ACTIVE_TOTAL_VALUE)
 
         if predict_direction == 'Б' and active_total < 117.5:
+            
+            if CF.VAL.tb_approve != 10:
+                CF.VAL.tb_approve += 1
+                return
+
             return True
 
         if predict_direction == 'М' and active_total > 96.5:
