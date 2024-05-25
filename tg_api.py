@@ -158,12 +158,12 @@ class TGApi:
                 cls.post_request(message=message, message_type='winner_opened')
             case 'blue', False:
                 message = TelegramStr.winner_blue.format(kills, timestamp)
+                cls.post_request(message=message)
             case 'red', True:
                 message = TelegramStr.winner_red_opened.format(kills, timestamp)
                 cls.post_request(message=message, message_type='winner_opened')
             case 'red', False:
                 message = TelegramStr.winner_red.format(kills, timestamp)
+                cls.post_request(message=message)
             case _:
                 pass
-
-        cls.post_request(message=message)
