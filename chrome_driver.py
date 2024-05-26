@@ -134,7 +134,7 @@ class Chrome():
 
         if predict_direction == 'М' and active_total > 96.5:
 
-            if predict_flet == "0.5" and CF.VAL.tl_approve != 4:
+            if predict_flet == "0.5" and CF.VAL.tl_approve != 3:
                 CF.VAL.tl_approve += 1
                 return
 
