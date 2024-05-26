@@ -60,6 +60,7 @@ class Trace:
 
     @classmethod
     def complete_trace(cls, team, kills, timestamp):
+        
         if not CF.SW.tracer.is_active():
             return
         data = cls.get_json()

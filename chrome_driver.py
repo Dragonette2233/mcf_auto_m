@@ -8,7 +8,7 @@ from modules.mcf_tracing import Trace
 from modules.mcf_predicts import PR
 from dynamic_data import CF
 from tg_api import TGApi
-from static_data import PATH, TRACE_RANGE
+from static_data import PATH, TRACE_RANGE, TelegramStr
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -122,6 +122,7 @@ class Chrome():
     def predicts_is_accepted(self, message):
 
         predict_direction = message.split()[1][-1]
+        predict_flet = message.split()[-1].split('_')[1].replace(TelegramStr.ARROW_DOWN, '')
         active_total = float(self.ACTIVE_TOTAL_VALUE)
 
         if predict_direction == 'Б' and active_total < 117.5:
@@ -132,9 +133,13 @@ class Chrome():
             return True
 
         if predict_direction == 'М' and active_total > 96.5:
+
+            if predict_flet == "0.5" and CF.VAL.tl_approve != 4:
+                CF.VAL.tl_approve += 1
+                return
+
             return True
             
-
     def send_predict(self, message: str, idx: int):
 
         if self.is_total_coeff_opened():
@@ -152,7 +157,6 @@ class Chrome():
             else:
                 CF.VAL.pr_cache = 'closed'
        
-
     def generate_predict(self, score):
 
         if score['time'] > 660:
