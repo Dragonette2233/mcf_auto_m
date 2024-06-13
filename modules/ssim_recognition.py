@@ -123,7 +123,7 @@ class ScoreRecognition:
         main_images_arr = [np.array(img) for img in main_images]
 
         for idx, compare_img in enumerate(main_images_arr):
-            similarity_index = ssim(compare_img, cut_image)
+            similarity_index = ssim(compare_img, cut_image, win_size=3)
 
             # Если найдено более высокое сходство, сохраняем его и путь к изображению
             if similarity_index > 0.75:
