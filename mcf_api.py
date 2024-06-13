@@ -364,10 +364,6 @@ class MCFApi:
                 Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
                 MCFStorage.predicts_monitor(kills=kills)
                 MCFStorage.predicts_monitor(kills=kills, daily=True)
-                # Validator.predict_value_flet['main'] = None
-                # Validator.predict_value_flet['stats'] = None
-                # chrome.ACTIVE_TOTAL_VALUE = 0
-                # CF.ACT.is_game_founded = False
                 CF.SW.request.deactivate()
 
                 finished_game.close()

@@ -127,7 +127,7 @@ class Chrome():
 
         if predict_direction == 'Б' and active_total < 117.5:
             
-            if CF.VAL.tb_approve != 10:
+            if CF.VAL.tb_approve != 7:
                 CF.VAL.tb_approve += 1
                 return
             return True

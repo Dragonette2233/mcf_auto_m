@@ -6,7 +6,7 @@ class PRstatic:
     KTT_HALF_IDX = 10.9
     KTT_T_HALF_IDX = 11.5
     KTT_MIDDLE_IDX = 11.9
-    KTT_FULL_IDX = 12.8
+    KTT_FULL_IDX = 12.5
 
     KTT_TW_HALF = 4.8
     KTT_TW_MIDDLE = 12
@@ -27,7 +27,10 @@ class PR:
 
     @classmethod
     def prepare_predict_values(cls):
+        """
+            Prepare values for prediction based on the current game state.
 
+        """
         cls.gtime = cls.sc['time']
         cls.all_kills = cls.sc['blue_kills'] + cls.sc['red_kills']
         cls.module_kills = abs(cls.sc['blue_kills'] - cls.sc['red_kills'])
@@ -49,6 +52,10 @@ class PR:
 
     @classmethod
     def ktt_straigh_leader(cls):
+        """
+            Check if there is a clear leader in kills, gold, and tower health.
+
+        """
 
         blue_kills_lead = cls.sc['blue_kills'] > cls.sc['red_kills'] and cls.sc['red_kills'] / cls.sc['blue_kills'] < 0.52
         red_kills_lead = cls.sc['red_kills'] > cls.sc['blue_kills'] and cls.sc['blue_kills'] / cls.sc['red_kills'] < 0.52
@@ -66,16 +73,27 @@ class PR:
     
     @classmethod
     def gold_not_equals(cls):
+        """
+            Check if the gold difference is significant.
+
+        """
         return abs(cls.sc['blue_gold'] - cls.sc['red_gold']) > 1.3
 
     @classmethod
     def kills_gold_equals(cls, kills, gold):
-
+        """
+            Check if the kills and gold difference meet certain criteria.
+        
+        """
         return cls.all_kills > kills and cls.module_kills < 7 and cls.module_gold < gold
 
     @classmethod
     def two_towers_destroyed(cls, one_side=False, some_side=False, equals=False):
+        """
+            Check if two towers are destroyed based on different conditions.
 
+        """
+        
         if some_side:
             return cls.sc['blue_towers'] > 1 or cls.sc['red_towers'] > 1
         
@@ -91,16 +109,26 @@ class PR:
 
     @classmethod
     def towers_hp_more_than(cls, hp: int):
+        """
+            Check if both towers' HP is more than a certain value.
 
+        """
         return cls.sc['blue_t1_hp'] > hp and cls.sc['red_t1_hp'] > hp
     
     @classmethod
     def towers_hp_less_than(cls, hp: int):
-
+        """
+         Check if either tower's HP is less than a certain value.
+         
+        """
         return cls.sc['blue_t1_hp'] < hp or cls.sc['red_t1_hp'] < hp
     
     @classmethod
     def ktt_tb(cls, fl):
+        """
+            Calculate KTT TB based on the given flag.
+
+        """
         match fl:
             case 'half':
                 if cls.tb_ktt_idx <= 8.45 and cls.tb_towers_idx <= 3.6 and cls.module_kills_idx >= 0.75:
@@ -111,6 +139,10 @@ class PR:
         
     @classmethod
     def ktt_tl(cls, fl='half'):
+        """
+            Calculate KTT TL based on the given flag.
+
+        """
         match fl:
             case 'half':
                 
@@ -138,7 +170,10 @@ class PR:
 
     @classmethod
     def gen_main_predict(cls):
+        """
+            Generate main predictions based on the current game state.
 
+        """
         predictions = {
 
                 TelegramStr.tb_predict_half: [

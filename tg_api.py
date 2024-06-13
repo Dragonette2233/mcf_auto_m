@@ -1,7 +1,6 @@
 import requests
 import os
 import logging
-import time
 from static_data import (
     TelegramStr
 )
