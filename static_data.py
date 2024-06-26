@@ -108,6 +108,20 @@ REGIONS_TUPLE = (
     ('th', 'th2', 'sea'), ('tw', 'tw2', 'sea')
 )
 
+class CSS:
+    # BTN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
+    BTN_REJECT_LIVE = 'button.ui-button.dashboard-redirect-message-timer__btn.ui-button--size-m.ui-button--theme-gray.ui-button--rounded'
+    # BTN_FOR_BET = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
+    TABLE_GAMES = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
+    GAMELINK = 'a.dashboard-game-block__link.dashboard-game-block-link'
+    SPAN_BTN_STREAM = 'span.dashboard-game-action-bar__group'
+    OBJ_BTN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
+    TITLE_ARAM_OUTER = 'span.caption.ui-dashboard-champ-name__caption.caption--size-m'
+    
+
+class MelSelenium:
+    ...
+
 class URL:
 
     FEATURED_GAMES = "https://{region}.api.riotgames.com/lol/spectator/v5/featured-games"

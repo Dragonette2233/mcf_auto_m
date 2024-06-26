@@ -26,8 +26,8 @@ class Chrome():
     def __init__(self) -> None:
         self.CSS_BTN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
         self.CSS_BTN_REJECT_LIVE = 'button.ui-button.dashboard-redirect-message-timer__btn.ui-button--size-m.ui-button--theme-gray.ui-button--rounded'
-        self.CSS_BTN_FOR_BET = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
-        self.CSS_TABLE_GAMES = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
+        # self.CSS_BTN_FOR_BET = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
+        # self.CSS_TABLE_GAMES = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
         self.URL_MAIN = 'https://lite.1xbet-new.com/ru/live/cyber-zone/league-of-legends'
         self.options = Options()
         self.options.add_argument("--disable-blink-features=AutomationControlled")
@@ -70,12 +70,9 @@ class Chrome():
             self.driver.get(url=self.URL + '?platform_type=desktop')
             time.sleep(5)
             return True
-        except TimeoutException:
+        except (TimeoutException, WebDriverException):
             return False
-        except WebDriverException:
-            return False
-        # time.sleep(6)
-
+       
     def remove_cancel(self):
         try:
             element = self.driver.find_element(By.CSS_SELECTOR, self.CSS_BTN_REJECT_LIVE)
@@ -105,7 +102,7 @@ class Chrome():
                 if len(lock_ico) == 0: return True
             
             else:
-                for i, mrk in enumerate(markets):
+                for _, mrk in enumerate(markets):
                     btn = mrk.find_element(By.CSS_SELECTOR, 'span.ui-market__name')
                     mrk_text = btn.text
                     if mrk_text.endswith('Б'):
@@ -209,14 +206,8 @@ class Chrome():
                     else:
                         self.remove_cancel()
                         time.sleep(1)
-            except AttributeError as ex_:
-                # logger.warning(ex_)
-                time.sleep(1)
-            except IndexError as ex_:
-                # logger.warning(ex_)
-                time.sleep(1)
-            except (NoSuchElementException, StaleElementReferenceException) as ex_:
-                # logger.warning(ex_)
+            except (AttributeError, IndexError, NoSuchElementException,
+                    StaleElementReferenceException) as ex_:
                 time.sleep(1)
             except Exception as ex_:
                 logger.info(self.game_index_new)

@@ -2,7 +2,10 @@ from PIL import Image, ImageGrab
 import numpy as np
 import os
 from skimage.metrics import structural_similarity as ssim
-from modules.mcf_pillow import greyshade_array
+from modules.mcf_pillow import (
+    greyshade_array,
+    green_fill_percents
+)
 from static_data import (
     PATH,
     GREYSHADE
@@ -132,35 +135,16 @@ class ScoreRecognition:
             return ''
 
     @classmethod
-    def towers_healh_recognition(cls, image):
+    def towers_healh_recognition(cls, image: Image):
         # 20, 850, 59, 902
         if not cls.get_compare(np.array(image.crop((20, 850, 59, 902)).convert('L')), 'tw_access', 0):
             return False
 
-
-        t1_health = [
-            cls.get_compare(np.array(image.crop((104, 857, 108, 864)).convert('L')), 'thp', 0),
-            cls.get_compare(np.array(image.crop((110, 857, 114, 864)).convert('L')), 'thp', 1),
-            cls.get_compare(np.array(image.crop((115, 857, 119, 864)).convert('L')), 'thp', 2)
-        ]
-
-        print(t1_health)
+        rect = image.crop((76, 865, 174, 867))
+        result = green_fill_percents(rect)
         
-
-        round_value = 295
-        
-        if t1_health[0] == '':
-            round_value = 2950
-       
-        t1 = ''.join([str(i) for i in t1_health])
-
-        t1_res = int(t1) if t1 !='' else 0
-
-        f_result = int((t1_res / round_value) * 100)
-        if f_result > 100:
-            return int(f_result / 10)
-        return f_result
-
+        return result
+      
     @classmethod
     def screen_score_recognition(cls, image=None) -> dict[str, int]:
 

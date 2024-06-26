@@ -106,3 +106,35 @@ def generate_scoreboard():
     # MCFStorage.save_score(score=score)
 
     return score
+
+
+def is_green(pixel, threshold=100):
+    """Проверка, является ли пиксель зеленым.
+    Порог можно настроить для более точного распознавания зеленого цвета."""
+    r, g, b = pixel
+    return g > threshold and g > r and g > b
+
+def green_fill_percents(cropped_image, green_threshold=100, fill_threshold=0.8) -> int:
+    
+    # Возвращает int от 0 до 100 (проценты башни)
+    
+    """
+    Проверить заполненность прямоугольника зелеными оттенками.
+    
+    :param cropped_image: обрезанное изображение (прямоугольник).
+    :param green_threshold: порог для компоненты G, чтобы пиксель считался зеленым.
+    :param fill_threshold: доля зеленых пикселей для определения заполненности.
+    """
+    pixels = cropped_image.load()
+    width, height = cropped_image.size
+    
+    green_pixels = 0
+    total_pixels = width * height
+    
+    for x in range(width):
+        for y in range(height):
+            if is_green(pixels[x, y], green_threshold):
+                green_pixels += 1
+    
+    green_fill_ratio = green_pixels / total_pixels
+    return int(green_fill_ratio * 100)
