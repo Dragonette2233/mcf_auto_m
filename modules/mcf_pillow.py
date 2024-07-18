@@ -1,6 +1,6 @@
 from PIL import Image, ImageGrab
 from dynamic_data import CF
-
+from modules import mcf_autogui
 import os
 import logging
 import time
@@ -59,6 +59,8 @@ def is_league_stream_active(debug=False):
         logger.info(similarity_index)
 
     if similarity_index > 0.949:
+        mcf_autogui.open_score_tab()
+        logger.info('Spectator activated')
         return True
 
 def generate_scoreboard():

@@ -53,12 +53,11 @@ class CharsRecognition:
 
         characters = []
 
-        main_images = [os.path.join('.', 
-                                'images_lib', 
-                                'chars', 
-                                team_color, 
-                                f'char_{i}.png') for i in range(5)] # Путь к основному изображению (35x35)
-        
+        if team_color == 'blue':
+            main_images = PATH.TEMP_BLUE_CUT
+        else:
+            main_images = PATH.TEMP_RED_CUT
+                
         # Подготовка массива основного изображения для последующего сравнения
         main_images_arr = [greyshade_array(img) for img in main_images]
 

@@ -1,8 +1,18 @@
 import requests
 import logging
+import asyncio
+from aiohttp import ClientSession, ClientTimeout
+from aiohttp.client_exceptions import (
+    ClientProxyConnectionError,
+    ClientConnectionError,
+    ContentTypeError
+    )
 from static_data import (
     MCFException,
     Headers,
+    ALL_CHAMPIONS_IDs,
+    FEATURED_GAMES_URL,
+    REGIONS_TUPLE
 )
 
 logger = logging.getLogger(__name__)
@@ -24,12 +34,9 @@ class RiotAPI:
             except (requests.exceptions.ConnectTimeout, 
                     requests.exceptions.ConnectionError,
                     requests.exceptions.ReadTimeout):
-                pass
-                # raise MCFException('No connection | Timeout')
-            except MCFException as mcf_ex:
-                logging.error(mcf_ex, exc_info=True)
+                logger.warning("No connection | Timeout")
             except Exception as exc:
-                logging.warning(exc, exc_info=True)
+                logger.warning(exc, exc_info=True)
             
         return wrapper
 
@@ -46,11 +53,14 @@ class RiotAPI:
         # print('im here', result.text)
         
         status = result.status_code
+        body = result.json()
+        
         if status != 200:
-            logger.warning(result.json())
+            logger.warning(body)
             return status
         else:
-            return result.json()['puuid']
+            return body['puuid']
+        
     @connection_handler
     @staticmethod
     def get_matches_by_puuid(area: str, puuid: int):
@@ -77,3 +87,72 @@ class RiotAPI:
         if status:
             return result
         return result.json()
+    
+    @staticmethod
+    def async_riot_parse():
+
+
+        """
+            This function parsing games from Riot API Featured Games into
+            GameData.json and returning count of missing regions
+        
+        """
+
+        featured_games = {}
+
+        async def parsing(region):
+            nonlocal missing_regions, featured_games
+            
+            async with ClientSession() as session:
+                async with session.get(url=FEATURED_GAMES_URL.format(region=region), 
+                                    **Headers.riot) as response:
+                    
+                    data = await response.json()
+                    
+                    try:
+                        gameList = data['gameList']
+                        if len(gameList) < 1:
+                            missing_regions += 1
+                            return
+                    except KeyError as key_err:
+                        logger.warning(f"{key_err}")
+                        missing_regions += 1
+                        return
+
+                    routelist = []
+                    for s in range(0, len(gameList)):
+                        
+                        # Создаем список из id персонажей для дальнейшей конвертации в имени
+                        id_names = [int(gameList[s]['participants'][k]['championId']) for k in range(5)]
+
+                        # Создаем список конвертированных id в имена персонажей
+                        champ_list = [ALL_CHAMPIONS_IDs.get(id_name) for id_name in id_names]
+                        
+                        champ_string = ' | '.join([str(item) for item in champ_list])
+                        summoners = '_|_'.join([f"{i['riotId']}:{gameList[s]['platformId']}" for i in gameList[s]['participants']])
+                                
+                        routelist.append(f"{champ_string}-|-{summoners}")
+
+                    featured_games[region] = routelist.copy()
+         
+        async def main_aram():
+
+            nonlocal missing_regions
+
+            tasks = []
+            for region in REGIONS_TUPLE:
+                tasks.append(asyncio.create_task(parsing(region[1])))
+
+            for task in tasks:
+                try: 
+                    await asyncio.gather(task)
+                except asyncio.exceptions.TimeoutError:
+                    missing_regions += 1
+                except (ClientConnectionError, ClientProxyConnectionError):
+                    missing_regions = 20
+                    
+        missing_regions = 0
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        asyncio.run(main_aram())
+        
+        return featured_games

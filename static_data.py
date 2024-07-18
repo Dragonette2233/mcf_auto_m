@@ -2,9 +2,7 @@ import os
 import threading
 import getpass
 from datetime import datetime
-from modules import (
-    mcf_pillow,
-)
+from modules import mcf_pillow
 
 """
     Values for interacting with League of Legends data
@@ -56,7 +54,7 @@ ALL_CHAMPIONS_IDs = {
     498: 'Xayah', 516: 'Ornn', 517: 'Sylas', 526: 'Rell',
     518: 'Neeko', 523: 'Aphelios', 555: 'Pyke', 875: "Sett",
     711: "Vex", 777: "Yone", 887: "Gwen", 876: "Lillia",
-    888: "Renata", 895: "Nilah", 897: "KSante", 901: "Smolder", 902: "Milio", 950: "Naafiri", 
+    888: "Renata", 893: "Aurora", 895: "Nilah", 897: "KSante", 901: "Smolder", 902: "Milio", 950: "Naafiri", 
     2002: 'Kayn_b', 910: "Hwei",
     2001: "MonkeyKing"
 }
@@ -71,7 +69,7 @@ ten_roles_dict = {
     '2': ('Akali', 'Kassadin', 'Masteryi', 'Rengar', 'Khazix', 'Evelynn', 'Talon', 'Zed', 'Nocturne',
            'Qiyana', 'Katarina', 'Pyke', 'Samira', 'Briar'),
     '3': ('Azir', 'Cassiopeia', 'Lillia', 'Ryze', 'Viktor',  'Ekko', 'Gangplank', 'Anivia', 'Heimerdinger', 
-           'Vladimir', 'Fiddlesticks', 'Kennen',  'Aurelionsol', 'Gragas', 'Ahri', 'Hwei'),
+           'Vladimir', 'Fiddlesticks', 'Kennen',  'Aurelionsol', 'Gragas', 'Ahri', 'Hwei', 'Aurora'),
     '4': ('Bard', 'Janna', 'Karma', 'Lulu', 'Maokai', 'Morgana', 'Nami', 'Orianna', 'Rakan', 'Renata', 'Senna', 
            'Seraphine', 'Sona', 'Soraka', 'Twistedfate', 'Yuumi', 'Zilean', 'Ivern',  'Yorick', 'Annie', 'Milio'),
     '5': ('Akshan', 'Aphelios', 'Caitlyn', 'Jhin', 'Jinx', 'Kaisa', 'Kalista', 'Kayle', 'Kindred', 
@@ -168,6 +166,19 @@ class PATH:
     BLUE_TOWER = os.path.join(MCF_BOT, 'ssim_score_data', 'team_blue', 'towers')
     RED_TOWER = os.path.join(MCF_BOT, 'ssim_score_data', 'team_red', 'towers')
     DEBUG_STATS = os.path.join(MCF_BOT, 'arambot_lib', 'debug_stats.json')
+    
+    TEMP_BLUE_CUT = [os.path.join('.', 
+                                'images_lib', 
+                                'chars', 
+                                "blue",
+                                f'char_{i}.png') for i in range(5)]
+    
+    TEMP_RED_CUT = [os.path.join('.', 
+                                'images_lib', 
+                                'chars', 
+                                "red",
+                                f'char_{i}.png') for i in range(5)]
+    
     BLUE_CUT = os.path.join(MCF_BOT, 
                             'images_lib',
                             'chars',  

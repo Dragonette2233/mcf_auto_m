@@ -23,23 +23,6 @@ import os
 
 logger = logging.getLogger(__name__)
 
-def delete_scoreboard():
-
-    MCFStorage.save_score(stop_tracking=True)
-    
-def close_league_of_legends():
-
-    list_task = os.popen('tasklist /FI "IMAGENAME eq League of Legends*"').readlines()
-    if len(list_task) == 1:
-        # self.info_view.exception('Game not launched')
-        return
-    
-    list_task[3] = list_task[3].replace(' ', '')
-    process_pid = list_task[3].split('exe')[1].split('Console')[0]
-    os.popen(f'taskkill /PID {process_pid} /F')
-
-def advance_poro_search():
-    ...
 
 def direct_poro_parsing(red_champion) -> list:
 
@@ -48,17 +31,14 @@ def direct_poro_parsing(red_champion) -> list:
 
     """
 
-    if len(red_champion) < 2:
-        raise MCFException('Short')
-
     converted_champion = None
     for champion in ALL_CHAMPIONS_IDs.values():
         if champion.capitalize().startswith(red_champion.capitalize()):
             converted_champion = champion.lower()
             break
     else:
-        raise MCFException(f'Who is {red_champion}')
-    
+        logger.warning("Champion unrecognized | %s", red_champion)
+        
     match converted_champion:
         case 'wukong':
             converted_champion = 'monkeyking'
@@ -67,23 +47,17 @@ def direct_poro_parsing(red_champion) -> list:
         case _:
             pass
 
-    try:
-        url = f'https://porofessor.gg/current-games/{converted_champion}/queue-450'
-    except:
-        raise MCFException('This gamemod is unaccesible')
-            
+    url = f'https://porofessor.gg/current-games/{converted_champion}/queue-450'
     result = requests.get(url, headers=Headers.default, timeout=3)
     soup: bs = bs(result.text, "html.parser").find_all('div', class_='cardTeam')
 
     if result.status_code != 200:
-        raise MCFException(f'Error. Status: {result.status_code}')
+        logger.warning("Connection in Poro failed. Code: %s", result.status_code)
     
     games = {
         'teams': [team.find_all('img') for i, team in enumerate(soup) if i % 2 == 0],
         'champions': [],
-        # 'nicknames': [team.find('div', class_='name').text.strip() for i, team in enumerate(soup) if i % 2 == 0],
         'regions': [team.find('a', class_='liveGameLink').get('href') for i, team in enumerate(soup) if i % 2 == 0],
-        # 'elorank': [team.find('div', class_='subname').text.strip() for i, team in enumerate(soup) if i % 2 == 0]
     }
 
 
@@ -92,7 +66,6 @@ def direct_poro_parsing(red_champion) -> list:
 
     if len(soup) != 0:
         nicknames = [blue + red for blue, red in zip(nicknames_blue, nicknames_red)]
-        # for i in (range(soup) / 2):
     else:
         nicknames = []
 
@@ -123,8 +96,6 @@ def direct_poro_parsing(red_champion) -> list:
         whole_string = f"{champs}-|-{names_region}"
         featured_games.append(whole_string)
     
-    # MCFStorage.write_data(route=('MatchesPoroGlobal', ), value=featured_games)
-    # print(featured_games)
     return featured_games
 
 def async_poro_parsing(champion_name, advance_elo: str | bool = False):
@@ -173,15 +144,12 @@ def async_poro_parsing(champion_name, advance_elo: str | bool = False):
                 games = {
                     'teams': [team.find_all('img') for i, team in enumerate(soup) if i % 2 == 0],
                     'champions': [],
-                    # 'nicknames': [team.find('div', class_='name').text.strip() for i, team in enumerate(soup) if i % 2 == 0],
                     'regions': [team.find('a', class_='liveGameLink').get('href') for i, team in enumerate(soup) if i % 2 == 0],
-                    # 'elorank': [team.find('div', class_='subname').text.strip() for i, team in enumerate(soup) if i % 2 == 0]
                 }
 
 
                 ### TESTS
 
-                # single_game = [game.find_all('div', class_='name') for game in soup]
                 nicknames_blue = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 == 0]
                 nicknames_red = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 != 0]
 

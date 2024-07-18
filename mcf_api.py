@@ -69,15 +69,15 @@ class MCFApi:
         # app_blueprint.delete_screenscore()
         logger.info('League of Legends closed')
 
-    @classmethod
-    def delete_scoreboard(cls):
+    # @classmethod
+    # def delete_scoreboard(cls):
 
-        MCFStorage.save_score(stop_tracking=True)
-        try:
-            # os.remove(os.path.join('images_lib', 'scorecrop.png'))
-            os.remove(os.path.join('.', 'images_lib', 'buildcrop.png'))
-        except FileNotFoundError:
-            pass
+    #     MCFStorage.save_score(stop_tracking=True)
+    #     try:
+    #         # os.remove(os.path.join('images_lib', 'scorecrop.png'))
+    #         os.remove(os.path.join('.', 'images_lib', 'buildcrop.png'))
+    #     except FileNotFoundError:
+    #         pass
 
 
     @classmethod

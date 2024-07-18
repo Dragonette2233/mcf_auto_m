@@ -59,7 +59,6 @@ class Chrome():
         self.RESTART_REQUIRED = True
 
     def open_activegame_page(self):
-
         self.driver.get(self.URL + '/' + self.game_index_ended.replace('_', '/') + '?platform_type=mobile')
 
     def open_league_page(self):
@@ -113,7 +112,8 @@ class Chrome():
                         if len(lock_ico) == 0:
                             return True
         except:
-            return False
+            ...
+            
         return False
   
     def predicts_is_accepted(self, message):
@@ -202,20 +202,19 @@ class Chrome():
                             return
                         else:
                             stream_btn.click()
-                            time.sleep(1)
+
                     else:
                         self.remove_cancel()
-                        time.sleep(1)
+                        
             except (AttributeError, IndexError, NoSuchElementException,
                     StaleElementReferenceException) as ex_:
-                time.sleep(1)
+                ...
             except Exception as ex_:
                 logger.info(self.game_index_new)
                 logger.info(self.game_index_ended)
                 logger.warning(ex_)
-                # logger.warning(exc_info=True)
-                time.sleep(1)
 
+            time.sleep(1)
             self.remove_cancel()
 
             # print(self.PASSAGES)

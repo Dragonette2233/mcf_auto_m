@@ -1,5 +1,4 @@
 import json
-# import redis
 import logging
 from datetime import datetime
 from dynamic_data import CF
@@ -7,9 +6,6 @@ from static_data import PATH
 from tg_api import TGApi
 
 logger = logging.getLogger(__name__)
-
-# r = redis.Redis(host='localhost', port=6379, decode_responses=True)
-
 
 class SafeJson:
 
@@ -41,16 +37,6 @@ class MCFStorage:
 
         with open(PATH.PREVIOUS_GAMEID, 'w+') as file:
             file.write(game_id)
-
-        # open()
-    @classmethod
-    def save_score(cls, score: dict = None, stop_tracking=False):
-        ...
-        # if stop_tracking:
-        #     r.set('is_active', 0)
-        # else:
-        #     for key, value in score.items():
-        #         r.set(key, value)
 
     @classmethod
     def get_selective_data(cls, route: tuple):
@@ -103,7 +89,6 @@ class MCFStorage:
             return
 
         if daily:
-            logger.warning('_Something here!_')
             predicts_path = PATH.PREDICTS_TRACE_DAILY
             trace_day = datetime.now().day
 
