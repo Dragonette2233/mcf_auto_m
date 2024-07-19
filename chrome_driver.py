@@ -4,7 +4,7 @@ import logging
 import modules.mcf_autogui as mcf_autogui
 import modules.mcf_pillow as mcf_pillow
 from modules.mcf_storage import MCFStorage
-from modules.mcf_tracing import Trace
+# from modules.mcf_tracing import Trace
 from modules.mcf_predicts import PR
 from dynamic_data import CF
 from tg_api import TGApi
@@ -159,8 +159,8 @@ class Chrome():
         if score['time'] > 660:
             return
         
-        if score['time'] in TRACE_RANGE and not CF.SW.tracer.is_active():
-            Trace.add_tracing(score=score)
+        # if score['time'] in TRACE_RANGE and not CF.SW.tracer.is_active():
+        #     Trace.add_tracing(score=score)
 
         if not CF.VAL.pr_cache:
             PR.sc = copy.deepcopy(score)
