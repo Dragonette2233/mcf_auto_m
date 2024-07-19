@@ -13,7 +13,7 @@ import itertools
 from chrome_driver import Chrome
 from modules.ssim_recognition import CharsRecognition as CharsRecog
 from modules.mcf_storage import MCFStorage
-from modules.mcf_tracing import Trace
+# from modules.mcf_tracing import Trace
 from modules.mcf_riot_api import RiotAPI
 from modules import mcf_utils
 logger = logging.getLogger(__name__)
@@ -316,7 +316,7 @@ class MCFApi:
 
 
                 if CF.ACT.is_game_founded:
-                    Trace.create_new_trace(gameid=CF.ACT.match_id)
+                    # Trace.create_new_trace(gameid=CF.ACT.match_id)
                     return True
                     
             except Exception as ex:
@@ -361,7 +361,7 @@ class MCFApi:
                 
                 timestamp = f"[{time_stamp[0]}:{time_stamp[1]}]"
                 TGApi.winner_is(team=winner, kills=kills, timestamp=timestamp, opened=is_opened)
-                Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
+                # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
                 MCFStorage.predicts_monitor(kills=kills)
                 MCFStorage.predicts_monitor(kills=kills, daily=True)
                 CF.SW.request.deactivate()
