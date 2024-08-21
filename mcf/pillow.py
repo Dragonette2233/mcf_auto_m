@@ -116,7 +116,7 @@ def is_green(pixel, threshold=100):
     r, g, b = pixel
     return g > threshold and g > r and g > b
 
-def green_fill_percents(cropped_image, green_threshold=100, fill_threshold=0.8) -> int:
+def green_fill_percents(cropped_image: Image.Image, green_threshold=100, fill_threshold=0.8) -> int:
     
     # Возвращает int от 0 до 100 (проценты башни)
     

@@ -134,7 +134,7 @@ class ScoreRecognition:
             return ''
 
     @classmethod
-    def towers_healh_recognition(cls, image: Image):
+    def towers_healh_recognition(cls, image: Image.Image):
         # 20, 850, 59, 902
         if not cls.get_compare(np.array(image.crop((20, 850, 59, 902)).convert('L')), 'tw_access', 0):
             return False
