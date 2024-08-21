@@ -1,4 +1,4 @@
-from static_data import (
+from mcf.static_data import (
     ALL_CHAMPIONS_IDs,
     REGIONS_TUPLE,
     URL_PORO_BY_REGIONS,

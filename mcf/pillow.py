@@ -1,6 +1,6 @@
 from PIL import Image, ImageGrab
-from dynamic_data import CF
-from modules import mcf_autogui
+from mcf.dynamic_data import CF
+from mcf import autogui
 import os
 import logging
 import time
@@ -15,7 +15,7 @@ def greyshade_array(image_path):
     return np.array(Image.open(image_path).convert('L'))
 
 def is_game_started():
-    from static_data import GREYSHADE
+    from mcf.static_data import GREYSHADE
 
     image_ = ImageGrab.grab()
 
@@ -59,15 +59,15 @@ def is_league_stream_active(debug=False):
         logger.info(similarity_index)
 
     if similarity_index > 0.949:
-        mcf_autogui.open_score_tab()
+        autogui.open_score_tab()
         logger.info('Spectator activated')
         return True
 
 def generate_scoreboard():
 
-    from modules.ssim_recognition import ScoreRecognition
+    from mcf.ssim_recognition import ScoreRecognition
     # from modules.mcf_storage import MCFStorage
-    from modules import mcf_autogui
+    from mcf import autogui
 
     blue_shot = None
     red_shot = None
@@ -75,9 +75,9 @@ def generate_scoreboard():
     score = ScoreRecognition.screen_score_recognition()
 
     if score['red_towers'] == 0:
-        mcf_autogui.click(1752, 970)
+        autogui.click(1752, 970)
         time.sleep(0.05)
-        mcf_autogui.doubleClick(936, 620)
+        autogui.doubleClick(936, 620)
         time.sleep(0.05)
         blue_shot = ImageGrab.grab()
         blue_t1_health = ScoreRecognition.towers_healh_recognition(image=blue_shot)
@@ -89,9 +89,9 @@ def generate_scoreboard():
         blue_t1_health = 0
 
     if score['blue_towers'] == 0:
-        mcf_autogui.click(1811, 919)
+        autogui.click(1811, 919)
         time.sleep(0.05)
-        mcf_autogui.doubleClick(951, 490)
+        autogui.doubleClick(951, 490)
         time.sleep(0.05)
         red_shot = ImageGrab.grab()
         red_t1_health = ScoreRecognition.towers_healh_recognition(image=red_shot)

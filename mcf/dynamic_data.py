@@ -1,4 +1,4 @@
-from mcf_asbstract import BoolSwitch, Singleton
+from modules.mcf_asbstract import BoolSwitch, Singleton
 
 class StatsRate:
     def __init__(self) -> None:

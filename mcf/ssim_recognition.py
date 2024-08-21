@@ -2,11 +2,11 @@ from PIL import Image, ImageGrab
 import numpy as np
 import os
 from skimage.metrics import structural_similarity as ssim
-from modules.mcf_pillow import (
+from mcf.pillow import (
     greyshade_array,
     green_fill_percents
 )
-from static_data import (
+from mcf.static_data import (
     PATH,
     GREYSHADE
 
@@ -54,9 +54,9 @@ class CharsRecognition:
         characters = []
 
         if team_color == 'blue':
-            main_images = PATH.TEMP_BLUE_CUT
+            main_images = [PATH.BLUE_CUT.format(idx) for idx in range(5)]
         else:
-            main_images = PATH.TEMP_RED_CUT
+            main_images = [PATH.BLUE_CUT.format(idx) for idx in range(5)]
                 
         # Подготовка массива основного изображения для последующего сравнения
         main_images_arr = [greyshade_array(img) for img in main_images]

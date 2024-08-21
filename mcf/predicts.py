@@ -1,12 +1,12 @@
-from dynamic_data import CF
-from static_data import TelegramStr
+from mcf.dynamic_data import CF
+from mcf.static_data import TelegramStr
 
-class PRstatic:
+class PR_IDXs:
 
-    KTT_HALF_IDX = 10.9
-    KTT_T_HALF_IDX = 11.5
-    KTT_MIDDLE_IDX = 11.9
-    KTT_FULL_IDX = 12.5
+    KTT_HALF = 10.9
+    KTT_T_HALF = 11.5
+    KTT_MIDDLE = 11.9
+    KTT_FULL = 12.5
 
     KTT_TW_HALF = 4.8
     KTT_TW_MIDDLE = 12
@@ -147,22 +147,22 @@ class PR:
             case 'half':
                 
                 if any([
-                    cls.tl_ktt_idx < PRstatic.KTT_T_HALF_IDX and cls.towers_idx >= PRstatic.KTT_TW_HALF,
-                    cls.tl_ktt_idx < PRstatic.KTT_HALF_IDX
+                    cls.tl_ktt_idx < PR_IDXs.KTT_T_HALF and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
+                    cls.tl_ktt_idx < PR_IDXs.KTT_HALF
                 ]):
                     return True
             case 's_half':
                 if any([
-                    cls.tl_ktt_idx < PRstatic.KTT_MIDDLE_IDX,
-                    cls.tl_ktt_idx < PRstatic.KTT_FULL_IDX and cls.towers_idx >= PRstatic.KTT_TW_HALF,
+                    cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE,
+                    cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
                 ]):
                     return True
             case 'middle':
-                if cls.tl_ktt_idx < PRstatic.KTT_MIDDLE_IDX and cls.towers_idx >= PRstatic.KTT_TW_MIDDLE:
+                if cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE and cls.towers_idx >= PR_IDXs.KTT_TW_MIDDLE:
                     return True
                 
             case 'full':
-                if cls.tl_ktt_idx < PRstatic.KTT_FULL_IDX and cls.ktt_straigh_leader():
+                if cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.ktt_straigh_leader():
                     return True
             case _:
                 ...

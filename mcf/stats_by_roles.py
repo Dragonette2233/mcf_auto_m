@@ -1,4 +1,4 @@
-from static_data import (
+from mcf.static_data import (
     ten_roles_dict,
     PATH
 )
@@ -37,6 +37,9 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
             'T1': ''.join(teams['T1']),
             'T2': ''.join(teams['T2'])
         }
+        
+        blue_string = '_'.join(roles_strings.values())
+        red_string = '_'.join(reversed(roles_strings))
 
         
         with open(PATH.STATISTICS, 'r') as stats:
@@ -45,13 +48,9 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
         target = None
         
         for match in list_stats:
-            if match.startswith(f"{roles_strings['T1']}_{roles_strings['T2']}"):
-                
-                target = (match, 'blue')
-                break
-            elif match.startswith(f"{roles_strings['T2']}_{roles_strings['T1']}"):
-                
-                target = (match, 'red')
+            
+            if match.startswith((blue_string, red_string)):
+                target = (match, 'blue' if match.startswith(blue_string) else 'red')
                 break
         else:
             return None
