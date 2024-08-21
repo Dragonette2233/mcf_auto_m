@@ -1,14 +1,14 @@
 import time
 import copy
 import logging
-import modules.mcf_autogui as mcf_autogui
-import modules.mcf_pillow as mcf_pillow
-from modules.mcf_storage import MCFStorage
+import mcf.autogui as autogui
+import mcf.pillow as pillow
+from mcf.storage import MCFStorage
 # from modules.mcf_tracing import Trace
-from modules.mcf_predicts import PR
-from dynamic_data import CF
+from mcf.predicts import PR
+from mcf.dynamic_data import CF
 from tg_api import TGApi
-from static_data import PATH, TRACE_RANGE, TelegramStr
+from mcf.static_data import PATH, TRACE_RANGE, TelegramStr, MelCSS
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -21,74 +21,56 @@ from selenium.common.exceptions import (
 
 logger = logging.getLogger(__name__)
 
-class Chrome():
+class Chrome:
 
     def __init__(self) -> None:
-        self.CSS_BTN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
-        self.CSS_BTN_REJECT_LIVE = 'button.ui-button.dashboard-redirect-message-timer__btn.ui-button--size-m.ui-button--theme-gray.ui-button--rounded'
-        # self.CSS_BTN_FOR_BET = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
-        # self.CSS_TABLE_GAMES = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
-        self.URL_MAIN = 'https://lite.1xbet-new.com/ru/live/cyber-zone/league-of-legends'
         self.options = Options()
         self.options.add_argument("--disable-blink-features=AutomationControlled")
-        self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+        self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
         self.driver = None
         self.game_index_new = ''
         self.game_index_ended = MCFStorage.get_gameid()
-
+        
         self.PASSAGES = 0
         self.RESTART_REQUIRED = False
 
         self.URL: str = ''
         self.ACTIVE_TOTAL_VALUE = 0
-        
     
     def start(self):
         self.driver = webdriver.Chrome(options=self.options)
         self.driver.maximize_window()
         time.sleep(3)
-        mcf_autogui.click(x=1896, y=99) #disable infobar
+        autogui.click(x=1896, y=99) #disable infobar
         time.sleep(3)
 
-    def force_quit(self):
-        try:
-            self.driver.quit()
-        except:
-            ...
-            
-        self.RESTART_REQUIRED = True
-
-    def open_activegame_page(self):
-        self.driver.get(self.URL + '/' + self.game_index_ended.replace('_', '/') + '?platform_type=mobile')
-
     def open_league_page(self):
-        with open(PATH.MIRROR_PAGE, 'r') as ex_url:
-            self.URL = ex_url.read().strip()
-        
-        try:
-            self.driver.get(url=self.URL + '?platform_type=desktop')
-            time.sleep(5)
-            return True
-        except (TimeoutException, WebDriverException):
-            return False
-       
+        with open('./mcf_lib/mirror_page.txt', 'r') as ex_url:
+            url = ex_url.read().strip()
+        self.driver.get(url=url)
+        time.sleep(6)
+
     def remove_cancel(self):
         try:
-            element = self.driver.find_element(By.CSS_SELECTOR, self.CSS_BTN_REJECT_LIVE)
+            element = self.driver.find_element(By.CSS_SELECTOR, MelCSS.BUTTON_REJECT_LIVE)
             if element is not None:
                 element.click()
-        except (NoSuchElementException, TimeoutException, StaleElementReferenceException):
+                
+        except (NoSuchElementException, 
+                TimeoutException,
+                StaleElementReferenceException):
             pass
 
     def delay(self, second: int):
         time.sleep(second)
 
     def stream_close(self):
-        mcf_autogui.close_league_stream()
+        autogui.close_league_stream()
 
     def stream_fullscreen(self):
-        mcf_autogui.click(x=1871, y=361)
+        autogui.click(x=1871, y=361)
         time.sleep(2.5)
+
 
     def is_total_coeff_opened(self, end_check=False):
 
@@ -115,7 +97,7 @@ class Chrome():
             ...
             
         return False
-  
+    
     def predicts_is_accepted(self, message):
 
         predict_direction = message.split()[1][-1]
@@ -168,33 +150,35 @@ class Chrome():
             main_predict = PR.gen_main_predict()
             if main_predict:
                 self.send_predict(message=main_predict[0], idx=main_predict[1])
-        
+
     def notify_when_starts(self):
+
+        passages = 0
 
         while True:
 
             try:
-                games = self.driver.find_elements(By.CSS_SELECTOR, 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray')
-                aram_title_outer = games[0].find_element(By.CSS_SELECTOR, 'span.caption.ui-dashboard-champ-name__caption.caption--size-m')
-                aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, 'span.caption__label').get_attribute('innerText')
+                games = self.driver.find_elements(By.CSS_SELECTOR, MelCSS.GAMES_DASHBOARD)
+                aram_title_outer = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_OUTER)
+                aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_INNER).get_attribute('innerText')
               
                 if aram_title_inner == 'All Random All Mid':
-                    game_link = games[0].find_element(By.CSS_SELECTOR, 'a.dashboard-game-block__link.dashboard-game-block-link').get_attribute('href')
+                    game_link = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_GAME_LINK).get_attribute('href')
                     game_index = '_'.join(game_link.split('/')[7:])
-
+                    
                     if game_index != self.game_index_ended:
                         logger.info('Gamelink changed, refreshing driver')
                         self.open_league_page()
                         time.sleep(6)
                         self.game_index_new = game_index
                         self.game_index_ended = game_index
-
+          
                     if game_index == self.game_index_new:
-                        stream_btn = games[0].find_element(By.CSS_SELECTOR, 'span.dashboard-game-action-bar__group')
-                        stream_btn.find_element(By.CSS_SELECTOR, self.CSS_BTN_STREAM).click()
+                        stream_btn = games[0].find_element(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM)
+                        stream_btn.find_element(By.CSS_SELECTOR, MelCSS.BUTTON_OPEN_STREAM).click()
                         time.sleep(2)
 
-                        if mcf_pillow.is_game_started():
+                        if pillow.is_game_started():
                             logger.info('Game started: (from comparing stream)')
                             self.game_index_new = ''
                             MCFStorage.save_gameid(self.game_index_ended)
@@ -202,10 +186,9 @@ class Chrome():
                             return
                         else:
                             stream_btn.click()
-
                     else:
                         self.remove_cancel()
-                        
+
             except (AttributeError, IndexError, NoSuchElementException,
                     StaleElementReferenceException) as ex_:
                 ...
