@@ -1,8 +1,8 @@
 import logging
 import time
-from dynamic_data import CF
+from mcf.dynamic_data import CF
 from tg_api import TGApi
-from static_data import (
+from mcf.static_data import (
     REGIONS_TUPLE,
     ALL_CHAMPIONS_IDs,
     SPECTATOR_MODE,
@@ -11,11 +11,11 @@ from static_data import (
 import os
 import itertools
 from chrome_driver import Chrome
-from modules.ssim_recognition import CharsRecognition as CharsRecog
-from modules.mcf_storage import MCFStorage
+from mcf.ssim_recognition import CharsRecognition as CharsRecog
+from mcf.storage import MCFStorage
 # from modules.mcf_tracing import Trace
-from modules.mcf_riot_api import RiotAPI
-from modules import mcf_utils
+from mcf.riot_api import RiotAPI
+from mcf import utils
 logger = logging.getLogger(__name__)
 
 class MCFApi:
@@ -107,11 +107,11 @@ class MCFApi:
         while True:
             try:
                 logger.info('Parsing from RiotAPI and Poro...')
-                cls.PARSED_PORO_REGIONS = mcf_utils.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
-                cls.PARSED_PORO_BRONZE = mcf_utils.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
-                cls.PARSED_PORO_SILVER = mcf_utils.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
-                cls.PARSED_PORO_DIRECT = mcf_utils.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
-                cls.PARSED_RIOT_API = mcf_utils.async_riot_parsing() # Parse featured games from Riot API
+                cls.PARSED_PORO_REGIONS = utils.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
+                cls.PARSED_PORO_BRONZE = utils.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
+                cls.PARSED_PORO_SILVER = utils.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
+                cls.PARSED_PORO_DIRECT = utils.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
+                cls.PARSED_RIOT_API = utils.async_riot_parsing() # Parse featured games from Riot API
                 # print(cls.PARSED_PORO_BRONZE)
                 logger.info('Games parsed succesfully.')
                 break
@@ -132,11 +132,11 @@ class MCFApi:
 
     @classmethod
     def cache_before_stream(cls):
-        cls.CACHE_RIOT_API = mcf_utils.async_riot_parsing() # Parse featured games from Riot API
+        cls.CACHE_RIOT_API = utils.async_riot_parsing() # Parse featured games from Riot API
         logger.info('Games cached successfull!')
 
     @classmethod
-    def finded_game(cls, teams: dict, from_cache=False):
+    def finded_game(cls, teams: dict, from_cache=False) -> list:
 
         team_cycle = itertools.cycle(zip(teams['blue'], teams['red']))
 
@@ -203,7 +203,7 @@ class MCFApi:
 
     @classmethod
     def get_aram_statistic(cls, blue: list, red: list):
-        from modules import stats_by_roles
+        from mcf import stats_by_roles
 
         return stats_by_roles.get_aram_statistic(
                 blue_entry=blue,
@@ -297,7 +297,7 @@ class MCFApi:
         subprocess.call([PATH.SPECTATOR_FILE, *args])
 
     @classmethod
-    def get_activegame_parametres(cls, nicknames: list) -> bool:
+    def is_game_active(cls, nicknames: list) -> bool:
 
         for nick in nicknames:
             try:

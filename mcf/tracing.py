@@ -1,6 +1,6 @@
 import json
-from static_data import PATH
-from dynamic_data import CF
+from mcf.static_data import PATH
+from mcf.dynamic_data import CF
 
 class Trace:
 

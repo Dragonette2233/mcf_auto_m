@@ -1,4 +1,4 @@
-from static_data import (
+from mcf.static_data import (
     PATH,
     ALL_CHAMPIONS_IDs,
     REGIONS_TUPLE,
@@ -11,7 +11,7 @@ from static_data import (
 import asyncio
 import logging
 import requests
-from modules.mcf_storage import MCFStorage
+from mcf.storage import MCFStorage
 from bs4 import BeautifulSoup as bs
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import (

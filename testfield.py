@@ -3,8 +3,8 @@ import time
 # from PIL import ImageGrab
 # import numpy as np
 # from mcf_data import GREYSHADE_CLOCKS_CUT
-from modules import mcf_utils
-from dynamic_data import ControlFlow
+from mcf import utils
+from mcf.dynamic_data import ControlFlow
 from skimage.metrics import structural_similarity as ssim
 logging.basicConfig(level=logging.INFO)
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
@@ -40,9 +40,9 @@ match command:
         MCFApi.search_game(nick_region='VendettaCorrida#RU1:RU')
 
     case 'pr_test':
-        from modules.mcf_storage import MCFStorage
+        from mcf.storage import MCFStorage
         from tg_api import TGApi
-        from modules.mcf_predicts import PR
+        from mcf.predicts import PR
         import copy
 
         CF.SR.tb_rate[1] = CF.SR.WINNER
@@ -90,8 +90,8 @@ match command:
         TGApi.post_request(message='kak nehui delat', predicts_chat=True)
 
     case 'sim_start':
-        from modules.mcf_pillow import is_game_started
-        from dynamic_data import Validator
+        from mcf.pillow import is_game_started
+        from mcf.dynamic_data import Validator
 
         if is_game_started():
             
@@ -119,14 +119,14 @@ match command:
                 logger.info('Finded!: {characters}'.format(characters=nicknames))
                 break
     case 'cmpactive':
-        from modules import mcf_pillow
-        mcf_pillow.is_league_stream_active(debug=True)
+        from mcf import pillow
+        pillow.is_league_stream_active(debug=True)
     case 'scrgrab':
         ImageGrab.grab().crop((862, 2, 951, 22)).save('spectator_compare.png')
         # ImageGrab.grab().save('screenshot.png')
     case 'last':
-            from dynamic_data import ActiveGame
-            from static_data import Switches
+            from mcf.dynamic_data import ActiveGame
+            from mcf.static_data import Switches
             import mcf_api
             logger.info('Debugging last game')
             ActiveGame.area = 'europe'
@@ -139,7 +139,7 @@ match command:
     case 'parse_test':
         
         
-        test_featured = mcf_utils.async_riot_parsing() # Parse featured games from Riot API
+        test_featured = utils.async_riot_parsing() # Parse featured games from Riot API
         print(test_featured)
             # logger.info(f'Games parsed succesfully. {i}')
     case 'cstm':
@@ -155,22 +155,22 @@ match command:
         import mcf_api
         chars = mcf_api.MCFApi.get_characters()
     case 'sdiff':
-        from modules import mcf_pillow
-        from modules import mcf_autogui
+        from mcf import pillow
+        from mcf import autogui
         logger.info('Diff check. Press any key to start')
         input()
         
-        while not mcf_pillow.is_league_stream_active():
+        while not pillow.is_league_stream_active():
             logger.info('Waiting for stream')
             time.sleep(2)
-        mcf_autogui.open_score_tab()
+        autogui.open_score_tab()
 
     case 'force':
         from mcf_api import MCFApi
-        from static_data import MCFThread, Switches
-        from modules import mcf_pillow
-        from modules import mcf_autogui
-        from dynamic_data import ActiveGame
+        from mcf.static_data import MCFThread, Switches
+        from mcf import pillow
+        from mcf import autogui
+        from mcf.dynamic_data import ActiveGame
     
         nickname = input('Enter nickname:region: ')
         # maitretays#EUW:EUW
@@ -185,11 +185,11 @@ match command:
             input('Spectate game?')
             MCFApi.spectate_active_game()
 
-            while not mcf_pillow.is_league_stream_active():
+            while not pillow.is_league_stream_active():
                 logger.info('Waiting for stream')
                 time.sleep(2)
-            mcf_autogui.open_score_tab()
+            autogui.open_score_tab()
 
             while Switches.request:
-                mcf_autogui.doubleClick(x=658, y=828)
+                autogui.doubleClick(x=658, y=828)
                 time.sleep(2)

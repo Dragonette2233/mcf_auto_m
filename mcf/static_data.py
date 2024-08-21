@@ -2,7 +2,7 @@ import os
 import threading
 import getpass
 from datetime import datetime
-from modules import mcf_pillow
+from mcf import pillow
 
 """
     Values for interacting with League of Legends data
@@ -223,21 +223,21 @@ class GREYSHADE:
     
     
     BLUE_ARRAY = {
-                char: mcf_pillow.greyshade_array(img) for char, img in PATH.BLUE_IMAGES_TO_COMPARE.items()
+                char: pillow.greyshade_array(img) for char, img in PATH.BLUE_IMAGES_TO_COMPARE.items()
     }
     RED_ARRAY = {
-                char: mcf_pillow.greyshade_array(img) for char, img in PATH.RED_IMAGES_TO_COMPARE.items()
+                char: pillow.greyshade_array(img) for char, img in PATH.RED_IMAGES_TO_COMPARE.items()
     }
 
     # GREYSHADE_CMP_MAP = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_map.png'))
 
-    CMP_RIOT = mcf_pillow.greyshade_array(os.path.join(PATH._comparable, 'cmp_riot.png'))
-    CMP_BLUE = mcf_pillow.greyshade_array(os.path.join(PATH._comparable, 'cmp_blue.png'))
-    CMP_RED = mcf_pillow.greyshade_array(os.path.join(PATH._comparable, 'cmp_red.png'))
-    mCMP_RIOT = mcf_pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_riot.png'))
-    mCMP_BLUE = mcf_pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_blue.png'))
-    mCMP_RED = mcf_pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_red.png'))
-    mCMP_LOADING = mcf_pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_loading.png'))
+    CMP_RIOT = pillow.greyshade_array(os.path.join(PATH._comparable, 'cmp_riot.png'))
+    CMP_BLUE = pillow.greyshade_array(os.path.join(PATH._comparable, 'cmp_blue.png'))
+    CMP_RED = pillow.greyshade_array(os.path.join(PATH._comparable, 'cmp_red.png'))
+    mCMP_RIOT = pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_riot.png'))
+    mCMP_BLUE = pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_blue.png'))
+    mCMP_RED = pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_red.png'))
+    mCMP_LOADING = pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_loading.png'))
 
 
 class TelegramStr:

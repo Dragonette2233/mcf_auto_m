@@ -7,7 +7,7 @@ from aiohttp.client_exceptions import (
     ClientConnectionError,
     ContentTypeError
     )
-from static_data import (
+from mcf.static_data import (
     MCFException,
     Headers,
     ALL_CHAMPIONS_IDs,

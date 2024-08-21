@@ -1,10 +1,10 @@
 import requests
 import os
 import logging
-from static_data import (
+from mcf.static_data import (
     TelegramStr
 )
-from dynamic_data import CF
+from mcf.dynamic_data import CF
 
 logger = logging.getLogger(__name__)
 

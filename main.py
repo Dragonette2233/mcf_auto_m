@@ -1,12 +1,12 @@
 
 import time
 import logging
-from modules.mcf_storage import MCFStorage
-from modules import mcf_pillow
-from modules import mcf_autogui
-from dynamic_data import CF
+from mcf.storage import MCFStorage
+from mcf import pillow
+from mcf import autogui
+from mcf.dynamic_data import CF
 from chrome_driver import Chrome
-from static_data import (
+from mcf.static_data import (
     MCFThread,
     TelegramStr
 )
@@ -44,7 +44,7 @@ def main():
 
     logger.info(nicknames)
 
-    if nicknames and MCFApi.get_activegame_parametres(nicknames=nicknames):
+    if nicknames and MCFApi.is_game_active(nicknames=nicknames):
         
         TGApi.gamestart_notification(
             team_blue=' '.join(teams['blue']),
@@ -55,13 +55,13 @@ def main():
         MCFThread(func=MCFApi.awaiting_game_end, args=(chrome, )).start()
         MCFApi.spectate_active_game()
 
-        while not mcf_pillow.is_league_stream_active():
+        while not pillow.is_league_stream_active():
             time.sleep(2)
         
     
         while CF.SW.request.is_active():
-            mcf_autogui.doubleClick(x=658, y=828) # flash foward game
-            score = mcf_pillow.generate_scoreboard() # generating score using kills, towers, gold and time info
+            autogui.doubleClick(x=658, y=828) # flash foward game
+            score = pillow.generate_scoreboard() # generating score using kills, towers, gold and time info
             chrome.generate_predict(score) # generating predict based on score data
             
             TGApi.update_score(score, 

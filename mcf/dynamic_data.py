@@ -1,4 +1,4 @@
-from modules.mcf_asbstract import BoolSwitch, Singleton
+from mcf.asbstract import BoolSwitch, Singleton
 
 class StatsRate:
     def __init__(self) -> None:
@@ -19,7 +19,7 @@ class StatsRate:
         self.LOSER = '🟥'
 
     def calculate(self, team_blue, team_red):
-        from modules import stats_by_roles
+        from mcf import stats_by_roles
         stats_result = stats_by_roles.get_aram_statistic(
                 blue_entry=team_blue,
                 red_entry=team_red,

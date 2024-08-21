@@ -1,8 +1,8 @@
 import json
 import logging
 from datetime import datetime
-from dynamic_data import CF
-from static_data import PATH
+from mcf.dynamic_data import CF
+from mcf.static_data import PATH
 from tg_api import TGApi
 
 logger = logging.getLogger(__name__)
