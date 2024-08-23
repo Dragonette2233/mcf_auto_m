@@ -75,22 +75,22 @@ class Chrome:
     def is_total_coeff_opened(self, end_check=False):
 
         try:
-            game_market_contents = self.driver.find_element(By.CSS_SELECTOR, 'div.game-markets-content')
-            markets = game_market_contents.find_elements(By.CSS_SELECTOR, 'div.ui-accordion.game-markets-group')
+            game_market_contents = self.driver.find_element(By.CSS_SELECTOR, MelCSS.MARKETS_CONTENT)
+            markets = game_market_contents.find_elements(By.CSS_SELECTOR, MelCSS.MARKETS_GROUP)
 
             if end_check:
-                lock_ico = markets[0].find_elements(By.CSS_SELECTOR, 'span.ico.ui-market__lock')
+                lock_ico = markets[0].find_elements(By.CSS_SELECTOR, MelCSS.LOCK_ICON)
                 if len(lock_ico) == 0: return True
             
             else:
                 for _, mrk in enumerate(markets):
-                    btn = mrk.find_element(By.CSS_SELECTOR, 'span.ui-market__name')
+                    btn = mrk.find_element(By.CSS_SELECTOR, MelCSS.MARKET_BUTTON)
                     mrk_text = btn.text
                     if mrk_text.endswith('Б'):
                         total_value = mrk_text.split()[0]
                         self.ACTIVE_TOTAL_VALUE = total_value
                         # print(total_value)
-                        lock_ico = mrk.find_elements(By.CSS_SELECTOR, 'span.ico.ui-market__lock')
+                        lock_ico = mrk.find_elements(By.CSS_SELECTOR, MelCSS.LOCK_ICON)
                         if len(lock_ico) == 0:
                             return True
         except:

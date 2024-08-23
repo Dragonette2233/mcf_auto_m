@@ -150,7 +150,7 @@ class BasePATH:
     _chars_cut = os.path.join(_images, 'chars')
 
 
-class PATH(BasePATH):
+class PATH():
     
     base = BasePATH
     
@@ -214,9 +214,9 @@ class PATH(BasePATH):
 
 class Snippet:
     
-    SPECTATOR = os.path.join(PATH._snips, 'spectate.bat')
-    SCORE = os.path.join(PATH._snips, 'score.txt')
-    GAMESTART = os.path.join(PATH._snips, 'game_started.txt')
+    SPECTATOR = os.path.join(PATH.base._snips, 'spectate.bat')
+    SCORE = os.path.join(PATH.base._snips, 'score.txt')
+    GAMESTART = os.path.join(PATH.base._snips, 'game_started.txt')
 
 class GREYSHADE:
 
