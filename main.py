@@ -5,10 +5,12 @@ from mcf.storage import MCFStorage
 from mcf import pillow
 from mcf import autogui
 from mcf.dynamic_data import CF
+from mcf.utils import is_riot_apikey_valid
+from mcf.livegamedata import generate_scoreboard
 from chrome_driver import Chrome
 from mcf.static_data import (
     MCFThread,
-    TelegramStr
+    TelegramStr,
 )
 from mcf_api import MCFApi
 from tg_api import TGApi
@@ -20,6 +22,10 @@ logger = logging.getLogger(__name__)
 
 def main():
 
+    is_riot_apikey_valid()
+        
+    # else:
+        
 
     logger.info('BOT started')
             
@@ -27,7 +33,7 @@ def main():
     chrome.start()
     chrome.open_league_page()
     chrome.remove_cancel()
-    chrome.notify_when_starts()
+    chrome.awaiting_for_start()
 
     if chrome.RESTART_REQUIRED:
         return
@@ -61,7 +67,7 @@ def main():
     
         while CF.SW.request.is_active():
             autogui.doubleClick(x=658, y=828) # flash foward game
-            score = pillow.generate_scoreboard() # generating score using kills, towers, gold and time info
+            score = generate_scoreboard() # generating score using kills, towers, gold and time info
             chrome.generate_predict(score) # generating predict based on score data
             
             TGApi.update_score(score, 
@@ -77,10 +83,10 @@ def main():
         logger.info('Game ended.')
         
         if not CF.SW.coeff_opened.is_active():
-            for _ in range(120):
+            for _ in range(136):
                 is_opened = chrome.is_total_coeff_opened(end_check=True)
                 if is_opened:
-                    TGApi.send_simple_message('🟢 Открыты')
+                    TGApi.post_send(message='🟢 Открыты', chat_id=TGApi.CHAT_ID_PR)
                     break
                 time.sleep(0.5)
         

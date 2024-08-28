@@ -1,5 +1,6 @@
 .env/
 __pycache__/
+server_mcf_backup/
 APIKEY
 stats_field/
 untracking/
@@ -9,12 +10,7 @@ images_lib/chars/red/*
 images_lib/chars/testfield/red/
 images_lib/chars/testfield/
 images_lib/chars/testfield
-images_lib/buildcrop.png
-images_lib/build_compare.png
-images_lib/scorecrop.png
 images_lib/screenshot_PIL.png
-arambot_lib/mcf_status.png
-mcf_lib/xbt.png
 testrun.bat
 telegram.bat
 botrun.bat
@@ -27,4 +23,5 @@ wrk
 MSG.py
 message.bat
 TODO
+app.py
 

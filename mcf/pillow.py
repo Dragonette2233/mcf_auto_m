@@ -3,12 +3,13 @@ from mcf.dynamic_data import CF
 from mcf import autogui
 import os
 import logging
-import time
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
+from mcf import autogui
 # from mcf_data import Validator
 
 logger = logging.getLogger(__name__)
+y_shift = 10
 
 def greyshade_array(image_path):
     
@@ -26,9 +27,9 @@ def is_game_started():
             MCFApi.cache_before_stream()
             CF.SW.cache_done.activate()
     
-    cut_cmp_riot = image_.crop((1645, 366, 1683, 380)).convert('L')
-    cut_cmp_blue = image_.crop((1689, 243, 1705, 250)).convert('L')
-    cut_cmp_red = image_.crop((1832, 243, 1847, 250)).convert('L')
+    cut_cmp_riot = image_.crop((1645, 366 + y_shift, 1683, 380 + y_shift)).convert('L')
+    cut_cmp_blue = image_.crop((1689, 243 + y_shift, 1705, 250 + y_shift)).convert('L')
+    cut_cmp_red = image_.crop((1832, 243 + y_shift, 1847, 250 + y_shift)).convert('L')
     
     np_cut_riot = np.array(cut_cmp_riot)
     np_cut_blue = np.array(cut_cmp_blue)
@@ -42,7 +43,7 @@ def is_game_started():
         ssim(np_cut_blue, GREYSHADE.mCMP_BLUE) > 0.93,
         ssim(np_cut_red, GREYSHADE.mCMP_RED) > 0.93,
             ]
-
+    
     if any(similarity):
         return True
 
@@ -62,52 +63,6 @@ def is_league_stream_active(debug=False):
         autogui.open_score_tab()
         logger.info('Spectator activated')
         return True
-
-def generate_scoreboard():
-
-    from mcf.ssim_recognition import ScoreRecognition
-    # from modules.mcf_storage import MCFStorage
-    from mcf import autogui
-
-    blue_shot = None
-    red_shot = None
-   
-    score = ScoreRecognition.screen_score_recognition()
-
-    if score['red_towers'] == 0:
-        autogui.click(1752, 970)
-        time.sleep(0.05)
-        autogui.doubleClick(936, 620)
-        time.sleep(0.05)
-        blue_shot = ImageGrab.grab()
-        blue_t1_health = ScoreRecognition.towers_healh_recognition(image=blue_shot)
-        if not blue_t1_health or blue_t1_health > CF.TW_HP.blue_backup:
-            blue_t1_health = CF.TW_HP.blue_backup
-        else:
-            CF.TW_HP.blue_backup = blue_t1_health
-    else:
-        blue_t1_health = 0
-
-    if score['blue_towers'] == 0:
-        autogui.click(1811, 919)
-        time.sleep(0.05)
-        autogui.doubleClick(951, 490)
-        time.sleep(0.05)
-        red_shot = ImageGrab.grab()
-        red_t1_health = ScoreRecognition.towers_healh_recognition(image=red_shot)
-        if not red_t1_health or red_t1_health > CF.TW_HP.red_backup:
-            red_t1_health = CF.TW_HP.red_backup
-        else:
-            CF.TW_HP.red_backup = red_t1_health
-    else:
-        red_t1_health = 0
-    
-    score['blue_t1_hp'] = blue_t1_health
-    score['red_t1_hp'] = red_t1_health
-
-    # MCFStorage.save_score(score=score)
-
-    return score
 
 
 def is_green(pixel, threshold=100):

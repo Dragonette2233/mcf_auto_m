@@ -7,6 +7,7 @@ from mcf.static_data import (
     ALL_CHAMPIONS_IDs,
     SPECTATOR_MODE,
     PATH,
+    Snippet
 )
 import os
 import itertools
@@ -14,7 +15,8 @@ from chrome_driver import Chrome
 from mcf.ssim_recognition import CharsRecognition as CharsRecog
 from mcf.storage import MCFStorage
 # from modules.mcf_tracing import Trace
-from mcf.riot_api import RiotAPI
+from mcf.api.riot import RiotAPI
+from mcf.api.poro import PoroAPI
 from mcf import utils
 logger = logging.getLogger(__name__)
 
@@ -30,30 +32,25 @@ class MCFApi:
     PARSED_PORO_SILVER = {}
 
     @classmethod
-    def get_characters(cls):
+    def get_characters(cls) -> dict[str, list]:
 
-        while True:
-            if not CF.ACT.nick_region:
-                CharsRecog.cut_from_screenshot()
-                logger.info('Comparing icons...')
-                team_blue = CharsRecog.get_recognized_characters(team_color='blue')
-                team_red = CharsRecog.get_recognized_characters(team_color='red')
-                
-            logger.info(team_blue)
-            logger.info(team_red)
+        CharsRecog.cut_from_screenshot()
+        logger.info('Comparing icons...')
+        team_blue = CharsRecog.get_recognized_characters(team_color='blue')
+        team_red = CharsRecog.get_recognized_characters(team_color='red')
             
-            if len(set(team_blue)) != 5:
-                return
+            
+        logger.info(team_blue)
+        logger.info(team_red)
+        
+        if len(set(team_blue)) != 5:
+            return
 
-            CF.SR.calculate(
-                team_blue=team_blue,
-                team_red=team_red
-            )
+        return {
+            'blue': team_blue,
+            'red': team_red
+        }
             
-            return {
-                'blue': team_blue,
-                'red': team_red
-            }
 
     @classmethod   
     def close_league_of_legends(cls):
@@ -107,11 +104,11 @@ class MCFApi:
         while True:
             try:
                 logger.info('Parsing from RiotAPI and Poro...')
-                cls.PARSED_PORO_REGIONS = utils.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
-                cls.PARSED_PORO_BRONZE = utils.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
-                cls.PARSED_PORO_SILVER = utils.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
-                cls.PARSED_PORO_DIRECT = utils.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
-                cls.PARSED_RIOT_API = utils.async_riot_parsing() # Parse featured games from Riot API
+                cls.PARSED_PORO_REGIONS = PoroAPI.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
+                cls.PARSED_PORO_BRONZE = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
+                cls.PARSED_PORO_SILVER = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
+                cls.PARSED_PORO_DIRECT = PoroAPI.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
+                cls.PARSED_RIOT_API = RiotAPI.async_riot_parse() # Parse featured games from Riot API
                 # print(cls.PARSED_PORO_BRONZE)
                 logger.info('Games parsed succesfully.')
                 break
@@ -132,11 +129,11 @@ class MCFApi:
 
     @classmethod
     def cache_before_stream(cls):
-        cls.CACHE_RIOT_API = utils.async_riot_parsing() # Parse featured games from Riot API
+        cls.CACHE_RIOT_API = RiotAPI.async_riot_parse() # Parse featured games from Riot API
         logger.info('Games cached successfull!')
 
     @classmethod
-    def finded_game(cls, teams: dict, from_cache=False) -> list:
+    def get_activegame_by_teams(cls, teams: dict, from_cache=False) -> list:
 
         team_cycle = itertools.cycle(zip(teams['blue'], teams['red']))
 
@@ -192,14 +189,13 @@ class MCFApi:
         
         
         champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
-        timestamp = list(divmod(lastgame['info']['gameDuration'], 60))
-        if timestamp[1] < 10: 
-            timestamp[1] = f"0{timestamp[1]}"
+        timestamp = divmod(lastgame['info']['gameDuration'], 60)
+    
         CF.END.blue_chars = champions_names[0:5].copy()
         CF.END.red_chars = champions_names[5:].copy()
         CF.END.kills = sum(lastgame['info']['participants'][k]['kills'] for k in range(10))
         CF.END.winner = 'blue' if teams_info[0]['win'] else 'red'
-        CF.END.time = f"{timestamp[0]}:{timestamp[1]}"
+        CF.END.time = f"{timestamp[0]:02}:{timestamp[1]:02}"
 
     @classmethod
     def get_aram_statistic(cls, blue: list, red: list):
@@ -294,7 +290,7 @@ class MCFApi:
         
         MCFStorage.write_data(route=("0", ), value=str(args))
 
-        subprocess.call([PATH.SPECTATOR_FILE, *args])
+        subprocess.call([Snippet.SPECTATOR, *args])
 
     @classmethod
     def is_game_active(cls, nicknames: list) -> bool:
@@ -323,7 +319,7 @@ class MCFApi:
                 logger.error('{ex}'.format(ex=ex), exc_info=True)
     
     @classmethod
-    def awaiting_game_end(cls, chrome: Chrome = None):
+    def awaiting_game_end(cls, chrome: None | Chrome = None):
         CF.SW.request.activate()
 
         while CF.SW.request.is_active():
@@ -341,10 +337,7 @@ class MCFApi:
 
                 response = finished_game.json()
                 kills = sum(response['info']['participants'][k]['kills'] for k in range(10))
-                time_stamp = list(divmod(response['info']['gameDuration'], 60))
-                
-                if time_stamp[1] < 10: 
-                    time_stamp[1] = f"0{time_stamp[1]}"
+                time_stamp = divmod(response['info']['gameDuration'], 60)
                 
             
                 if chrome is not None:
@@ -354,12 +347,9 @@ class MCFApi:
                 else:
                     is_opened = False
 
-                if response['info']['teams'][0]['win']:
-                    winner = 'blue'
-                else:
-                    winner = 'red'
+                winner = 'blue' if response['info']['teams'][0]['win'] else 'red'
                 
-                timestamp = f"[{time_stamp[0]}:{time_stamp[1]}]"
+                timestamp = f"[{time_stamp[0]:02}:{time_stamp[1]:02}]"
                 TGApi.winner_is(team=winner, kills=kills, timestamp=timestamp, opened=is_opened)
                 # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
                 MCFStorage.predicts_monitor(kills=kills)

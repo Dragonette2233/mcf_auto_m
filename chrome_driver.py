@@ -43,12 +43,29 @@ class Chrome:
         time.sleep(3)
         autogui.click(x=1896, y=99) #disable infobar
         time.sleep(3)
+    
+    def force_quit(self):
+        try:
+            self.PASSAGES = 0
+            self.driver.quit()
+        except:
+            ...
+            
+        self.RESTART_REQUIRED = True
 
+    def open_mobile_page(self):
+        self.driver.get(self.URL + '/' + self.game_index_ended.replace('_', '/') + '?platform_type=mobile')
+    
     def open_league_page(self):
-        with open('./mcf_lib/mirror_page.txt', 'r') as ex_url:
-            url = ex_url.read().strip()
-        self.driver.get(url=url)
-        time.sleep(6)
+        with open(PATH.MIRROR_PAGE, 'r') as ex_url:
+            self.URL = ex_url.read().strip()
+        
+        try:
+            self.driver.get(url=self.URL + '?platform_type=desktop')
+            time.sleep(5)
+            return True
+        except (TimeoutException, WebDriverException):
+            return False
 
     def remove_cancel(self):
         try:
@@ -58,7 +75,8 @@ class Chrome:
                 
         except (NoSuchElementException, 
                 TimeoutException,
-                StaleElementReferenceException):
+                StaleElementReferenceException,
+                WebDriverException):
             pass
 
     def delay(self, second: int):
@@ -151,9 +169,9 @@ class Chrome:
             if main_predict:
                 self.send_predict(message=main_predict[0], idx=main_predict[1])
 
-    def notify_when_starts(self):
+    def awaiting_for_start(self):
 
-        passages = 0
+        # passages = 0
 
         while True:
 

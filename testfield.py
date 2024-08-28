@@ -14,6 +14,13 @@ CF = ControlFlow()
 # command: str = input('Enter test command: ')
 command = 'parse'
 match command:
+    
+    case 'livedata':
+        
+        from mcf.livegamedata import generate_scoreboard
+        
+        print(generate_scoreboard)
+    
     case 'spectate':
         from mcf_api import MCFApi
         

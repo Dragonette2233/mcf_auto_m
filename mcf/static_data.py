@@ -94,6 +94,8 @@ SPECTATOR_MODE = 'spectator.{reg}.lol.pvp.net:8080'
 FEATURED_GAMES_URL = "https://{region}.api.riotgames.com/lol/spectator/v5/featured-games"
 URL_PORO_BY_REGIONS = "https://porofessor.gg/current-games/{champion}/{region}/queue-450"
 URL_PORO_ADVANCE = "https://porofessor.gg/current-games/{champion}/{region}/{elo}/queue-450"
+RIOT_API_KEY = open('APIKEY', 'r').read().strip()
+
 
 REGIONS_TUPLE = (
     ('br', 'br1', 'americas'), ('lan', 'la1', 'americas'),
@@ -162,6 +164,7 @@ class PATH():
     
     SCREEN_GAMESCORE = os.path.join(base.MCF_BOT, 'images_lib', 'gamescore_PIL.png')
     STATISTICS = os.path.join(base.MCF_BOT, 'mcf_lib', 'stats_59.txt')
+    # SPECTATOR = os.path.join()
 
     """
         Untracking pathes
@@ -177,9 +180,9 @@ class PATH():
     PREDICTS_TRACE_DAILY = os.path.join(base._untracking, 'predicts_trace_daily.json')
 
     
-    SNIPPET_SPECTATOR = ''
-    SNIPPET_SCORE = os.path.join(base._snips, 'score.txt')
-    SNIPPET_GAMESTART = os.path.join(base._snips, 'game_started.txt')
+    # SNIPPET_SPECTATOR = ''
+    # SNIPPET_SCORE = os.path.join(base._snips, 'score.txt')
+    # SNIPPET_GAMESTART = os.path.join(base._snips, 'game_started.txt')
 
     """
         Data for screen score recognizing (Time, kills, towers)
@@ -216,7 +219,8 @@ class Snippet:
     
     SPECTATOR = os.path.join(PATH.base._snips, 'spectate.bat')
     SCORE = os.path.join(PATH.base._snips, 'score.txt')
-    GAMESTART = os.path.join(PATH.base._snips, 'game_started.txt')
+    GAMESTART = os.path.join(PATH.base._snips, 'gamestart.txt')
+    ONLYPREDICT = os.path.join(PATH.base._snips, 'onlypredict.txt')
 
 class GREYSHADE:
 
@@ -231,13 +235,13 @@ class GREYSHADE:
 
     # GREYSHADE_CMP_MAP = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_map.png'))
 
-    CMP_RIOT = pillow.greyshade_array(os.path.join(PATH._comparable, 'cmp_riot.png'))
-    CMP_BLUE = pillow.greyshade_array(os.path.join(PATH._comparable, 'cmp_blue.png'))
-    CMP_RED = pillow.greyshade_array(os.path.join(PATH._comparable, 'cmp_red.png'))
-    mCMP_RIOT = pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_riot.png'))
-    mCMP_BLUE = pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_blue.png'))
-    mCMP_RED = pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_red.png'))
-    mCMP_LOADING = pillow.greyshade_array(os.path.join(PATH._comparable, 'mcmp_loading.png'))
+    CMP_RIOT = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'cmp_riot.png'))
+    CMP_BLUE = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'cmp_blue.png'))
+    CMP_RED = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'cmp_red.png'))
+    mCMP_RIOT = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_riot.png'))
+    mCMP_BLUE = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_blue.png'))
+    mCMP_RED = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_red.png'))
+    mCMP_LOADING = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_loading.png'))
 
 
 class TelegramStr:
@@ -276,8 +280,8 @@ class TelegramStr:
     '''
         Telegram notification for started game
     '''
-    SNIPPET_SCORE = open(PATH.SNIPPET_SCORE, 'r', encoding='utf-8').read()
-    SNIPPET_GAMESTART = open(PATH.SNIPPET_GAMESTART, 'r', encoding='utf-8').read()
+    SNIPPET_SCORE = open(Snippet.SCORE, 'r', encoding='utf-8').read()
+    SNIPPET_GAMESTART = open(Snippet.GAMESTART, 'r', encoding='utf-8').read()
 
     game_founded = SUCCESS + ' {0}'
     game_not_founded = FAILURE + ' Игра не найдена'
@@ -290,7 +294,7 @@ class TelegramStr:
         Only predicts message
     '''
 
-    only_pr_message = open(os.path.join(PATH._snips, 'only_predicts.txt'), 'r', encoding='utf-8').read()
+    only_pr_message = open(Snippet.ONLYPREDICT, 'r', encoding='utf-8').read()
 
 class MCFException(Exception): ...
 class MCFTimeoutError(Exception): ...
