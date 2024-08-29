@@ -213,10 +213,10 @@ class ScoreRecognition:
             red_towers = 0
         
         gamedata = {
-            'blue_towers': blue_towers,
-            'red_towers': red_towers,
-            'blue_gold': blue_golds,
-            'red_gold': red_golds,
+            'blue_towers': int(blue_towers),
+            'red_towers': int(red_towers),
+            'blue_gold': float(blue_golds),
+            'red_gold': float(red_golds),
             'is_active': True
         }
 
