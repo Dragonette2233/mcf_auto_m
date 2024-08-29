@@ -43,6 +43,11 @@ class MCFApi:
         logger.info(team_blue)
         logger.info(team_red)
         
+        CF.SR.calculate(
+                team_blue=team_blue,
+                team_red=team_red
+            )
+        
         if len(set(team_blue)) != 5:
             return
 
