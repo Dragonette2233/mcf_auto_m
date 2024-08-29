@@ -1,6 +1,6 @@
 import logging
 import time
-from mcf.dynamic_data import CF
+from mcf.dynamic import CF
 from mcf.api.telegram import TGApi
 from mcf.static import (
     REGIONS_TUPLE,

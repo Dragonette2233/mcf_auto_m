@@ -3,8 +3,6 @@ import threading
 import getpass
 from datetime import datetime
 from mcf import pillow
-# from mcf.storage import config
-
 
 """
     Values for interacting with League of Legends data
@@ -92,15 +90,7 @@ WINDOWS_USER = getpass.getuser()
 TRACE_RANGE = range(360, 420)
 TODAY = datetime.now().day
 SPECTATOR_MODE = 'spectator.{reg}.lol.pvp.net:8080'
-FEATURED_GAMES_URL = "https://{region}.api.riotgames.com/lol/spectator/v5/featured-games"
-URL_PORO_BY_REGIONS = "https://porofessor.gg/current-games/{champion}/{region}/queue-450"
-URL_PORO_ADVANCE = "https://porofessor.gg/current-games/{champion}/{region}/{elo}/queue-450"
-
-# config values
-# RIOT_API_KEY = config['RIOT_API']['VALUE']
-# MIRROR_PAGE = config['MIRROR_PAGE']['VALUE']
-# PREVIOUS_GAMEID = config['PREVIOS_GAMEID']['VALUE']
-
+RIOT_API_KEY = open(os.path.join('untracking', 'APIKEY'), 'r').read().strip()
 
 REGIONS_TUPLE = (
     ('br', 'br1', 'americas'), ('lan', 'la1', 'americas'),
@@ -112,17 +102,6 @@ REGIONS_TUPLE = (
     ('sg', 'sg2', 'sea'), ('ph', 'ph2', 'sea'),
     ('th', 'th2', 'sea'), ('tw', 'tw2', 'sea')
 )
-
-# class CSS:
-#     # BTN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
-#     BTN_REJECT_LIVE = 'button.ui-button.dashboard-redirect-message-timer__btn.ui-button--size-m.ui-button--theme-gray.ui-button--rounded'
-#     # BTN_FOR_BET = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
-#     TABLE_GAMES = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
-#     GAMELINK = 'a.dashboard-game-block__link.dashboard-game-block-link'
-#     SPAN_BTN_STREAM = 'span.dashboard-game-action-bar__group'
-#     OBJ_BTN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
-#     TITLE_ARAM_OUTER = 'span.caption.ui-dashboard-champ-name__caption.caption--size-m'
-    
 
 class MelCSS:
     MARKETS_CONTENT = 'div.game-markets-content'
@@ -140,19 +119,27 @@ class MelCSS:
     BUTTON_REJECT_LIVE = 'button.ui-button.dashboard-redirect-message-timer__btn.ui-button--size-m.ui-button--theme-gray.ui-button--rounded'
 
 class URL:
-
+    
+    # poro links
     FEATURED_GAMES = "https://{region}.api.riotgames.com/lol/spectator/v5/featured-games"
     PORO_BY_REGIONS = "https://porofessor.gg/current-games/{champion}/{region}/queue-450"
     PORO_ADVANCE = "https://porofessor.gg/current-games/{champion}/{region}/{elo}/queue-450"
-
+    
+    # riot links
+    SUMMONER_BY_RIOTID = "https://{area}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{nickName}/{tagLine}"
+    MATCHES_BY_PUUID = "https://{area}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count=2"
+    MATCH_BY_GAMEID = "https://{area}.api.riotgames.com/lol/match/v5/matches/{gameid}"
+    ACTIVEGAME_BY_SUMMID = "https://{region}.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/{summid}"
+    
+    FEATURED_GAMES = "https://{region}.api.riotgames.com/lol/spectator/v5/featured-games"
 
 class BasePATH:
     
     MCF_BOT: str = os.environ.get('MCF_BOT')
     _untracking = os.path.join(MCF_BOT, 'untracking')
-    _snips = os.path.join(MCF_BOT, 'snips')
+    _snips = os.path.join(MCF_BOT, 'mcf', 'snips')
     _ssim = os.path.join(MCF_BOT, 'ssim_score_data')
-    _images = os.path.join(MCF_BOT, 'images_lib')
+    _images = os.path.join(MCF_BOT, 'mcf', 'images_lib')
     _comparable = os.path.join(_images, 'comparable')
     _chars_cut = os.path.join(_images, 'chars')
 
@@ -167,40 +154,31 @@ class PATH():
     """
 
     
-    SCREEN_GAMESCORE = os.path.join(base.MCF_BOT, 'images_lib', 'gamescore_PIL.png')
-    STATISTICS = os.path.join(base.MCF_BOT, 'mcf_lib', 'stats_59.txt')
-    # SPECTATOR = os.path.join()
+    SCREEN_GAMESCORE = os.path.join(base._images, 'gamescore_PIL.png')
+    STATISTICS = os.path.join(base.MCF_BOT, 'mcf', 'stats_lib', 'stats_59.txt')
 
     """
         Untracking pathes
 
     """
-    
+    MIRROR_PAGE = os.path.join(base.MCF_BOT, 'untracking', 'mirror_page.txt')
+    PREVIOUS_GAMEID = os.path.join(base.MCF_BOT, 'untracking', 'previous_gameid.txt')
     JSON_GAMEDATA = os.path.join(base._untracking, 'GameData.json')
-    PREVIOUS_GAMEID = os.path.join(base._untracking, 'previous_gameid.txt')
     ACTIVE_GAMESCORE = os.path.join(base._untracking, 'activegame_score.json')
     SCORE_TRACE = os.path.join(base._untracking, 'score_trace.json')
     PREDICTS_TRACE_GLOBAL = os.path.join(base._untracking, 'predicts_trace.json')
     PREDICTS_TRACE_DAILY = os.path.join(base._untracking, 'predicts_trace_daily.json')
 
-    
-    # SNIPPET_SPECTATOR = ''
-    # SNIPPET_SCORE = os.path.join(base._snips, 'score.txt')
-    # SNIPPET_GAMESTART = os.path.join(base._snips, 'game_started.txt')
 
     """
         Data for screen score recognizing (Time, kills, towers)
 
     """
 
-    GTIME_DATA = os.path.join(base._ssim, 'gametime')
-    BLUE_SCORE = os.path.join(base._ssim, 'team_blue', 'score_{pos}')
-    RED_SCORE =  os.path.join(base._ssim, 'team_red', 'score_{pos}')
-    BLUE_TOWER = os.path.join(base._ssim, 'team_blue', 'towers')
-    RED_TOWER = os.path.join(base._ssim, 'team_red', 'towers')
-    # DEBUG_STATS = os.path.join(MCF_BOT, 'arambot_lib', 'debug_stats.json')
-    
-    
+    fBLUE_TOWER = os.path.join(base._ssim, 'blue_towers', '{tw}.png')
+    fRED_TOWER = os.path.join(base._ssim, 'red_towers', '{tw}.png')
+    fGOLD = os.path.join(base._ssim, 'gold', '{gl}.png')
+    TOWER_ACCESS = os.path.join(base._ssim, 'tw_access', 'access.png')
     
     BLUE_CUT = os.path.join(base._chars_cut, 'blue', 'char_{indx}.png')
     RED_CUT = os.path.join(base._chars_cut, 'red', 'char_{indx}.png')
@@ -237,7 +215,6 @@ class GREYSHADE:
                 char: pillow.greyshade_array(img) for char, img in PATH.RED_IMAGES_TO_COMPARE.items()
     }
 
-    # GREYSHADE_CMP_MAP = mcf_pillow.greyshade_array(os.path.join('.', 'mcf_lib', 'cmp_map.png'))
 
     CMP_RIOT = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'cmp_riot.png'))
     CMP_BLUE = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'cmp_blue.png'))
@@ -331,7 +308,7 @@ class Headers:
     }
 
     riot = {
-            'headers': { "X-Riot-Token": open('APIKEY', 'r').read().strip() },
+            'headers': { "X-Riot-Token": RIOT_API_KEY },
             'timeout': 3
         }
 

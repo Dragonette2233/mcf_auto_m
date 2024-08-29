@@ -4,16 +4,16 @@ import logging
 from mcf.storage import MCFStorage
 from mcf import pillow
 from mcf import autogui
-from mcf.dynamic_data import CF
+from mcf.dynamic import CF
 from mcf.utils import is_riot_apikey_valid
 from mcf.livegamedata import generate_scoreboard
-from chrome_driver import Chrome
-from mcf.static_data import (
+from mcf.api.chrome import Chrome
+from mcf.api.overall import MCFApi
+from mcf.api.telegram import TGApi
+from mcf.static import (
     MCFThread,
     TelegramStr,
 )
-from mcf_api import MCFApi
-from tg_api import TGApi
 
 logging.basicConfig(level=logging.INFO)
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')

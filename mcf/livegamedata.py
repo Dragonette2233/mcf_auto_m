@@ -3,8 +3,7 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from mcf.ssim_recognition import ScoreRecognition
 from mcf import autogui
-from mcf.dynamic_data import CF
-import time
+from mcf.dynamic import CF
 
 def get_live_gamedata() -> dict:
     

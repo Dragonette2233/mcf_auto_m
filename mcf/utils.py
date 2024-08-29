@@ -1,8 +1,4 @@
-from mcf.static_data import (
-   
-    RIOT_API_KEY,
-)
-
+from mcf.static import RIOT_API_KEY
 import logging
 import requests
 

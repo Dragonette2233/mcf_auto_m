@@ -1,8 +1,7 @@
-from mcf.static_data import (
+from mcf.static import (
     ALL_CHAMPIONS_IDs,
     REGIONS_TUPLE,
-    URL_PORO_BY_REGIONS,
-    URL_PORO_ADVANCE,
+    URL,
     Headers
 )
 import asyncio
@@ -128,9 +127,9 @@ class PoroAPI:
             nonlocal missing_regions, featured_games
             # print('inhere')
             if advance_elo:
-                url = URL_PORO_ADVANCE.format(region=region, champion=champion, elo=advance_elo.lower())
+                url = URL.PORO_ADVANCE.format(region=region, champion=champion, elo=advance_elo.lower())
             else:
-                url = URL_PORO_BY_REGIONS.format(region=region, champion=champion)
+                url = URL.PORO_BY_REGIONS.format(region=region, champion=champion)
             
             async with ClientSession() as session:
                 

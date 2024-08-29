@@ -1,4 +1,4 @@
-from mcf.static_data import (
+from mcf.static import (
     ten_roles_dict,
     PATH
 )

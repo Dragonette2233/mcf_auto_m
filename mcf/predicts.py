@@ -1,5 +1,5 @@
-from mcf.dynamic_data import CF
-from mcf.static_data import TelegramStr
+from mcf.dynamic import CF
+from mcf.static import TelegramStr
 
 class PR_IDXs:
 
@@ -72,22 +72,6 @@ class PR:
         return blue_leader or red_leader
     
     @classmethod
-    def gold_not_equals(cls):
-        """
-            Check if the gold difference is significant.
-
-        """
-        return abs(cls.sc['blue_gold'] - cls.sc['red_gold']) > 1.3
-
-    @classmethod
-    def kills_gold_equals(cls, kills, gold):
-        """
-            Check if the kills and gold difference meet certain criteria.
-        
-        """
-        return cls.all_kills > kills and cls.module_kills < 7 and cls.module_gold < gold
-
-    @classmethod
     def two_towers_destroyed(cls, one_side=False, some_side=False, equals=False):
         """
             Check if two towers are destroyed based on different conditions.
@@ -107,22 +91,6 @@ class PR:
 
         return cls.sc['blue_towers'] + cls.sc['red_towers'] > 1
 
-    @classmethod
-    def towers_hp_more_than(cls, hp: int):
-        """
-            Check if both towers' HP is more than a certain value.
-
-        """
-        return cls.sc['blue_t1_hp'] > hp and cls.sc['red_t1_hp'] > hp
-    
-    @classmethod
-    def towers_hp_less_than(cls, hp: int):
-        """
-         Check if either tower's HP is less than a certain value.
-         
-        """
-        return cls.sc['blue_t1_hp'] < hp or cls.sc['red_t1_hp'] < hp
-    
     @classmethod
     def ktt_tb(cls, fl):
         """

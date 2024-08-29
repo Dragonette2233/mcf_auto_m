@@ -1,9 +1,9 @@
 import json
 import logging
 from datetime import datetime
-from mcf.dynamic_data import CF
-from mcf.static_data import PATH
-from tg_api import TGApi
+from mcf.dynamic import CF
+from mcf.static import PATH
+from mcf.api.telegram import TGApi
 
 logger = logging.getLogger(__name__)
 

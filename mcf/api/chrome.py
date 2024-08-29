@@ -6,9 +6,9 @@ import mcf.pillow as pillow
 from mcf.storage import MCFStorage
 # from modules.mcf_tracing import Trace
 from mcf.predicts import PR
-from mcf.dynamic_data import CF
+from mcf.dynamic import CF
 from mcf.api.telegram import TGApi
-from mcf.static import PATH, TRACE_RANGE, TelegramStr, MelCSS, PREVIOUS_GAME_ID
+from mcf.static import PATH, TelegramStr, MelCSS
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -29,7 +29,7 @@ class Chrome:
         self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
         self.driver = None
         self.game_index_new = ''
-        self.game_index_ended = PREVIOUS_GAME_ID
+        self.game_index_ended = MCFStorage.get_gameid()
         
         self.PASSAGES = 0
         self.RESTART_REQUIRED = False

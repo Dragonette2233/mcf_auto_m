@@ -4,7 +4,7 @@ import logging
 from mcf.static import (
     TelegramStr
 )
-from mcf.dynamic_data import CF
+from mcf.dynamic import CF
 
 logger = logging.getLogger(__name__)
 

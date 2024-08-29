@@ -4,7 +4,7 @@ import time
 # import numpy as np
 # from mcf_data import GREYSHADE_CLOCKS_CUT
 from mcf import utils
-from mcf.dynamic_data import ControlFlow
+from mcf.dynamic import ControlFlow
 from skimage.metrics import structural_similarity as ssim
 logging.basicConfig(level=logging.INFO)
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
@@ -98,7 +98,7 @@ match command:
 
     case 'sim_start':
         from mcf.pillow import is_game_started
-        from mcf.dynamic_data import Validator
+        from mcf.dynamic import Validator
 
         if is_game_started():
             
@@ -132,7 +132,7 @@ match command:
         ImageGrab.grab().crop((862, 2, 951, 22)).save('spectator_compare.png')
         # ImageGrab.grab().save('screenshot.png')
     case 'last':
-            from mcf.dynamic_data import ActiveGame
+            from mcf.dynamic import ActiveGame
             from mcf.static_data import Switches
             import mcf_api
             logger.info('Debugging last game')
@@ -177,7 +177,7 @@ match command:
         from mcf.static_data import MCFThread, Switches
         from mcf import pillow
         from mcf import autogui
-        from mcf.dynamic_data import ActiveGame
+        from mcf.dynamic import ActiveGame
     
         nickname = input('Enter nickname:region: ')
         # maitretays#EUW:EUW
