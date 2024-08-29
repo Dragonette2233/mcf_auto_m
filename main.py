@@ -45,8 +45,8 @@ def main():
         MCFStorage.save_gameid('Err')
         return
 
-    chrome.open_activegame_page()
-    nicknames = MCFApi.finded_game(teams=teams)
+    chrome.open_mobile_page()
+    nicknames = MCFApi.get_activegame_by_teams(teams=teams)
 
     logger.info(nicknames)
 
