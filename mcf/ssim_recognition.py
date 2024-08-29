@@ -155,7 +155,7 @@ class ScoreRecognition:
     @classmethod
     def gold_recognition(cls, image: Image.Image):
         
-        print(cls.gold_shift)
+        # print(cls.gold_shift)
         
         blue_gold = (
             cls.get_compare(np.array(image.crop((126 - cls.gold_shift, 12, 134 - cls.gold_shift, 28)).convert('L')), 'gold', 0),
@@ -189,19 +189,19 @@ class ScoreRecognition:
         blue_gold, red_gold = cls.gold_recognition(image=image)
         
         if '' in blue_gold or '' in red_gold:
-            cls.gold_shift = 1
-            blue_gold, red_gold = cls.gold_recognition(image=image)
-        else:
-            cls.gold_shift = 0
-        
-        # print(blue_gold, red_gold)
-        
+            if cls.gold_shift == 1:
+                cls.gold_shift = 0
+                blue_gold, red_gold = cls.gold_recognition(image=image)
+            else:
+                cls.gold_shift = 1
+                blue_gold, red_gold = cls.gold_recognition(image=image)
+ 
         blue_golds = ''.join([str(i) for i in blue_gold[0:2]]) + ',' + str(blue_gold[2])
         red_golds = ''.join([str(i) for i in red_gold[0:2]]) + ',' + str(red_gold[2])
         
-        if blue_golds == ',' or '' in blue_golds:
+        if blue_golds == ',':#  or '' in blue_golds:
             blue_golds = 10.0
-        if red_golds == ',' or '' in red_golds:
+        if red_golds == ',':#  or '' in red_golds:
             red_golds = 10.0
         
         blue_towers = cls.get_compare(np.array(image.crop((60, 13, 75, 29)).convert('L')), 'towers', 0, 'blue')
@@ -220,7 +220,6 @@ class ScoreRecognition:
             'is_active': True
         }
 
-        cls.gold_shift = 0
         return gamedata
         
         # print(cls.gold_shift)
