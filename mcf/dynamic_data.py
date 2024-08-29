@@ -172,7 +172,7 @@ class ControlFlow(Singleton):
         self.SW._reset()
         self.VAL._reset()
         self.END._reset()
-        self.TW_HP._reset()
+        self.LD._reset()
         self.ACT._reset()
         self.SR._reset()
 
