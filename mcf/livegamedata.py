@@ -85,31 +85,25 @@ def generate_scoreboard() -> dict[str, int]:
 
     towers_gold = ScoreRecognition.screen_score_recognition()
     
-    score |= towers_gold
-
+    score |= towers_gold    
+    
     if score['red_towers'] == 0:
-        autogui.click(1752, 970)
-        time.sleep(0.05)
-        autogui.doubleClick(936, 620)
-        time.sleep(0.05)
+        autogui.click_on_tower((1752, 970, 936, 620))
         blue_t1_health = ScoreRecognition.towers_healh_recognition()
-        if not blue_t1_health or blue_t1_health > CF.TW_HP.blue_backup:
-            blue_t1_health = CF.TW_HP.blue_backup
+        if not blue_t1_health or blue_t1_health > CF.LD.twh_blue:
+            blue_t1_health = CF.LD.twh_blue
         else:
-            CF.TW_HP.blue_backup = blue_t1_health
+            CF.LD.twh_blue = blue_t1_health
     else:
         blue_t1_health = 0
 
     if score['blue_towers'] == 0:
-        autogui.click(1811, 919)
-        time.sleep(0.05)
-        autogui.doubleClick(951, 490)
-        time.sleep(0.05)
+        autogui.click_on_tower(1811, 919, 951, 490)
         red_t1_health = ScoreRecognition.towers_healh_recognition()
-        if not red_t1_health or red_t1_health > CF.TW_HP.red_backup:
-            red_t1_health = CF.TW_HP.red_backup
+        if not red_t1_health or red_t1_health > CF.LD.twh_red:
+            red_t1_health = CF.LD.twh_red
         else:
-            CF.TW_HP.red_backup = red_t1_health
+            CF.LD.twh_red = red_t1_health
     else:
         red_t1_health = 0
     

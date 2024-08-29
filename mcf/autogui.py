@@ -27,3 +27,21 @@ def open_score_tab():
     doubleClick(x=271, y=1054)
     time.sleep(0.25)
     click(x=328, y=972)
+
+def click_on_tower(coords: tuple[int]):
+    
+    """
+        Функция принимает 4 координаты в кортеже
+            x - башня на миникарте по X
+            y - башня на миникарте по Y
+            x1 - клик на башню по X
+            y2 = клик на башню по Y
+        
+    """
+    
+    x, y, x1, y1 = coords
+    
+    click(x, y)
+    time.sleep(0.05)
+    doubleClick(x1, y1)
+    time.sleep(0.05)

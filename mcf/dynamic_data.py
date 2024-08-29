@@ -122,14 +122,24 @@ class Switches():
             switch: BoolSwitch = getattr(self, switch_name)
             switch.deactivate()
 
-class TowersHealth:
-    def __init__(self) -> None:     
-        self.blue_backup = 100
-        self.red_backup = 100
+class LiveData:
+    def __init__(self) -> None:
+        self.twh_blue = 100
+        self.twh_red = 100
+        
+        self.tw_blue = 0
+        self.tw_red = 0
+        
+        self.gold_blue = 10.0
+        self.gold_red = 10.0
 
     def _reset(self):
-        self.blue_backup = 100
-        self.red_backup = 100
+        self.twh_blue = 100
+        self.twh_red = 100
+        self.tw_blue = 0
+        self.tw_red = 0
+        self.gold_blue = 10.0
+        self.gold_red = 10.0
 
 class Validator():
     def __init__(self) -> None:
@@ -155,7 +165,7 @@ class ControlFlow(Singleton):
         self.VAL = Validator()
         self.END = EndedGameData()
         self.ACT = ActiveGameData()
-        self.TW_HP = TowersHealth()
+        self.LD = LiveData()
         self.SR = StatsRate()
         
     def reset(self):
