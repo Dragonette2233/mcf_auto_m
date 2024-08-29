@@ -42,6 +42,6 @@ def click_on_tower(coords: tuple[int]):
     x, y, x1, y1 = coords
     
     click(x, y)
-    time.sleep(0.05)
+    # time.sleep(0.05)
     doubleClick(x1, y1)
     time.sleep(0.05)

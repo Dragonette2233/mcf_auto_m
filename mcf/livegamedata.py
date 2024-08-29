@@ -98,7 +98,7 @@ def generate_scoreboard() -> dict[str, int]:
         blue_t1_health = 0
 
     if score['blue_towers'] == 0:
-        autogui.click_on_tower(1811, 919, 951, 490)
+        autogui.click_on_tower((1811, 919, 951, 490))
         red_t1_health = ScoreRecognition.towers_healh_recognition()
         if not red_t1_health or red_t1_health > CF.LD.twh_red:
             red_t1_health = CF.LD.twh_red
