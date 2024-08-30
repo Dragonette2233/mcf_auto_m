@@ -86,6 +86,19 @@ def generate_scoreboard() -> dict[str, int]:
     
     score |= towers_gold    
     
+    # Бэкап значений blue_gold и red_gold в CF.LD
+    if score['blue_gold'] > CF.LD.gold_blue:
+        CF.LD.gold_blue = score['blue_gold']
+    else:
+        # Проверка, что значение blue_gold не упало
+        score['blue_gold'] = CF.LD.gold_blue
+
+    if score['red_gold'] > CF.LD.gold_red:
+        CF.LD.gold_red = score['red_gold']
+    else:
+        # Проверка, что значение red_gold не упало
+        score['red_gold'] = CF.LD.gold_red
+    
     if score['red_towers'] == 0:
         autogui.click_on_tower((1752, 970, 936, 620))
         blue_t1_health = ScoreRecognition.towers_healh_recognition()
