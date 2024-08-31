@@ -124,8 +124,14 @@ class Switches():
 
 class LiveData:
     def __init__(self) -> None:
-        self.twh_blue = 100
-        self.twh_red = 100
+        self.tw_health_T1 = {
+            'blue': 100,
+            'red': 100
+        }
+        self.tw_health_T2 = {
+            'blue': 100,
+            'red': 100
+        }
         
         self.tw_blue = 0
         self.tw_red = 0
@@ -134,8 +140,11 @@ class LiveData:
         self.gold_red = 10.0
 
     def _reset(self):
-        self.twh_blue = 100
-        self.twh_red = 100
+        self.tw_health_T1['blue'] = 100
+        self.tw_health_T1['red'] = 100
+        self.tw_health_T2['blue'] = 100
+        self.tw_health_T2['red'] = 100
+        
         self.tw_blue = 0
         self.tw_red = 0
         self.gold_blue = 10.0

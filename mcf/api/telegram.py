@@ -101,17 +101,16 @@ class TGApi:
         
         if score:
             timestamp = divmod(int(score['time']), 60)
-            minutes = timestamp[0] if timestamp[0] > 9 else f"0{timestamp[0]}"
-            seconds = timestamp[1] if timestamp[1] > 9 else f"0{timestamp[1]}"
-
-            score['time'] = ':'.join([str(minutes), str(seconds)])
+            
+            score['time'] = f"{timestamp[0]:02}:{timestamp[1]:02}"
             score['total_value'] = total_value
+            
             if is_total_opened:
                 open_snip = TelegramStr.events_opened.format(total_value=total_value)
 
                 all_kills = score['blue_kills'] + score['red_kills']
-
                 if not CF.SW.total_diff.is_active() and abs(all_kills - int(float(total_value))) < 20:
+                    
                     alert = f"⚠️ Тотал: {all_kills} | На сайте: {total_value} | Время: {score['time']}"
                     cls.post_send(message=alert, chat_id=cls.CHAT_ID_PR)
                     CF.SW.total_diff.activate()

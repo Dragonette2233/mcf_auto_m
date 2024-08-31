@@ -5,6 +5,46 @@ from mcf.ssim_recognition import ScoreRecognition
 from mcf import autogui
 from mcf.dynamic import CF
 
+
+def process_structure_health(score: dict, teams: tuple, click_coords_t1: tuple, click_coords_t2: tuple) -> tuple:
+    
+    """
+        This function returns current health of tower or inhibitor (in the dev).
+        
+        :params score: dict with current scoredata
+        :params teams: current team tw health require and opossite team. Example ('blue', 'red')
+        :params click_coords: coords X, Y where mouse clicking to get tower health
+
+    Returns:
+        `tuple` of towers health (t1_health, t2_health)
+    """
+    
+    
+    if score[f'{teams[0]}_towers'] == 0:
+        t2_health = 100
+        autogui.click_on_tower(click_coords_t1)
+        t1_health = ScoreRecognition.towers_healh_recognition()
+        if not t1_health or t1_health > CF.LD.tw_health_T1[teams[1]]:
+            t1_health = CF.LD.tw_health_T1[teams[1]]
+        else:
+            CF.LD.tw_health_T1[teams[1]] = t1_health
+            
+    elif score[f'{teams[0]}_towers'] == 1:
+        CF.LD.tw_health_T1[teams[1]] = 0
+        t1_health = 0
+        autogui.click_on_tower(click_coords_t2)
+        t2_health = ScoreRecognition.towers_healh_recognition()
+        if not t2_health or t2_health > CF.LD.tw_health_T2[teams[1]]:
+            t2_health = CF.LD.tw_health_T2[teams[1]]
+        else:
+            CF.LD.tw_health_T2[teams[1]] = t2_health
+    else:
+        CF.LD.tw_health_T2[teams[1]] = 0
+        t1_health = 0
+        t2_health = 0
+    
+    return (t1_health, t2_health)
+
 def get_live_gamedata() -> dict:
     
     """
@@ -72,18 +112,9 @@ def get_live_gamedata() -> dict:
     }
     
 def generate_scoreboard() -> dict[str, int]:
-
-    
-    # # from modules.mcf_storage import MCFStorage
-    
-
-    # blue_shot = None
-    # red_shot = None
     
     score = get_live_gamedata()
-
     towers_gold = ScoreRecognition.screen_score_recognition()
-    
     score |= towers_gold    
     
     # Бэкап значений blue_gold и red_gold в CF.LD
@@ -99,29 +130,19 @@ def generate_scoreboard() -> dict[str, int]:
         # Проверка, что значение red_gold не упало
         score['red_gold'] = CF.LD.gold_red
     
-    if score['red_towers'] == 0:
-        autogui.click_on_tower((1752, 970, 936, 620))
-        blue_t1_health = ScoreRecognition.towers_healh_recognition()
-        if not blue_t1_health or blue_t1_health > CF.LD.twh_blue:
-            blue_t1_health = CF.LD.twh_blue
-        else:
-            CF.LD.twh_blue = blue_t1_health
-    else:
-        blue_t1_health = 0
-
-    if score['blue_towers'] == 0:
-        autogui.click_on_tower((1811, 919, 951, 490))
-        red_t1_health = ScoreRecognition.towers_healh_recognition()
-        if not red_t1_health or red_t1_health > CF.LD.twh_red:
-            red_t1_health = CF.LD.twh_red
-        else:
-            CF.LD.twh_red = red_t1_health
-    else:
-        red_t1_health = 0
+    
+    blue_t1_health, blue_t2_health = process_structure_health(score, 
+                                                           teams=('red', 'blue'),
+                                                           click_coords_t1=(1752, 970, 936, 620,),
+                                                           click_coords_t2=(1730, 993, 956, 493,))    
+    red_t1_health, red_t2_health = process_structure_health(score, 
+                                                         teams=('blue', 'red'),
+                                                         click_coords_t1=(1811, 919, 951, 490,),
+                                                         click_coords_t2=(1833, 892, 934, 543,))
     
     score['blue_t1_hp'] = blue_t1_health
     score['red_t1_hp'] = red_t1_health
-
-    # MCFStorage.save_score(score=score)
+    score['blue_t2_hp'] = blue_t2_health
+    score['red_t2_hp'] = red_t2_health
 
     return score

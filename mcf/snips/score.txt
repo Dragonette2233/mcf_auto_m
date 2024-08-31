@@ -4,5 +4,6 @@ KL:  🐳 {blue_kills} 🐙 {red_kills}
 TW: 🐳 {blue_towers}   🐙 {red_towers}
 GL:  🐳 {blue_gold}k 🐙 {red_gold}k
 T1:  🐳 {blue_t1_hp}% 🐙 {red_t1_hp}%
+T2:  🐳 {blue_t2_hp}% 🐙 {red_t2_hp}%
 
 ⏳ {time}

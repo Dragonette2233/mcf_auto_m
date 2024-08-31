@@ -70,7 +70,7 @@ def main():
             score = generate_scoreboard() # generating score using kills, towers, gold and time info
             chrome.generate_predict(score) # generating predict based on score data
             
-            TGApi.update_score(score, 
+            TGApi.update_score(score,
                                 is_total_opened=chrome.is_total_coeff_opened(),
                                 total_value=chrome.ACTIVE_TOTAL_VALUE) # updating score info in telegram channel
             

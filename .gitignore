@@ -5,8 +5,8 @@ APIKEY
 stats_field/
 untracking/
 deprecated/
-images_lib/chars/blue/*
-images_lib/chars/red/*
+mcf/images_lib/chars/blue/*
+mcf/images_lib/chars/red/*
 images_lib/chars/testfield/red/
 images_lib/chars/testfield/
 images_lib/chars/testfield
