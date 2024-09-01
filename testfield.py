@@ -12,14 +12,14 @@ logger = logging.getLogger(__name__)
 CF = ControlFlow()
 
 # command: str = input('Enter test command: ')
-command = 'parse'
+command = 'pr_test'
 match command:
     
-    case 'livedata':
+    # case 'pr_test':
         
-        from mcf.livegamedata import generate_scoreboard
+    #     from mcf.livegamedata import generate_scoreboard
         
-        print(generate_scoreboard)
+    #     print(generate_scoreboard)
     
     case 'spectate':
         from mcf_api import MCFApi
@@ -48,7 +48,7 @@ match command:
 
     case 'pr_test':
         from mcf.storage import MCFStorage
-        from tg_api import TGApi
+        from mcf.api.telegram import TGApi
         from mcf.predicts import PR
         import copy
 
@@ -57,20 +57,23 @@ match command:
 
         score = {
             'time': 370,
-            'blue_kills': 40,
-            'red_kills': 40,
+            'blue_kills': 5,
+            'red_kills': 6,
             'blue_towers': 0,
             'red_towers': 0,
             'blue_gold': 24.8,
             'red_gold': 27.6,
             'blue_t1_hp': 70,
-            'red_t1_hp': 100
+            'red_t1_hp': 100,
+            'blue_t2_hp': 70,
+            'red_t2_hp': 100
         }
         
         PR.sc = copy.deepcopy(score)
         PR.prepare_predict_values()
-
-        pr = PR.gen_main_predict()
+        
+        # pr = PR.gen_main_predict()
+        pr = ('🔽PR 110.5М FL_1🔽', 0)
         if pr:
 
             MCFStorage.rgs_predicts_monitor(message=pr[0], idx=pr[1])
@@ -79,14 +82,16 @@ match command:
             CF.SR.blue_characters = 'Gnar Pyke Leblanc Darius Vayne'
             CF.SR.red_characters = 'Rengar Illaoi Jinx Smolder Morgana'
 
-            TGApi.post_request(message=pr[0], message_type='predict')
-
-            time.sleep(4)
-            MCFStorage.predicts_monitor(kills=110)
+            # TGApi.post_request(message=pr[0], message_type='predict')
+            
+            total = 112
+            MCFStorage.predicts_monitor(kills=total)
+            MCFStorage.predicts_monitor(kills=total, daily=True)
+            print(pr)
 
             
-            alert = f"⚠️ Тотал: 98 | На сайте: 110.5 | Время: {PR.sc['time']}"
-            TGApi.post_send(message=alert, chat_id=TGApi.CHAT_ID_PR)
+            # alert = f"⚠️ Тотал: 98 | На сайте: 110.5 | Время: {PR.sc['time']}"
+            # TGApi.post_send(message=alert, chat_id=TGApi.CHAT_ID_PR)
         # print(pr_2)
 
 

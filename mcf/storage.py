@@ -78,6 +78,8 @@ class MCFStorage:
             CF.VAL.pr_cache = (value, direction, flet)
             CF.VAL.pr_debug = idx
 
+            logger.info(f"PR accepted: {value} | {direction} | {flet}")
+            
         except Exception as ex_:
             logger.warning(ex_)
 
@@ -125,8 +127,8 @@ class MCFStorage:
                 else:
                     data[f"{direction} (FL {flet})"][1] += 1
                     TGApi.update_predict_result(state='minus')
-            case _:
-                ...
+            case other:
+                logger.info(f"Undefined value: {other}")
 
         if CF.VAL.pr_debug is not None:
             
@@ -138,3 +140,4 @@ class MCFStorage:
             CF.VAL.pr_debug = None
         
         SafeJson.dump(json_path=predicts_path, data=data)
+        logger.info(f"PR {predicts_path} - register done")
