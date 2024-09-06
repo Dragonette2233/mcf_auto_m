@@ -59,11 +59,13 @@ def get_live_gamedata() -> dict:
     try:
         response = requests.get(url, verify=False)
     except requests.exceptions.ConnectionError:
-        print('Game not launched')
+        print('Game not launched or crashed')
+        input()
+        # TG NOTIFICATION
 
     # Проверяем успешность запроса
-    if response.status_code != 200:
-        exit(0)
+    # if response.status_code != 200:
+    #     exit(0)
         
     data = response.json()
     blue_kills = 0

@@ -193,12 +193,16 @@ class MCFApi:
         
         champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
         timestamp = divmod(lastgame['info']['gameDuration'], 60)
-    
-        CF.END.blue_chars = champions_names[0:5].copy()
-        CF.END.red_chars = champions_names[5:].copy()
-        CF.END.kills = sum(lastgame['info']['participants'][k]['kills'] for k in range(10))
-        CF.END.winner = 'blue' if teams_info[0]['win'] else 'red'
-        CF.END.time = f"{timestamp[0]:02}:{timestamp[1]:02}"
+
+        end_game_data = (
+            champions_names[0:5].copy(), # blue team
+            champions_names[5:].copy(), # red team
+            sum(lastgame['info']['participants'][k]['kills'] for k in range(10)), # kills
+            'blue' if teams_info[0]['win'] else 'red', # winner
+            f"{timestamp[0]:02}:{timestamp[1]:02}" # time
+        )
+        
+        CF.END.save(end_game_data)
 
     @classmethod
     def get_aram_statistic(cls, blue: list, red: list):
@@ -257,19 +261,24 @@ class MCFApi:
             
             champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
 
-            CF.ACT.encryptionKey = response['observers']['encryptionKey']
-            CF.ACT.blue_team = champions_names[0:5]
-            CF.ACT.red_team = champions_names[5:]
-            CF.ACT.is_game_founded = True
-            CF.ACT.nick_region = nick_region
-
+            activegame_data = (
+                champions_names[0:5], # blue_chars
+                champions_names[5:], # red_chars
+                nick_region, # nick_region
+                response['observers']['encryptionKey'], # encryptionKey
+                True, # is_game_founded
+                
+            )
+            
+            CF.ACT.save(activegame_data)
+            
             common_check = cls.count_of_common(
-                sequence_1=CF.ACT.blue_team,
+                sequence_1=CF.ACT.blue_chars,
                 sequence_2=CF.ACT.finded_chars
             )
 
             if common_check != 5:
-                logger.info(f'Active game characters: {CF.ACT.blue_team}')
+                logger.info(f'Active game characters: {CF.ACT.blue_chars}')
                 logger.info(f'Finded game characters: {CF.ACT.finded_chars}')
                 return False
             

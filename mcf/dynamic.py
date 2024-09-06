@@ -1,4 +1,4 @@
-from mcf.asbstract import BoolSwitch, Singleton
+from mcf.asbstract import BoolSwitch, Singleton, gData
 
 class StatsRate:
     def __init__(self) -> None:
@@ -77,25 +77,43 @@ class StatsRate:
         if (self.games_all != 0) and (self.tl_rate[1] == self.WINNER):
             return True
 
-class ActiveGameData():
+class ActiveGameData(gData):
     def __init__(self) -> None:
         self.cache_parse = None
         self.nick_region: str = None
         self.region: str = None
         self.area: str = None
         self.puuid: str = None
-        self.blue_team = None
-        self.red_team = None
+        self.blue_chars = None
+        self.red_chars = None
         self.finded_chars = None
         self.match_id: str = None
         self.is_game_founded: bool = False
         self.encryptionKey: str = None
 
+    def save(self, data: tuple) -> None:
+        
+        """
+            Saving data from activegame which founded from mel-stream.\n
+            `data` args position ( blue_chars, red_chars, nick_region, encryptionKey, is_game_founded )
+        
+        """
+        attributes = ['blue_chars', 
+                      'red_chars', 
+                      'nick_region', 
+                      'encryptionKey', 
+                      'is_game_founded']
+        
+        # Присваиваем данные атрибутам
+        
+        for attr, value in zip(attributes, data):
+            setattr(self, attr, value)
+    
     def _reset(self):
         for attr in vars(self):
             setattr(self, attr, None)
 
-class EndedGameData():
+class EndedGameData(gData):
     def __init__(self) -> None:
         self.blue_chars = None
         self.red_chars = None
@@ -103,6 +121,20 @@ class EndedGameData():
         self.time = None
         self.winner = None
     
+    def save(self, data: tuple):
+        
+        """
+            Saving data from game which ended with remake.\n
+            `data` args position ( blue_chars, red_chars, kills, winner, time )
+        
+        """
+        attributes = ['blue_chars', 'red_chars', 'kills', 'winner', 'time']
+        
+        # Присваиваем данные атрибутам
+        
+        for attr, value in zip(attributes, data):
+            setattr(self, attr, value)
+        
     def _reset(self):
         for attr in vars(self):
             setattr(self, attr, None)
@@ -122,7 +154,7 @@ class Switches():
             switch: BoolSwitch = getattr(self, switch_name)
             switch.deactivate()
 
-class LiveData:
+class LiveData(gData):
     def __init__(self) -> None:
         self.tw_health_T1 = {
             'blue': 100,
@@ -150,7 +182,7 @@ class LiveData:
         self.gold_blue = 10.0
         self.gold_red = 10.0
 
-class Validator():
+class Validator(gData):
     def __init__(self) -> None:
         self.pr_cache: tuple = None
         self.pr_debug: int = None
@@ -172,9 +204,9 @@ class ControlFlow(Singleton):
         super().__init__()
         self.SW = Switches()
         self.VAL = Validator()
-        self.END = EndedGameData()
         self.ACT = ActiveGameData()
         self.LD = LiveData()
+        self.END = EndedGameData()
         self.SR = StatsRate()
         
     def reset(self):
