@@ -25,6 +25,9 @@ class Chrome:
 
     def __init__(self) -> None:
         self.options = Options()
+        
+        # self.options.add_argument(f'--proxy-server=https://t3V9Zz:36cMnH@185.236.20.78:8000')
+        # self.options.add_argument()
         self.options.add_argument("--disable-blink-features=AutomationControlled")
         self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
         self.driver = None
@@ -53,8 +56,12 @@ class Chrome:
             
         self.RESTART_REQUIRED = True
 
+    def generate_mobile_page(self) -> str:
+        # return 'https://melbet-33933.top/ru/live/cyber-zone/league-of-legends/1690826-all-random-all-mid/560036806-team-1-team-2'
+        return self.URL + '/' + self.game_index_ended.replace('_', '/') + '?platform_type=mobile'
+    
     def open_mobile_page(self):
-        self.driver.get(self.URL + '/' + self.game_index_ended.replace('_', '/') + '?platform_type=mobile')
+        self.driver.get(self.generate_mobile_page())
     
     def open_league_page(self):
         with open(PATH.MIRROR_PAGE, 'r') as ex_url:
@@ -144,8 +151,13 @@ class Chrome:
                 return
             message: str = message.replace('110.5', self.ACTIVE_TOTAL_VALUE)
 
-            TGApi.post_request(message=message, message_type='predict')
+            
+            TGApi.post_request(message=message,
+                               message_type='predict',
+                               link=self.generate_mobile_page())
             logger.info(message)
+            # print(self.generate_mobile_page())
+            # logger.info()
 
             time.sleep(5)
 
@@ -199,6 +211,7 @@ class Chrome:
                         if pillow.is_game_started():
                             logger.info('Game started: (from comparing stream)')
                             self.game_index_new = ''
+                            MCFStorage.current_game_tracking(self.generate_mobile_page())
                             MCFStorage.save_gameid(self.game_index_ended)
                             # self.open_activegame_page()
                             return
