@@ -94,24 +94,31 @@ class PoroAPI:
         return featured_games
     
     @classmethod
-    def direct_poro_parsing(cls, red_champion) -> list:
+    def direct_poro_parsing(cls, red_champion) -> dict:
 
         """
             returning parsed games from ARAM page on porofessor.gg
 
         """
+        
+        mock_dict = {}
 
         converted_champion = cls.convert_income_character(red_champion)
 
         url = f'https://porofessor.gg/current-games/{converted_champion}/queue-450'
-        result = requests.get(url, headers=Headers.default, timeout=3)
-        
-        if result.status_code != 200:
-            logger.warning("Connection in Poro failed. Code: %s", result.status_code)
+               
+        try:
+            result = requests.get(url, headers=Headers.default, timeout=3)
+            result.raise_for_status()  # Проверяет, не было ли ошибки при запросе
+        except requests.RequestException as e:
+            logger.warning("Connection to Poro failed. Error: %s", str(e))
+            mock_dict.setdefault("direct", None)
+            return mock_dict
         
         parse_result = result.text
+        mock_dict['direct'] = cls.get_games_from_parse(parse_result)
         
-        return cls.get_games_from_parse(parse_result)
+        return mock_dict
           
     @classmethod
     def async_poro_parsing(cls, champion_name, advance_elo: str | bool = False):

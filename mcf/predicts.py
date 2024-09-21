@@ -104,7 +104,7 @@ class PR:
             case 's_half':
                 if cls.tb_ktt_idx <= 8.8 and cls.tb_towers_idx <= 3.9 and cls.module_kills_idx >= 0.7:
                     return True
-        
+
     @classmethod
     def ktt_tl(cls, fl='half'):
         """
@@ -114,24 +114,20 @@ class PR:
         match fl:
             case 'half':
                 
-                if any([
+                return any([
                     cls.tl_ktt_idx < PR_IDXs.KTT_T_HALF and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
                     cls.tl_ktt_idx < PR_IDXs.KTT_HALF
-                ]):
-                    return True
+                ])
             case 's_half':
-                if any([
+                return any([
                     cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE,
                     cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
-                ]):
-                    return True
+                ])
             case 'middle':
-                if cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE and cls.towers_idx >= PR_IDXs.KTT_TW_MIDDLE:
-                    return True
+                return cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE and cls.towers_idx >= PR_IDXs.KTT_TW_MIDDLE
                 
             case 'full':
-                if cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.ktt_straigh_leader():
-                    return True
+                return cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.ktt_straigh_leader()
             case _:
                 ...
 
@@ -171,7 +167,7 @@ class PR:
                 ]
 
             }
-
+                 
         for mess, pr in predictions.items():
             for i, p in enumerate(pr):
                 if p:

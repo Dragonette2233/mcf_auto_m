@@ -103,6 +103,11 @@ REGIONS_TUPLE = (
     ('th', 'th2', 'sea'), ('tw', 'tw2', 'sea')
 )
 
+
+class CropCoords:
+    Y = (160, 263, 366, 469, 572, 194, 297, 400, 503, 606)
+    X = (45, 58, 1858, 1873)
+
 class MelCSS:
     MARKETS_CONTENT = 'div.game-markets-content'
     MARKETS_GROUP = 'div.ui-accordion.game-markets-group'
@@ -163,6 +168,7 @@ class PATH():
     """
     MIRROR_PAGE = os.path.join(base.MCF_BOT, 'untracking', 'mirror_page.txt')
     PREVIOUS_GAMEID = os.path.join(base.MCF_BOT, 'untracking', 'previous_gameid.txt')
+    CURRENT_GAME_LINK = os.path.join(base.MCF_BOT, 'untracking', 'current_game_link.txt')
     JSON_GAMEDATA = os.path.join(base._untracking, 'GameData.json')
     ACTIVE_GAMESCORE = os.path.join(base._untracking, 'activegame_score.json')
     SCORE_TRACE = os.path.join(base._untracking, 'score_trace.json')

@@ -37,6 +37,11 @@ class MCFStorage:
 
         with open(PATH.PREVIOUS_GAMEID, 'w+') as file:
             file.write(game_id)
+    
+    @classmethod
+    def current_game_tracking(cls, link=None):
+        with open(PATH.CURRENT_GAME_LINK, 'w+') as file:
+            file.write(str(link))
 
     @classmethod
     def get_selective_data(cls, route: tuple):

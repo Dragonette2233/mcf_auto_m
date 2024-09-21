@@ -21,14 +21,11 @@ logger = logging.getLogger(__name__)
 # check commit
 
 def main():
-
     is_riot_apikey_valid()
-        
-    # else:
-        
-
+    MCFStorage.current_game_tracking(None)
+    
+    
     logger.info('BOT started')
-            
     chrome = Chrome()        
     chrome.start()
     chrome.open_league_page()
@@ -64,15 +61,22 @@ def main():
         while not pillow.is_league_stream_active():
             time.sleep(2)
         
-    
+
         while CF.SW.request.is_active():
             autogui.doubleClick(x=658, y=828) # flash foward game
             score = generate_scoreboard() # generating score using kills, towers, gold and time info
-            chrome.generate_predict(score) # generating predict based on score data
             
-            TGApi.update_score(score,
-                                is_total_opened=chrome.is_total_coeff_opened(),
-                                total_value=chrome.ACTIVE_TOTAL_VALUE) # updating score info in telegram channel
+            if not score:
+                MCFApi.spectate_active_game()
+                while not pillow.is_league_stream_active():
+                    time.sleep(2)
+                autogui.doubleClick(x=658, y=828)
+                score = generate_scoreboard()
+            else:
+                chrome.generate_predict(score) # generating predict based on score data
+                TGApi.update_score(score,
+                                    is_total_opened=chrome.is_total_coeff_opened(),
+                                    total_value=chrome.ACTIVE_TOTAL_VALUE) # updating score info in telegram channel
             
             chrome.remove_cancel() # preventing unwanted jump to Live page in Chrome
             time.sleep(3.5) 
@@ -103,10 +107,11 @@ def main():
         )
 
         if CF.SW.quick_end.is_active():
+            winner, kills, timestamp = CF.END.extract()
             TGApi.winner_is(
-                        team=CF.END.winner,
-                        kills=CF.END.kills,
-                        timestamp=CF.END.time
+                        winner=winner,
+                        kills=kills,
+                        timestamp=timestamp
                     )
         
     logger.info('Bot restarting...')

@@ -53,19 +53,22 @@ class TGApi:
 
         resp = requests.post(
             url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_send),
-            data={'chat_id': chat_id, 'text': message }, timeout=2
+            data={'chat_id': chat_id, 
+                  'text': message,
+                  'disable_web_page_preview': True}, timeout=2
         )
 
         return resp.json()
              
     @classmethod
-    def post_request(cls, message: str, save_post_result=False, message_type=None):
+    def post_request(cls, message: str, save_post_result=False, message_type=None, link=None):
         
         if message_type == 'predict':
             message_pr = TelegramStr.only_pr_message.format(
                 pr_message = message,
                 chars_blue = CF.SR.blue_characters,
                 chars_red = CF.SR.red_characters,
+                link=link
             )
 
             result = cls.post_send(message=message_pr, chat_id=cls.CHAT_ID_PR)
@@ -148,9 +151,9 @@ class TGApi:
         cls.post_request(message=full_message, save_post_result=True)
     
     @classmethod
-    def winner_is(cls, team, kills, timestamp, opened=False):
+    def winner_is(cls, winner, kills, timestamp, opened=False):
         
-        match team, opened:
+        match winner, opened:
             case 'blue', True:
                 message = TelegramStr.winner_blue_opened.format(kills, timestamp)
                 cls.post_request(message=message, message_type='winner_opened')

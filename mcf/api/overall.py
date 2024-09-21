@@ -1,9 +1,9 @@
 import logging
 import time
+from mcf import utils
 from mcf.dynamic import CF
 from mcf.api.telegram import TGApi
 from mcf.static import (
-    REGIONS_TUPLE,
     ALL_CHAMPIONS_IDs,
     SPECTATOR_MODE,
     Snippet
@@ -19,14 +19,14 @@ logger = logging.getLogger(__name__)
 
 class MCFApi:
     
-    CACHE_RIOT_API = {}
-    CACHED_RIOT_REGIONS = {}
-
-    PARSED_RIOT_API = {}
-    PARSED_PORO_REGIONS = {}
-    PARSED_PORO_DIRECT = []
-    PARSED_PORO_BRONZE = {}
-    PARSED_PORO_SILVER = {}
+    PARSED = {
+        "RIOT_API_CACHE": {},
+        "RIOT_API": {},
+        "PORO_REGIONS": {},
+        "PORO_DIRECT": {},
+        "PORO_BRONZE": {},
+        "PORO_SILVER": {}
+    }
 
     @classmethod
     def get_characters(cls) -> dict[str, list]:
@@ -54,7 +54,29 @@ class MCFApi:
             'red': team_red
         }
             
+    @classmethod
+    def spectate_active_game(cls):
+        # import os
+        import subprocess
+        
+        cls.close_league_of_legends()
+        time.sleep(0.5)
+        # list_task = os.popen('tasklist /FI "IMAGENAME eq League of Legends*"').readlines()
+        
+        # if len(list_task) != 1:
+        #     logger.info('Game already running')
+        #     return
+        
+        logger.info('Launching spectator...')
 
+        enc_key = CF.ACT.encryptionKey
+        spectator = SPECTATOR_MODE.format(reg=CF.ACT.region)
+        args = spectator, enc_key, str(CF.ACT.match_id.split('_')[1]), CF.ACT.region.upper()
+        
+        MCFStorage.write_data(route=("0", ), value=str(args))
+
+        subprocess.call([Snippet.SPECTATOR, *args])
+    
     @classmethod   
     def close_league_of_legends(cls):
 
@@ -66,33 +88,20 @@ class MCFApi:
         list_task[3] = list_task[3].replace(' ', '')
         process_pid = list_task[3].split('exe')[1].split('Console')[0]
         os.popen(f'taskkill /PID {process_pid} /F')
-        # app_blueprint.delete_screenscore()
         logger.info('League of Legends closed')
-
-    # @classmethod
-    # def delete_scoreboard(cls):
-
-    #     MCFStorage.save_score(stop_tracking=True)
-    #     try:
-    #         # os.remove(os.path.join('images_lib', 'scorecrop.png'))
-    #         os.remove(os.path.join('.', 'images_lib', 'buildcrop.png'))
-    #     except FileNotFoundError:
-    #         pass
-
 
     @classmethod
     def get_games_by_character(cls, character: str):
 
         all_matches = []
 
-        all_matches += [item for sublist in cls.PARSED_RIOT_API.values() for item in sublist]
-        logger.info(f'RiotAPI len matches: {len(all_matches)}')
-        all_matches += [item for sublist in cls.PARSED_PORO_REGIONS.values() for item in sublist]
-        all_matches += [item for sublist in cls.PARSED_PORO_BRONZE.values() for item in sublist]
-        all_matches += [item for sublist in cls.PARSED_PORO_SILVER.values() for item in sublist]
-        all_matches += [item for sublist in cls.CACHE_RIOT_API.values() for item in sublist]
-        all_matches += cls.PARSED_PORO_DIRECT
-        logger.info(f'Total len matches: {len(all_matches)}')
+        for key in cls.PARSED.keys():
+            all_matches += [item for sublist in cls.PARSED[key].values() for item in sublist]
+        
+        for match in cls.PARSED.keys():
+            matches_len = sum([len(cls.PARSED[match][i]) for i in cls.PARSED[match].keys()])
+            logger.info(f"{match} len: {matches_len}")
+
         finded_games = set()
 
         for match in all_matches:
@@ -107,12 +116,13 @@ class MCFApi:
         while True:
             try:
                 logger.info('Parsing from RiotAPI and Poro...')
-                cls.PARSED_PORO_REGIONS = PoroAPI.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
-                cls.PARSED_PORO_BRONZE = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
-                cls.PARSED_PORO_SILVER = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
-                cls.PARSED_PORO_DIRECT = PoroAPI.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
-                cls.PARSED_RIOT_API = RiotAPI.async_riot_parse() # Parse featured games from Riot API
-                # print(cls.PARSED_PORO_BRONZE)
+                
+                cls.PARSED['PORO_REGIONS'] = PoroAPI.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
+                cls.PARSED['PORO_BRONZE'] = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
+                cls.PARSED['PORO_SILVER'] = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
+                cls.PARSED['PORO_DIRECT'] = PoroAPI.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
+                cls.PARSED['RIOT_API'] = RiotAPI.async_riot_parse() # Parse featured games from Riot API
+
                 logger.info('Games parsed succesfully.')
                 break
             except Exception as ex:
@@ -132,7 +142,7 @@ class MCFApi:
 
     @classmethod
     def cache_before_stream(cls):
-        cls.CACHE_RIOT_API = RiotAPI.async_riot_parse() # Parse featured games from Riot API
+        cls.PARSED['RIOT_API_CACHE'] = RiotAPI.async_riot_parse() # Parse featured games from Riot API
         logger.info('Games cached successfull!')
 
     @classmethod
@@ -164,13 +174,12 @@ class MCFApi:
                 time.sleep(2)
     
     @classmethod
-    def show_lastgame_info(cls):
+    def cache_ended_game(cls):
         
         games_list = RiotAPI.get_matches_by_puuid(area=CF.ACT.area, 
                                                   puuid=CF.ACT.puuid)
         
         if len(games_list) == 0:
-
             logger.warning('No games for this summoner')
             return
 
@@ -212,19 +221,14 @@ class MCFApi:
                 blue_entry=blue,
                 red_entry=red,
             )
-
+    
     @classmethod
     def search_game(cls, nick_region: str):
        
         summoner_name = nick_region.split(':')
         
-        for short, code, area in REGIONS_TUPLE:
-            if summoner_name[1].lower() == short or summoner_name[1].lower() == code:
-                CF.ACT.region = code
-                CF.ACT.area = area
-                break
-
-    
+        CF.ACT.region, CF.ACT.area = utils.extract_code_and_area(summoner_name)
+        
         logger.info('Searching...')
         logger.info(summoner_name[0].split('#')[0])
 
@@ -245,7 +249,7 @@ class MCFApi:
         if response_activegame.status_code != 200:
             logger.info(response_activegame.status_code)
             logger.info('Loading last game')
-            cls.show_lastgame_info()
+            cls.cache_ended_game()
         else:
             
             '''Запрос активной игры'''
@@ -256,9 +260,7 @@ class MCFApi:
             
             game_id = str(response['gameId']) # 1237890
             CF.ACT.match_id = CF.ACT.region.upper() + '_' + game_id # EUW_12378912
-            champions_ids = [response['participants'][p]['championId'] for p in 
-                                             range(10)]
-            
+            champions_ids = [response['participants'][p]['championId'] for p in range(10)]
             champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
 
             activegame_data = (
@@ -285,33 +287,13 @@ class MCFApi:
         return True
     
     @classmethod
-    def spectate_active_game(cls):
-        import os
-        import subprocess
-        list_task = os.popen('tasklist /FI "IMAGENAME eq League of Legends*"').readlines()
-        
-        if len(list_task) != 1:
-            logger.info('Game already running')
-            return
-        
-        logger.info('Launching spectator...')
-
-        enc_key = CF.ACT.encryptionKey
-        spectator = SPECTATOR_MODE.format(reg=CF.ACT.region)
-        args = spectator, enc_key, str(CF.ACT.match_id.split('_')[1]), CF.ACT.region.upper()
-        
-        MCFStorage.write_data(route=("0", ), value=str(args))
-
-        subprocess.call([Snippet.SPECTATOR, *args])
-
-    @classmethod
     def is_game_active(cls, nicknames: list) -> bool:
 
         for nick in nicknames:
             try:
                 cls.search_game(nick_region=nick)
 
-                if CF.END.blue_chars is not None:
+                if CF.END.is_ended():
                     
                     common_elements = cls.count_of_common(
                         sequence_1=CF.END.blue_chars,
@@ -362,7 +344,7 @@ class MCFApi:
                 winner = 'blue' if response['info']['teams'][0]['win'] else 'red'
                 
                 timestamp = f"[{time_stamp[0]:02}:{time_stamp[1]:02}]"
-                TGApi.winner_is(team=winner, kills=kills, timestamp=timestamp, opened=is_opened)
+                TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
                 # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
                 MCFStorage.predicts_monitor(kills=kills)
                 MCFStorage.predicts_monitor(kills=kills, daily=True)

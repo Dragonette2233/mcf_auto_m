@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 CF = ControlFlow()
 
 # command: str = input('Enter test command: ')
-command = 'pr_test'
+command = 'pr_link'
 match command:
     
     # case 'pr_test':
@@ -20,7 +20,19 @@ match command:
     #     from mcf.livegamedata import generate_scoreboard
         
     #     print(generate_scoreboard)
-    
+    case 'pr_link':
+        from mcf.dynamic import CF
+        from mcf.api.telegram import TGApi
+        from mcf.api.chrome import Chrome
+        
+        chrome = Chrome()   
+        
+        message = 'PR 108.5M FL_0.69'
+        CF.SR.blue_characters = 'One two bool free zed'
+        CF.SR.red_characters = 'One less bool cool zed'
+        
+        TGApi.post_request(message=message, message_type='predict', link=chrome.generate_mobile_page())
+        
     case 'spectate':
         from mcf_api import MCFApi
         
@@ -117,10 +129,10 @@ match command:
         input('press to grab')
         ImageGrab.grab().save('x_full.png')
     case 'parse':
-        from mcf_api import MCFApi
-        MCFApi.parse_from_all_sources(char_r='Jax')
-        featured: list[str] = MCFApi.get_games_by_character(character='Tristana')
-        finded_game_characerts = 'Varus Shen Tristana Jhin Graves'.split()
+        from mcf.api.overall import MCFApi
+        MCFApi.parse_from_all_sources(char_r='Sona')
+        featured: list[str] = MCFApi.get_games_by_character(character='DrMundo')
+        finded_game_characerts = 'DrMundo Jhin Fiora Azir Rumble'.split()
         # print(featured)
         for charlist in featured:
             nicknames = charlist.split('-|-')[1].split('_|_')
@@ -130,6 +142,7 @@ match command:
             if common_elements >= 4:
                 logger.info('Finded!: {characters}'.format(characters=nicknames))
                 break
+            
     case 'cmpactive':
         from mcf import pillow
         pillow.is_league_stream_active(debug=True)

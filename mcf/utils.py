@@ -1,4 +1,4 @@
-from mcf.static import RIOT_API_KEY
+from mcf.static import RIOT_API_KEY, REGIONS_TUPLE
 import logging
 import requests
 
@@ -14,3 +14,14 @@ def is_riot_apikey_valid():
     
     logger.info('Riot API key is correct!')
     return True
+
+def extract_code_and_area(summoner_name: str) -> tuple:
+    
+    """
+        Extracting code and area from nickname and region string.
+        Example - SomeNick223:BR -> ('br1', 'americas')
+    """
+        
+    for short, code, area in REGIONS_TUPLE:
+        if summoner_name[1].lower() == short or summoner_name[1].lower() == code:
+            return (code, area)

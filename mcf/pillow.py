@@ -7,17 +7,48 @@ import numpy as np
 from skimage.metrics import structural_similarity as ssim
 from mcf import autogui
 
+ImageType = Image.Image
 logger = logging.getLogger(__name__)
 y_shift = 10
 
-def greyshade_array(image_path: str) -> None:
+
+def crop_team(image: ImageType, x_start, x_end, y_positions):
+    crops = [crop_image(image, x_start, y_positions[i], x_end, y_positions[i + 5]) for i in range(5)]
+    return crops
+
+def crop_image(image: ImageType, x_start, y_start, x_end, y_end):
+    return image.crop((x_start, y_start, x_end, y_end))
+
+def take_screenshot() -> ImageType:
+    
+    im = ImageGrab.grab()
+    if im.size != (1920, 1080):
+        im = im.resize((1920, 1080))
+    
+    return im
+
+def open_image(path: str):
+    return Image.open(path)
+
+def greyshade_array(from_path: str = None, from_crop: tuple[ImageType | int] = None) -> np.ndarray:
     
     """
-        Converting image to numpy array with shades of grey
+        Converting image to numpy array with shades of grey\n
+        `from_path` - string repr of image PATH\n
+        `from_crop` - tuple of (ImageType, x1, x2, y1, y2)
 
     """
     
-    return np.array(Image.open(image_path).convert('L'))
+    if from_path:
+        image = Image.open(from_path)
+    elif from_crop:
+        img, *coords = from_crop
+        if len(coords) == 4 and isinstance(img, Image.Image):
+            image = img.crop(coords)
+        else:
+            raise ValueError("from_crop must contain an image and 4 integer coordinates")
+    
+    return np.array(image.convert('L'))
 
 def is_game_started() -> bool:
     """
@@ -114,3 +145,4 @@ def green_fill_percents(cropped_image: Image.Image, green_threshold=100, fill_th
     green_fill_ratio = green_pixels / total_pixels
     
     return int(green_fill_ratio * 100)
+

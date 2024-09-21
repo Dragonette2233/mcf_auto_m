@@ -1,7 +1,7 @@
 import requests
 import logging
 import asyncio
-from aiohttp import ClientSession, ClientTimeout
+from aiohttp import ClientSession
 from aiohttp.client_exceptions import (
     ClientProxyConnectionError,
     ClientConnectionError,
@@ -35,7 +35,7 @@ class RiotAPI:
 
     @connection_handler
     @staticmethod
-    def get_summoner_puuid(area: str, name: str, puuid=False) -> dict:
+    def get_summoner_puuid(area: str, name: str, puuid=False) -> dict | int:
 
         if area == 'sea':
             area = 'asia'

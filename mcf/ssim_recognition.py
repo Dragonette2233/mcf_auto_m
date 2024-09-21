@@ -1,9 +1,10 @@
-from PIL import Image, ImageGrab
+from mcf import pillow
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
 from mcf.static import (
     PATH,
-    GREYSHADE
+    GREYSHADE,
+    CropCoords
 
 )
 
@@ -14,41 +15,21 @@ from mcf.pillow import (
 
 class CharsRecognition:
     
-    
-    
     @classmethod    
     def cut_from_screenshot(cls):
         """
         This method cuts characters from left and right side on stream screen, then
         saving it to images lib
 
-        """
-
-        y = [160, 263, 366, 469, 572, 194, 297, 400, 503, 606]
-        x = [45, 58, 1858, 1873]
+        """        
+        im = pillow.take_screenshot()
         
-        im = ImageGrab.grab()
-        
-        if im.size != (1920, 1080):
-            im = im.resize((1920, 1080))
-        
-        crops = (
-            im.crop((x[0], y[0], x[1], y[5])), 
-            im.crop((x[0], y[1], x[1], y[6])),
-            im.crop((x[0], y[2], x[1], y[7])), 
-            im.crop((x[0], y[3], x[1], y[8])),
-            im.crop((x[0], y[4], x[1], y[9])),
-
-            im.crop((x[2], y[0], x[3], y[5])),
-            im.crop((x[2], y[1], x[3], y[6])),
-            im.crop((x[2], y[2], x[3], y[7])), 
-            im.crop((x[2], y[3], x[3], y[8])),
-            im.crop((x[2], y[4], x[3], y[9]))
-        )
-
-        for a, b in tuple(zip(range(0,5), range(5, 10))):
-            crops[a].save(PATH.BLUE_CUT.format(indx=a))
-            crops[b].save(PATH.RED_CUT.format(indx=a))
+        blue_crops = pillow.crop_team(im, CropCoords.X[0], CropCoords.X[1], CropCoords.Y)
+        red_crops = pillow.crop_team(im, CropCoords.X[2], CropCoords.X[3], CropCoords.Y)
+    
+        for a in range(5):
+            blue_crops[a].save(PATH.BLUE_CUT.format(indx=a))
+            red_crops[a].save(PATH.RED_CUT.format(indx=a))
     
     @classmethod
     def get_recognized_characters(cls, team_color) -> list[str]:
@@ -68,7 +49,7 @@ class CharsRecognition:
             main_images = [PATH.RED_CUT.format(indx=idx) for idx in range(5)]
                 
         # Подготовка массива основного изображения для последующего сравнения
-        main_images_arr = [greyshade_array(img) for img in main_images]
+        main_images_arr = [greyshade_array(from_path=img) for img in main_images]
 
         best_similarity = 0
         best_character = None
@@ -100,34 +81,41 @@ class ScoreRecognition:
     gold_shift = 1
     
     @classmethod
-    def get_compare(cls, cut_image, type, position, team=None):
+    def is_similar(cls, image_1: pillow.ImageType, image_2: pillow.ImageType, idx=0.75) -> bool:
+        
+        """
+        Checking if one image is similar to another
 
-        match type, position, team:
-            case 'tw_access', pos, None:
-                main_image_arr = np.array(Image.open(PATH.TOWER_ACCESS))
-                similarity_index = ssim(main_image_arr, cut_image)
-                if similarity_index > 0.75:
-                    return True
-                else:
-                    return False
-            case 'gold', pos, None:
-                main_images = [Image.open(PATH.fGOLD.format(gl=i)) for i in range(10)]
-            case 'towers', pos, 'blue':
-                main_images = [Image.open(PATH.fBLUE_TOWER.format(tw=i)) for i in range(5)]
-            case 'towers', pos, 'red':
-                main_images = [Image.open(PATH.fRED_TOWER.format(tw=i)) for i in range(5)]
+        Returns:
+            bool: if image similarity index is greater than deafult `idx`
+        """
+        
+        return ssim(image_1, image_2, win_size=3) > idx
+        
+    
+    @classmethod
+    def get_compare(cls, cut_image: np.ndarray, type, team=None):
+
+        match type, team:
+            case 'tw_access', None:
+                main_image_arr = np.array(pillow.open_image(PATH.TOWER_ACCESS))
+                return cls.is_similar(main_image_arr, cut_image)
+
+            case 'gold', None:
+                main_images = [pillow.open_image(PATH.fGOLD.format(gl=i)) for i in range(10)]
+            case 'towers', 'blue':
+                main_images = [pillow.open_image(PATH.fBLUE_TOWER.format(tw=i)) for i in range(5)]
+            case 'towers', 'red':
+                main_images = [pillow.open_image(PATH.fRED_TOWER.format(tw=i)) for i in range(5)]
             case _:
-                print(type, team, position)
+                print(type, team)
                 raise ValueError('Undefined value in get_compare()') 
                 # return
         
         main_images_arr = [np.array(img) for img in main_images]
 
         for idx, compare_img in enumerate(main_images_arr):
-            similarity_index = ssim(compare_img, cut_image, win_size=3)
-
-            # Если найдено более высокое сходство, сохраняем его и путь к изображению
-            if similarity_index > 0.75:
+            if cls.is_similar(compare_img, cut_image):
                 return idx
         else:
             return ''
@@ -136,30 +124,30 @@ class ScoreRecognition:
     def towers_healh_recognition(cls):
         # 20, 850, 59, 902
         
-        image = ImageGrab.grab()
+        image = pillow.take_screenshot()
         
-        if not cls.get_compare(np.array(image.crop((20, 850, 59, 902)).convert('L')), 'tw_access', 0):
+        if not cls.get_compare(greyshade_array(from_crop=(image, 20, 850, 59, 902)), 'tw_access'):
             return False
 
-        rect = image.crop((76, 865, 174, 867))
+        rect = pillow.crop_image(image, 76, 865, 174, 867)
         result = green_fill_percents(rect)
         
         return result
     
     @classmethod
-    def gold_recognition(cls, image: Image.Image):
+    def gold_recognition(cls, image: pillow.ImageType) -> tuple[tuple[str]]:
         
         # print(cls.gold_shift)
         
         blue_gold = (
-            cls.get_compare(np.array(image.crop((126 - cls.gold_shift, 12, 134 - cls.gold_shift, 28)).convert('L')), 'gold', 0),
-            cls.get_compare(np.array(image.crop((136 - cls.gold_shift, 12, 144 - cls.gold_shift, 28)).convert('L')), 'gold', 1),
-            cls.get_compare(np.array(image.crop((151 - cls.gold_shift, 12, 159 - cls.gold_shift, 28)).convert('L')), 'gold', 2),
+            cls.get_compare(greyshade_array(from_crop=(image, 126 - cls.gold_shift, 12, 134 - cls.gold_shift, 28)), 'gold'),
+            cls.get_compare(greyshade_array(from_crop=(image, 136 - cls.gold_shift, 12, 144 - cls.gold_shift, 28)), 'gold'),
+            cls.get_compare(greyshade_array(from_crop=(image, 151 - cls.gold_shift, 12, 159 - cls.gold_shift, 28)), 'gold'),
         )
         red_gold = (
-            cls.get_compare(np.array(image.crop((430 - cls.gold_shift, 12, 438 - cls.gold_shift, 28)).convert('L')), 'gold', 0),
-            cls.get_compare(np.array(image.crop((440 - cls.gold_shift, 12, 448 - cls.gold_shift, 28)).convert('L')), 'gold', 1),
-            cls.get_compare(np.array(image.crop((455 - cls.gold_shift, 12, 463 - cls.gold_shift, 28)).convert('L')), 'gold', 2),
+            cls.get_compare(greyshade_array(from_crop=(image, 430 - cls.gold_shift, 12, 438 - cls.gold_shift, 28)), 'gold'),
+            cls.get_compare(greyshade_array(from_crop=(image, 440 - cls.gold_shift, 12, 448 - cls.gold_shift, 28)), 'gold'),
+            cls.get_compare(greyshade_array(from_crop=(image, 455 - cls.gold_shift, 12, 463 - cls.gold_shift, 28)), 'gold'),
         )
         
         
@@ -174,7 +162,7 @@ class ScoreRecognition:
             gold and towers count data
         """
         
-        screen = ImageGrab.grab()
+        screen = pillow.take_screenshot()
         if not image:
             # screen.width
             image = screen.crop((681, 7, 1261, 99))
@@ -198,8 +186,8 @@ class ScoreRecognition:
         if red_golds == '.':#  or '' in red_golds:
             red_golds = 10.0
         
-        blue_towers = cls.get_compare(np.array(image.crop((60, 13, 75, 29)).convert('L')), 'towers', 0, 'blue')
-        red_towers = cls.get_compare(np.array(image.crop((498, 13, 514, 29)).convert('L')), 'towers', 0, 'red')
+        blue_towers = cls.get_compare(greyshade_array(from_crop=(image, 60, 13, 75, 29)), 'towers', 'blue')
+        red_towers = cls.get_compare(greyshade_array(from_crop=(image, 498, 13, 514, 29)), 'towers', 'red')
         
         if blue_towers == '':
             blue_towers = 0

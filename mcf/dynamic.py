@@ -90,7 +90,7 @@ class ActiveGameData(gData):
         self.match_id: str = None
         self.is_game_founded: bool = False
         self.encryptionKey: str = None
-
+        
     def save(self, data: tuple) -> None:
         
         """
@@ -120,6 +120,18 @@ class EndedGameData(gData):
         self.kills = None
         self.time = None
         self.winner = None
+    
+    def is_ended(self):
+        if self.blue_chars:
+            return True
+    
+    def extract(self) -> tuple:
+        """
+            Extracting data from game which ended with remake.\n
+            :return `tuple`: args position ( winner, kills, time )
+        
+        """
+        return (self.winner, self.kills, self.time)
     
     def save(self, data: tuple):
         

@@ -1,10 +1,12 @@
 import requests
 import urllib3
+import logging
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from mcf.ssim_recognition import ScoreRecognition
 from mcf import autogui
 from mcf.dynamic import CF
 
+logger = logging.getLogger(__name__)
 
 def process_structure_health(score: dict, teams: tuple, click_coords_t1: tuple, click_coords_t2: tuple) -> tuple:
     
@@ -59,8 +61,8 @@ def get_live_gamedata() -> dict:
     try:
         response = requests.get(url, verify=False)
     except requests.exceptions.ConnectionError:
-        print('Game not launched or crashed')
-        input()
+        logger.error("Game crashed!")
+        return False
         # TG NOTIFICATION
 
     # Проверяем успешность запроса
@@ -116,6 +118,11 @@ def get_live_gamedata() -> dict:
 def generate_scoreboard() -> dict[str, int]:
     
     score = get_live_gamedata()
+    
+    # Возвращаем False для перезапуска игры если она крашнулась
+    if not score:
+        return score
+    
     towers_gold = ScoreRecognition.screen_score_recognition()
     score |= towers_gold    
     
