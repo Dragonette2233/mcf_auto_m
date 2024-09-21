@@ -45,7 +45,8 @@ class TGApi:
             url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_edit),
             data={'chat_id': chat_id, 
                 'message_id': post_id,
-                'text': message }, timeout=2
+                'text': message,
+                'disable_web_page_preview': True}, timeout=2
             )
 
     @timeout_handler
