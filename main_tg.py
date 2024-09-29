@@ -6,6 +6,7 @@ from io import BytesIO
 from PIL import ImageGrab
 from static import TGSMP
 from mcf.api.storage import uStorage
+from static import PATH
 
 
 # Enable logging
@@ -23,7 +24,6 @@ BOT_TOKEN = uStorage.get_key("BOT_TOKEN")
 CHAT_LINK = '\nhttps://t.me/' + uStorage.get_key('CHAT_LINK')
 NFA_LINK = '\nhttps://t.me/' + uStorage.get_key('NFA_LINK')
 
-# def auth():
 def auth(func):
     @wraps(func)
     async def wrapper(update: Update, context: CallbackContext):
@@ -85,16 +85,32 @@ async def change_actual_mirror(update: Update, context: CallbackContext):
 
 @auth
 async def mcf_status(update: Update, context: CallbackContext) -> None:
+    
     if update.message.from_user.id == OWNER:
         
-        
-        screen = ImageGrab.grab()
-        img_byte_array = BytesIO()
-        screen.save(img_byte_array, format='PNG')
-        img_byte_array.seek(0)
+        if update.message.text == '/mcf_status':
+            screen = ImageGrab.grab()
+            img_byte_array = BytesIO()
+            screen.save(img_byte_array, format='PNG')
+            img_byte_array.seek(0)
 
-        # Отправка изображения как фото
-        await update.message.reply_photo(photo=img_byte_array)
+            # Отправка изображения как фото
+            await update.message.reply_photo(photo=img_byte_array)
+        elif update.message.text == '/betcaster_full':
+            with open(PATH.BETCASTER_LOGS, 'rb') as log_file:
+                await update.message.reply_document(document=log_file, filename='betcaster.log')
+        elif update.message.text == '/betcaster_less':
+            # Иначе отправляем последние 10 строк
+            try:
+                with open(PATH.BETCASTER_LOGS, 'r') as log_file:
+                    # Чтение всех строк и получение последних 10
+                    lines = log_file.readlines()[-10:]
+                    log_excerpt = ''.join(lines)  # Соединяем строки в один текст
+                    await update.message.reply_text(f"Last 10 lines of betcaster.log:\n\n{log_excerpt}")
+            except Exception as e:
+                logger.error(f"Failed to read logs: {e}")
+                await update.message.reply_text("Не удалось прочитать лог файл.")
+            
 
 
 async def pr_channel(update: Update, context: CallbackContext) -> None:
@@ -136,7 +152,9 @@ def main() -> None:
         ('info_bets', info),
         ('mirror', actual_mirror),
         ('current_game', actual_mirror),
-        ('mcf_status', mcf_status)
+        ('mcf_status', mcf_status),
+        ('betcaster_full', mcf_status),
+        ('betcaster_less', mcf_status)
         
     )
     
