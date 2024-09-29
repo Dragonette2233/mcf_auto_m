@@ -1,5 +1,5 @@
 import logging
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from functools import wraps
 from telegram.ext import Application, CommandHandler, CallbackContext, MessageHandler, filters
 from io import BytesIO
@@ -24,6 +24,12 @@ BOT_TOKEN = uStorage.get_key("BOT_TOKEN")
 CHAT_LINK = '\nhttps://t.me/' + uStorage.get_key('CHAT_LINK')
 NFA_LINK = '\nhttps://t.me/' + uStorage.get_key('NFA_LINK')
 
+keyboard = [
+        [KeyboardButton("/mcf_status")], 
+        [KeyboardButton("/betcaster_full")],
+        [KeyboardButton("/betcaster_less")]
+    ]
+
 def auth(func):
     @wraps(func)
     async def wrapper(update: Update, context: CallbackContext):
@@ -46,12 +52,19 @@ async def info(update: Update, context: CallbackContext):
     await update.message.reply_text(answer)
 
 async def start(update: Update, context: CallbackContext):
+    
+    if update.message.from_user.id == OWNER:
+        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    else:
+        reply_markup = None
+    
 
     visitor = update.message.chat.first_name
 
-    await update.message.reply_text(TGSMP.GREET_MESSAGE.format(visitor=visitor,
+    await update.message.reply_text(text=TGSMP.GREET_MESSAGE.format(visitor=visitor,
                                                                chat_link=CHAT_LINK,
-                                                               nfa_link=NFA_LINK))
+                                                               nfa_link=NFA_LINK), 
+                                    reply_markup=reply_markup)
 async def actual_mirror(update: Update, context: CallbackContext):
     
     msg = update.message.text
