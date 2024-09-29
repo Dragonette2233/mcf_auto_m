@@ -15,7 +15,7 @@ class TGApi:
     active_pr_text = ''
     active_post_id = 0
     active_post_text = ''
-    token = os.getenv('BOT_TOKEN')
+    token = uStorage.get_key(key="BOT_TOKEN")
     method_send = 'sendMessage'
     method_edit = 'editMessageText'
     tg_api_url = 'https://api.telegram.org/bot{token}/{method}'
@@ -59,7 +59,7 @@ class TGApi:
                   'text': message,
                   'disable_web_page_preview': True}, timeout=2
         )
-
+ 
         return resp.json()
              
     @classmethod
