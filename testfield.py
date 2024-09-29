@@ -59,7 +59,7 @@ match command:
         MCFApi.search_game(nick_region='VendettaCorrida#RU1:RU')
 
     case 'pr_test':
-        from mcf.storage import MCFStorage
+        from mcf.api.storage import MCFStorage
         from mcf.api.telegram import TGApi
         from mcf.predicts import PR
         import copy

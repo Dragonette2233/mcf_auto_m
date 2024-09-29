@@ -25,3 +25,7 @@ message.bat
 TODO
 app.py
 unt_config.cfg
+telegram.bat
+bot_reload.py
+storage_data/depr.txt
+_future/

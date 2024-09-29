@@ -1,8 +1,8 @@
 
 import time
 import logging
-from mcf.storage import MCFStorage
-from mcf import pillow
+from mcf.api.storage import uStorage
+from mcf.ssim_recognition import ScoreRecognition
 from mcf import autogui
 from mcf.dynamic import CF
 from mcf.utils import is_riot_apikey_valid
@@ -10,7 +10,7 @@ from mcf.livegamedata import generate_scoreboard
 from mcf.api.chrome import Chrome
 from mcf.api.overall import MCFApi
 from mcf.api.telegram import TGApi
-from mcf.static import (
+from static import (
     MCFThread,
     TelegramStr,
 )
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 def main():
     is_riot_apikey_valid()
-    MCFStorage.current_game_tracking(None)
+    uStorage.upd_current_game_link(link=None)
     
     
     logger.info('BOT started')
@@ -39,7 +39,7 @@ def main():
     teams = MCFApi.get_characters()
     
     if not teams:
-        MCFStorage.save_gameid('Err')
+        uStorage.upd_previous_game_id('Err')
         return
 
     chrome.open_mobile_page()
@@ -58,7 +58,7 @@ def main():
         MCFThread(func=MCFApi.awaiting_game_end, args=(chrome, )).start()
         MCFApi.spectate_active_game()
 
-        while not pillow.is_league_stream_active():
+        while not ScoreRecognition.is_game_started_spectator():
             time.sleep(2)
         
 
@@ -68,7 +68,7 @@ def main():
             
             if not score:
                 MCFApi.spectate_active_game()
-                while not pillow.is_league_stream_active():
+                while not ScoreRecognition.is_game_started_spectator():
                     time.sleep(2)
                 autogui.doubleClick(x=658, y=828)
                 score = generate_scoreboard()

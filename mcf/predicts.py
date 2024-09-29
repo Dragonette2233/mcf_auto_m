@@ -1,5 +1,5 @@
 from mcf.dynamic import CF
-from mcf.static import TelegramStr
+from static import TelegramStr
 
 class PR_IDXs:
 

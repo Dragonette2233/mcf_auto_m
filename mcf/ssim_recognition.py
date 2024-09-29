@@ -1,17 +1,35 @@
-from mcf import pillow
+# from mcf import pillow
+import os
 import numpy as np
+import logging
+from mcf import autogui
+from mcf.dynamic import CF
+from mcf import pillow
 from skimage.metrics import structural_similarity as ssim
-from mcf.static import (
-    PATH,
-    GREYSHADE,
-    CropCoords
-
-)
-
+from static import PATH, CropCoords
 from mcf.pillow import (
     greyshade_array,
     green_fill_percents
 )
+
+logger = logging.getLogger(__name__)
+
+class GREYSHADE:
+    BLUE_ARRAY = {
+                char: greyshade_array(img) for char, img in PATH.BLUE_IMAGES_TO_COMPARE.items()
+    }
+    RED_ARRAY = {
+                char: greyshade_array(img) for char, img in PATH.RED_IMAGES_TO_COMPARE.items()
+    }
+
+
+    CMP_RIOT = greyshade_array(os.path.join(PATH.base._comparable, 'cmp_riot.png'))
+    CMP_BLUE = greyshade_array(os.path.join(PATH.base._comparable, 'cmp_blue.png'))
+    CMP_RED = greyshade_array(os.path.join(PATH.base._comparable, 'cmp_red.png'))
+    mCMP_RIOT = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_riot.png'))
+    mCMP_BLUE = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_blue.png'))
+    mCMP_RED = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_red.png'))
+    mCMP_LOADING = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_loading.png'))
 
 class CharsRecognition:
     
@@ -79,6 +97,68 @@ class CharsRecognition:
         
 class ScoreRecognition:
     gold_shift = 1
+    y_shift = 10
+    
+    @classmethod
+    def is_game_started_spectator(cls, debug=False):
+
+        """
+            This script is checking if spectator game is ready
+        """
+        
+        compare_slice_active = pillow.take_screenshot().crop((862, 2, 951, 22)).convert('L')
+        compare_slice_main = pillow.open_image(os.path.join('.', 'mcf', 'images_lib', 'spectator_compare.png')).convert('L')
+        np_active = np.array(compare_slice_active)
+        np_main = np.array(compare_slice_main)
+
+        similarity_index = ssim(np_main, np_active)
+
+        if debug:
+            logger.info(similarity_index)
+
+        if similarity_index > 0.949:
+            autogui.open_score_tab()
+            logger.info('Spectator activated')
+            return True
+    
+    @classmethod
+    def is_game_started_browser(cls) -> bool:
+        """
+            This script is checking if game is avaliable on stream (map and players displayed)
+            
+            :returns True: if comparable images matches to cut images from stream
+            
+        """
+        image_ = pillow.take_screenshot()
+
+        if not CF.SW.cache_done.is_active():
+            np_mcmp_active = np.array(image_.crop((1648, 245, 1722, 331)).convert('L'))
+            if ssim(np_mcmp_active, GREYSHADE.mCMP_LOADING) > 0.93:
+                from mcf.api.overall import MCFApi
+                MCFApi.cache_before_stream()
+                CF.SW.cache_done.activate()
+        
+        cut_cmp_riot = image_.crop((1645, 366 + cls.y_shift, 1683, 380 + cls.y_shift)).convert('L')
+        cut_cmp_blue = image_.crop((1689, 243 + cls.y_shift, 1705, 250 + cls.y_shift)).convert('L')
+        cut_cmp_red = image_.crop((1832, 243 + cls.y_shift, 1847, 250 + cls.y_shift)).convert('L')
+        
+        np_cut_riot = np.array(cut_cmp_riot)
+        np_cut_blue = np.array(cut_cmp_blue)
+        np_cut_red = np.array(cut_cmp_red)
+
+        similarity = [
+            ssim(np_cut_riot, GREYSHADE.CMP_RIOT) > 0.93,
+            ssim(np_cut_blue, GREYSHADE.CMP_BLUE) > 0.93,
+            ssim(np_cut_red, GREYSHADE.CMP_RED) > 0.93,
+            ssim(np_cut_riot, GREYSHADE.mCMP_RIOT) > 0.93,
+            ssim(np_cut_blue, GREYSHADE.mCMP_BLUE) > 0.93,
+            ssim(np_cut_red, GREYSHADE.mCMP_RED) > 0.93,
+                ]
+        
+        if any(similarity):
+            return True
+
+        return False
     
     @classmethod
     def is_similar(cls, image_1: pillow.ImageType, image_2: pillow.ImageType, idx=0.75) -> bool:

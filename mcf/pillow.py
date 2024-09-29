@@ -1,16 +1,9 @@
-from PIL import Image, ImageGrab
-from mcf.dynamic import CF
-from mcf import autogui
-import os
 import logging
 import numpy as np
-from skimage.metrics import structural_similarity as ssim
-from mcf import autogui
+from PIL import Image, ImageGrab
 
 ImageType = Image.Image
 logger = logging.getLogger(__name__)
-y_shift = 10
-
 
 def crop_team(image: ImageType, x_start, x_end, y_positions):
     crops = [crop_image(image, x_start, y_positions[i], x_end, y_positions[i + 5]) for i in range(5)]
@@ -49,70 +42,6 @@ def greyshade_array(from_path: str = None, from_crop: tuple[ImageType | int] = N
             raise ValueError("from_crop must contain an image and 4 integer coordinates")
     
     return np.array(image.convert('L'))
-
-def is_game_started() -> bool:
-    """
-        This script is checking if game is avaliable on stream (map and players displayed)
-        
-        :returns True: if comparable images matches to cut images from stream
-        
-    """
-    
-    
-    from mcf.static import GREYSHADE
-
-    image_ = ImageGrab.grab()
-
-    if not CF.SW.cache_done.is_active():
-        np_mcmp_active = np.array(image_.crop((1648, 245, 1722, 331)).convert('L'))
-        if ssim(np_mcmp_active, GREYSHADE.mCMP_LOADING) > 0.93:
-            from mcf.api.overall import MCFApi
-            MCFApi.cache_before_stream()
-            CF.SW.cache_done.activate()
-    
-    cut_cmp_riot = image_.crop((1645, 366 + y_shift, 1683, 380 + y_shift)).convert('L')
-    cut_cmp_blue = image_.crop((1689, 243 + y_shift, 1705, 250 + y_shift)).convert('L')
-    cut_cmp_red = image_.crop((1832, 243 + y_shift, 1847, 250 + y_shift)).convert('L')
-    
-    np_cut_riot = np.array(cut_cmp_riot)
-    np_cut_blue = np.array(cut_cmp_blue)
-    np_cut_red = np.array(cut_cmp_red)
-
-    similarity = [
-        ssim(np_cut_riot, GREYSHADE.CMP_RIOT) > 0.93,
-        ssim(np_cut_blue, GREYSHADE.CMP_BLUE) > 0.93,
-        ssim(np_cut_red, GREYSHADE.CMP_RED) > 0.93,
-        ssim(np_cut_riot, GREYSHADE.mCMP_RIOT) > 0.93,
-        ssim(np_cut_blue, GREYSHADE.mCMP_BLUE) > 0.93,
-        ssim(np_cut_red, GREYSHADE.mCMP_RED) > 0.93,
-            ]
-    
-    if any(similarity):
-        return True
-
-    return False
-
-def is_league_stream_active(debug=False):
-
-    """
-        This script is checking if game is prepared for streaming (displayed League of Legends logo)
-    """
-    
-    compare_slice_active = ImageGrab.grab().crop((862, 2, 951, 22)).convert('L')
-    compare_slice_main = Image.open(os.path.join('.', 'mcf', 'images_lib', 'spectator_compare.png')).convert('L')
-    np_active = np.array(compare_slice_active)
-    np_main = np.array(compare_slice_main)
-
-    similarity_index = ssim(np_main, np_active)
-
-    if debug:
-        logger.info(similarity_index)
-
-    if similarity_index > 0.949:
-        autogui.open_score_tab()
-        logger.info('Spectator activated')
-        return True
-
 
 def is_green(pixel, threshold=100):
     """

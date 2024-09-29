@@ -1,7 +1,8 @@
 import requests
 import os
 import logging
-from mcf.static import (
+from mcf.api.storage import uStorage
+from static import (
     TelegramStr
 )
 from mcf.dynamic import CF
@@ -157,12 +158,14 @@ class TGApi:
         match winner, opened:
             case 'blue', True:
                 message = TelegramStr.winner_blue_opened.format(kills, timestamp)
+                uStorage.upd_pr_message(endgame_total=kills)
                 cls.post_request(message=message, message_type='winner_opened')
             case 'blue', False:
                 message = TelegramStr.winner_blue.format(kills, timestamp)
                 cls.post_request(message=message)
             case 'red', True:
                 message = TelegramStr.winner_red_opened.format(kills, timestamp)
+                uStorage.upd_pr_message(endgame_total=kills)
                 cls.post_request(message=message, message_type='winner_opened')
             case 'red', False:
                 message = TelegramStr.winner_red.format(kills, timestamp)

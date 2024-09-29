@@ -1,5 +1,5 @@
 import json
-from mcf.static import PATH
+from static import PATH
 from mcf.dynamic import CF
 
 class Trace:

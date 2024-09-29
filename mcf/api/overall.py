@@ -3,7 +3,7 @@ import time
 from mcf import utils
 from mcf.dynamic import CF
 from mcf.api.telegram import TGApi
-from mcf.static import (
+from static import (
     ALL_CHAMPIONS_IDs,
     SPECTATOR_MODE,
     Snippet
@@ -12,7 +12,7 @@ import os
 import itertools
 from mcf.api.chrome import Chrome
 from mcf.ssim_recognition import CharsRecognition as CharsRecog
-from mcf.storage import MCFStorage
+from mcf.api.storage import uStorage
 from mcf.api.riot import RiotAPI
 from mcf.api.poro import PoroAPI
 logger = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ class MCFApi:
         spectator = SPECTATOR_MODE.format(reg=CF.ACT.region)
         args = spectator, enc_key, str(CF.ACT.match_id.split('_')[1]), CF.ACT.region.upper()
         
-        MCFStorage.write_data(route=("0", ), value=str(args))
+        # MCFStorage.write_data(route=("0", ), value=str(args))
 
         subprocess.call([Snippet.SPECTATOR, *args])
     
@@ -105,8 +105,9 @@ class MCFApi:
         finded_games = set()
 
         for match in all_matches:
-            if character in match:
-                finded_games.add(match)
+            if match is not None:
+                if character in match:
+                    finded_games.add(match)
 
         return list(finded_games)
     
@@ -131,14 +132,13 @@ class MCFApi:
                 continue
     
     @classmethod
-    def count_of_common(cls, sequence_1, sequence_2) -> int:
+    def count_of_common(cls, sequence_1: list[str], sequence_2: list[str]) -> int:
 
          set_1 = set([i.lower().capitalize() for i in sequence_1])
          set_2 = set([i.lower().capitalize() for i in sequence_2])
         
          # Нахождение пересечения множеств
-         common_elements = set_1.intersection(set_2)
-         return len(common_elements)
+         return len(set_1 & set_2)
 
     @classmethod
     def cache_before_stream(cls):
@@ -346,8 +346,8 @@ class MCFApi:
                 timestamp = f"[{time_stamp[0]:02}:{time_stamp[1]:02}]"
                 TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
                 # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
-                MCFStorage.predicts_monitor(kills=kills)
-                MCFStorage.predicts_monitor(kills=kills, daily=True)
+                pr_result = uStorage.save_predict_result(kills=kills)
+                TGApi.update_predict_result(state=pr_result)
                 CF.SW.request.deactivate()
 
                 finished_game.close()

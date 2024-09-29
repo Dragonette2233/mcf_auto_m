@@ -2,7 +2,7 @@ import os
 import threading
 import getpass
 from datetime import datetime
-from mcf import pillow
+# from mcf import pillow
 
 """
     Values for interacting with League of Legends data
@@ -59,7 +59,7 @@ ALL_CHAMPIONS_IDs = {
     2001: "MonkeyKing"
 }
 
-ten_roles_dict = {
+TEN_ROLES_DICT = {
 
     '0': ('Aatrox', 'Belveth', 'Camille', 'Darius', 'Fiora', 'Gwen', 'Illaoi', 'Irelia', 'Kayn', 
            'Leesin', 'Renekton', 'Viego', 'Sett', 'Hecarim', 'Mordekaiser', 'Riven', 'Violet', # Vi is Violet
@@ -90,7 +90,7 @@ WINDOWS_USER = getpass.getuser()
 TRACE_RANGE = range(360, 420)
 TODAY = datetime.now().day
 SPECTATOR_MODE = 'spectator.{reg}.lol.pvp.net:8080'
-RIOT_API_KEY = open(os.path.join('untracking', 'APIKEY'), 'r').read().strip()
+# RIOT_API_KEY = open(os.path.join('untracking', 'APIKEY'), 'r').read().strip()
 
 REGIONS_TUPLE = (
     ('br', 'br1', 'americas'), ('lan', 'la1', 'americas'),
@@ -141,6 +141,7 @@ class URL:
 class BasePATH:
     
     MCF_BOT: str = os.environ.get('MCF_BOT')
+    _mcf_tg_storage = os.path.join(MCF_BOT, 'mcf_telegram', 'storage')
     _untracking = os.path.join(MCF_BOT, 'untracking')
     _snips = os.path.join(MCF_BOT, 'mcf', 'snips')
     _ssim = os.path.join(MCF_BOT, 'ssim_score_data')
@@ -148,6 +149,16 @@ class BasePATH:
     _comparable = os.path.join(_images, 'comparable')
     _chars_cut = os.path.join(_images, 'chars')
 
+class TGSMP():
+    """
+        Telegram messages for responsing /commands
+    """
+
+    GREET_MESSAGE = open(os.path.join(BasePATH._mcf_tg_storage, 'greet_message.txt'), 'r', encoding='utf-8').read()
+    PR_CHANNEL_MESSAGE = open(os.path.join(BasePATH._mcf_tg_storage, 'pr_channel_message.txt'), 'r', encoding='utf-8').read()
+    MAIN_INFO = open(os.path.join(BasePATH._mcf_tg_storage, 'bot_info_message.txt'), 'r', encoding='utf-8').read()
+    BETS_INFO = open(os.path.join(BasePATH._mcf_tg_storage, 'bets_start_message.txt'), 'r', encoding='utf-8').read()
+    PREDICTS_ANSWER = open(os.path.join(BasePATH._mcf_tg_storage, 'predicts_answer_sample.txt'), 'r', encoding='utf-8').read()
 
 class PATH():
     
@@ -166,14 +177,17 @@ class PATH():
         Untracking pathes
 
     """
-    MIRROR_PAGE = os.path.join(base.MCF_BOT, 'untracking', 'mirror_page.txt')
-    PREVIOUS_GAMEID = os.path.join(base.MCF_BOT, 'untracking', 'previous_gameid.txt')
+    UPARAMS = os.path.join(base.MCF_BOT, 'untracking', 'uparams.json')
+    # MIRROR_PAGE = os.path.join(base.MCF_BOT, 'untracking', 'mirror_page.txt')
+    # PREVIOUS_GAMEID = os.path.join(base.MCF_BOT, 'untracking', 'previous_gameid.txt')
     CURRENT_GAME_LINK = os.path.join(base.MCF_BOT, 'untracking', 'current_game_link.txt')
-    JSON_GAMEDATA = os.path.join(base._untracking, 'GameData.json')
-    ACTIVE_GAMESCORE = os.path.join(base._untracking, 'activegame_score.json')
+    # JSON_GAMEDATA = os.path.join(base._untracking, 'GameData.json')
+    # ACTIVE_GAMESCORE = os.path.join(base._untracking, 'activegame_score.json')
     SCORE_TRACE = os.path.join(base._untracking, 'score_trace.json')
-    PREDICTS_TRACE_GLOBAL = os.path.join(base._untracking, 'predicts_trace.json')
-    PREDICTS_TRACE_DAILY = os.path.join(base._untracking, 'predicts_trace_daily.json')
+    PR_TRACE = os.path.join(base._untracking, 'pr_trace.json')
+    # PREDICTS_TRACE_GLOBAL = os.path.join(base._untracking, 'predicts_trace.json')
+    # PREDICTS_TRACE_DAILY = os.path.join(base._untracking, 'predicts_trace_daily.json')
+    PR_STATE_FILE = os.path.join(base._untracking, 'pr_state.txt')
 
 
     """
@@ -209,27 +223,6 @@ class Snippet:
     SCORE = os.path.join(PATH.base._snips, 'score.txt')
     GAMESTART = os.path.join(PATH.base._snips, 'gamestart.txt')
     ONLYPREDICT = os.path.join(PATH.base._snips, 'onlypredict.txt')
-
-class GREYSHADE:
-
-    
-    
-    BLUE_ARRAY = {
-                char: pillow.greyshade_array(img) for char, img in PATH.BLUE_IMAGES_TO_COMPARE.items()
-    }
-    RED_ARRAY = {
-                char: pillow.greyshade_array(img) for char, img in PATH.RED_IMAGES_TO_COMPARE.items()
-    }
-
-
-    CMP_RIOT = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'cmp_riot.png'))
-    CMP_BLUE = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'cmp_blue.png'))
-    CMP_RED = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'cmp_red.png'))
-    mCMP_RIOT = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_riot.png'))
-    mCMP_BLUE = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_blue.png'))
-    mCMP_RED = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_red.png'))
-    mCMP_LOADING = pillow.greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_loading.png'))
-
 
 class TelegramStr:
     FAILURE = '❌'
@@ -295,9 +288,7 @@ class MCFThread(threading.Thread):
         if args:
             self._args = args
 
-class Headers:
-
-    default = {
+HEADERS = {
         'authority': 'lite.1xbet-new.com',
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
         'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
@@ -313,10 +304,7 @@ class Headers:
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
     }
 
-    riot = {
-            'headers': { "X-Riot-Token": RIOT_API_KEY },
-            'timeout': 3
-        }
+STATS_BASE_ITERATOR = open(PATH.STATISTICS, 'r').readlines().__iter__()
 
 COOKIES = {
         'auid': 'LY0LGGVJT9xF3cMHBakaAg==',

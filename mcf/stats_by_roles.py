@@ -1,6 +1,6 @@
-from mcf.static import (
-    ten_roles_dict,
-    PATH
+from static import (
+    TEN_ROLES_DICT,
+    STATS_BASE_ITERATOR
 )
 
 def get_aram_statistic(blue_entry: list, red_entry: list):
@@ -42,12 +42,12 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
         red_string = '_'.join(reversed(roles_strings))
 
         
-        with open(PATH.STATISTICS, 'r') as stats:
-            list_stats = stats.readlines()
+        # with open(PATH.STATISTICS, 'r') as stats:
+        #     list_stats = stats.readlines()
 
         target = None
         
-        for match in list_stats:
+        for match in STATS_BASE_ITERATOR:
             
             if match.startswith((blue_string, red_string)):
                 target = (match, 'blue' if match.startswith(blue_string) else 'red')
@@ -73,7 +73,7 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
     
     def _get_converted_roles(champ):
         
-        for i in ten_roles_dict.items():
+        for i in TEN_ROLES_DICT.items():
             if champ.lower().capitalize() in i[1]: 
                 return i[0]
         

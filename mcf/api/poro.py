@@ -1,8 +1,8 @@
-from mcf.static import (
+from static import (
     ALL_CHAMPIONS_IDs,
     REGIONS_TUPLE,
     URL,
-    Headers
+    HEADERS
 )
 import asyncio
 import logging
@@ -108,11 +108,11 @@ class PoroAPI:
         url = f'https://porofessor.gg/current-games/{converted_champion}/queue-450'
                
         try:
-            result = requests.get(url, headers=Headers.default, timeout=3)
+            result = requests.get(url, headers=HEADERS, timeout=3)
             result.raise_for_status()  # Проверяет, не было ли ошибки при запросе
         except requests.RequestException as e:
             logger.warning("Connection to Poro failed. Error: %s", str(e))
-            mock_dict.setdefault("direct", None)
+            mock_dict.setdefault("direct", [None, ])
             return mock_dict
         
         parse_result = result.text
@@ -142,7 +142,7 @@ class PoroAPI:
                 
                 
                 timeout = ClientTimeout(total=3)
-                async with session.get(url=url, timeout=timeout, headers=Headers.default) as response:
+                async with session.get(url=url, timeout=timeout, headers=HEADERS) as response:
                     
                     result = await response.text(encoding='utf8')
                     featured_games[region] = cls.get_games_from_parse(parse_result=result)

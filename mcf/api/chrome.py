@@ -2,13 +2,14 @@ import time
 import copy
 import logging
 import mcf.autogui as autogui
-import mcf.pillow as pillow
-from mcf.storage import MCFStorage
+# import mcf.pillow as 
+from mcf.ssim_recognition import ScoreRecognition
+from mcf.api.storage import MCFStorage, uStorage
 # from modules.mcf_tracing import Trace
 from mcf.predicts import PR
 from mcf.dynamic import CF
 from mcf.api.telegram import TGApi
-from mcf.static import PATH, TelegramStr, MelCSS
+from static import PATH, TelegramStr, MelCSS
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -32,7 +33,7 @@ class Chrome:
         self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
         self.driver = None
         self.game_index_new = ''
-        self.game_index_ended = MCFStorage.get_gameid()
+        self.game_index_ended = uStorage.get_key("PREVIOUS_GAME_ID")
         
         self.PASSAGES = 0
         self.RESTART_REQUIRED = False
@@ -64,9 +65,9 @@ class Chrome:
         self.driver.get(self.generate_mobile_page())
     
     def open_league_page(self):
-        with open(PATH.MIRROR_PAGE, 'r') as ex_url:
-            self.URL = ex_url.read().strip()
         
+        self.URL = uStorage.get_key("MIRROR_PAGE")
+            
         try:
             self.driver.get(url=self.URL + '?platform_type=desktop')
             time.sleep(5)
@@ -155,10 +156,8 @@ class Chrome:
             TGApi.post_request(message=message,
                                message_type='predict',
                                link=self.generate_mobile_page())
+            uStorage.upd_pr_message(pr_message=message)
             logger.info(message)
-            # print(self.generate_mobile_page())
-            # logger.info()
-
             time.sleep(5)
 
             if self.is_total_coeff_opened():
@@ -208,12 +207,11 @@ class Chrome:
                         stream_btn.find_element(By.CSS_SELECTOR, MelCSS.BUTTON_OPEN_STREAM).click()
                         time.sleep(2)
 
-                        if pillow.is_game_started():
+                        if ScoreRecognition.is_game_started_browser():
                             logger.info('Game started: (from comparing stream)')
                             self.game_index_new = ''
-                            MCFStorage.current_game_tracking(self.generate_mobile_page())
-                            MCFStorage.save_gameid(self.game_index_ended)
-                            # self.open_activegame_page()
+                            uStorage.upd_current_game_link(link=self.generate_mobile_page())
+                            uStorage.upd_previous_game_id(game_id=self.game_index_ended)
                             return
                         else:
                             stream_btn.click()

@@ -1,14 +1,14 @@
 import requests
 import logging
 import asyncio
+from mcf.api.storage import uStorage
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import (
     ClientProxyConnectionError,
     ClientConnectionError,
     ContentTypeError
     )
-from mcf.static import (
-    Headers,
+from static import (
     URL,
     ALL_CHAMPIONS_IDs,
     REGIONS_TUPLE
@@ -17,6 +17,11 @@ from mcf.static import (
 logger = logging.getLogger(__name__)
 
 class RiotAPI:
+    
+    HEADERS = {
+            'headers': { "X-Riot-Token": uStorage.get_key("RIOT_API") },
+            'timeout': 3
+        }
     
     @staticmethod
     def connection_handler(func):
@@ -42,7 +47,7 @@ class RiotAPI:
         
         nickName, tagLine = name.split('#')
         result = requests.get(URL.SUMMONER_BY_RIOTID.format(area=area, nickName=nickName, tagLine=tagLine), 
-                              **Headers.riot)
+                              **RiotAPI.HEADERS)
         # print('im here', result.text)
         
         status = result.status_code
@@ -58,7 +63,7 @@ class RiotAPI:
     @staticmethod
     def get_matches_by_puuid(area: str, puuid: int):
         result = requests.get(URL.MATCHES_BY_PUUID.format(area=area, puuid=puuid),
-                              **Headers.riot)
+                              **RiotAPI.HEADERS)
 
         return result.json()
     
@@ -66,7 +71,7 @@ class RiotAPI:
     @staticmethod
     def get_match_by_gameid(area: str, gameid: int, status=False):
         result = requests.get(URL.MATCH_BY_GAMEID.format(area=area, gameid=gameid), 
-                              **Headers.riot)
+                              **RiotAPI.HEADERS)
         
         if status:
             return result
@@ -76,7 +81,7 @@ class RiotAPI:
     @staticmethod
     def get_active_by_summonerid(region: str, summid: int, status=False):
         result = requests.get(URL.ACTIVEGAME_BY_SUMMID.format(region=region, summid=summid), 
-                              **Headers.riot)
+                              **RiotAPI.HEADERS)
         if status:
             return result
         return result.json()
@@ -98,7 +103,7 @@ class RiotAPI:
             
             async with ClientSession() as session:
                 async with session.get(URL.FEATURED_GAMES.format(region=region), 
-                                    **Headers.riot) as response:
+                                    **RiotAPI.HEADERS) as response:
                     
                     data = await response.json()
                     
