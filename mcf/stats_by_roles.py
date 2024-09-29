@@ -41,10 +41,6 @@ def get_aram_statistic(blue_entry: list, red_entry: list):
         blue_string = '_'.join(roles_strings.values())
         red_string = '_'.join(reversed(roles_strings))
 
-        
-        # with open(PATH.STATISTICS, 'r') as stats:
-        #     list_stats = stats.readlines()
-
         target = None
         
         for match in STATS_BASE_ITERATOR:

@@ -1,10 +1,10 @@
-import requests
 import urllib3
 import logging
+import requests
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-from mcf.ssim_recognition import ScoreRecognition
 from mcf import autogui
 from mcf.dynamic import CF
+from mcf.ssim_recognition import ScoreRecognition
 
 logger = logging.getLogger(__name__)
 

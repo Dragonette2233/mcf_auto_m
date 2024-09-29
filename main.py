@@ -18,7 +18,6 @@ from static import (
 logging.basicConfig(level=logging.INFO)
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-# check commit
 
 def main():
     is_riot_apikey_valid()

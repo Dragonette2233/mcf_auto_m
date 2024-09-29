@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 CF = ControlFlow()
 
 # command: str = input('Enter test command: ')
-command = 'pr_link'
+command = 'pr_test'
 match command:
     
     # case 'pr_test':
@@ -59,7 +59,7 @@ match command:
         MCFApi.search_game(nick_region='VendettaCorrida#RU1:RU')
 
     case 'pr_test':
-        from mcf.api.storage import MCFStorage
+        from mcf.api.storage import uStorage, MCFStorage
         from mcf.api.telegram import TGApi
         from mcf.predicts import PR
         import copy
@@ -94,12 +94,12 @@ match command:
             CF.SR.blue_characters = 'Gnar Pyke Leblanc Darius Vayne'
             CF.SR.red_characters = 'Rengar Illaoi Jinx Smolder Morgana'
 
-            # TGApi.post_request(message=pr[0], message_type='predict')
+            TGApi.post_request(message=pr[0], message_type='predict')
             
             total = 112
-            MCFStorage.predicts_monitor(kills=total)
-            MCFStorage.predicts_monitor(kills=total, daily=True)
-            print(pr)
+            uStorage.save_predict_result(kills=total)
+            
+            # print(pr)
 
             
             # alert = f"⚠️ Тотал: 98 | На сайте: 110.5 | Время: {PR.sc['time']}"
