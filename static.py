@@ -216,6 +216,8 @@ class PATH():
                             'red', f'{char.lower().capitalize()}.png') 
                             for char in ALL_CHAMPIONS_IDs.values()
         }
+    
+    BETCASTER_LOGS = os.path.join(base.MCF_BOT, 'untracking', 'betcaster.log')
 
 class Snippet:
     

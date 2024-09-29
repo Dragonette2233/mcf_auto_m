@@ -53,7 +53,7 @@ class uStorage():
         try:
             return data[key].strip()
         except KeyError:
-            logger.fatal("Key %s doesnt exist in `usarams` " % key)
+            logger.fatal("Key %s doesnt exist in `uparams` " % key)
     
     @classmethod
     def upd_pr_message(cls, pr_message: str = "", endgame_total=None):
