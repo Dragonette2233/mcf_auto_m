@@ -2,14 +2,12 @@ import time
 import copy
 import logging
 import mcf.autogui as autogui
-# import mcf.pillow as 
 from mcf.ssim_recognition import ScoreRecognition
 from mcf.api.storage import MCFStorage, uStorage
-# from modules.mcf_tracing import Trace
 from mcf.predicts import PR
 from mcf.dynamic import CF
 from mcf.api.telegram import TGApi
-from static import PATH, TelegramStr, MelCSS
+from static import TelegramStr, MelCSS
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -27,10 +25,14 @@ class Chrome:
     def __init__(self) -> None:
         self.options = Options()
         
-        # self.options.add_argument(f'--proxy-server=https://t3V9Zz:36cMnH@185.236.20.78:8000')
-        # self.options.add_argument()
         self.options.add_argument("--disable-blink-features=AutomationControlled")
         self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
+        self.options.add_argument("--disable-crash-reporter")
+        self.options.add_argument("--no-sandbox")
+        self.options.add_argument("--disable-logging")
+        self.options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        self.options.add_experimental_option("detach", True)
+        
         self.driver = None
         self.game_index_new = ''
         self.game_index_ended = uStorage.get_key("PREVIOUS_GAME_ID")
