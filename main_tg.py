@@ -110,8 +110,11 @@ async def mcf_status(update: Update, context: CallbackContext) -> None:
             # Отправка изображения как фото
             await update.message.reply_photo(photo=img_byte_array)
         elif update.message.text == '/betcaster_full':
-            with open(PATH.BETCASTER_LOGS, 'rb') as log_file:
-                await update.message.reply_document(document=log_file, filename='betcaster.log')
+            try:
+                with open(PATH.BETCASTER_LOGS, 'rb') as log_file:
+                    await update.message.reply_document(document=log_file, filename='betcaster.log')
+            except FileNotFoundError:
+                await update.message.reply_text("Betcaster logs doesnt exists yet")
         elif update.message.text == '/betcaster_less':
             # Иначе отправляем последние 10 строк
             try:
@@ -122,7 +125,7 @@ async def mcf_status(update: Update, context: CallbackContext) -> None:
                     await update.message.reply_text(f"Last 10 lines of betcaster.log:\n\n{log_excerpt}")
             except Exception as e:
                 logger.error(f"Failed to read logs: {e}")
-                await update.message.reply_text("Не удалось прочитать лог файл.")
+                await update.message.reply_text("Failed to read logs.")
             
 
 
