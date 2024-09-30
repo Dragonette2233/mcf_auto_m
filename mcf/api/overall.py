@@ -347,7 +347,8 @@ class MCFApi:
                 TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
                 # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
                 pr_result = uStorage.save_predict_result(kills=kills)
-                TGApi.update_predict_result(state=pr_result)
+                if pr_result:
+                    TGApi.update_predict_result(state=pr_result)
                 CF.SW.request.deactivate()
 
                 finished_game.close()

@@ -149,17 +149,6 @@ class BasePATH:
     _comparable = os.path.join(_images, 'comparable')
     _chars_cut = os.path.join(_images, 'chars')
 
-class TGSMP():
-    """
-        Telegram messages for responsing /commands
-    """
-
-    GREET_MESSAGE = open(os.path.join(BasePATH._mcf_tg_storage, 'greet_message.txt'), 'r', encoding='utf-8').read()
-    PR_CHANNEL_MESSAGE = open(os.path.join(BasePATH._mcf_tg_storage, 'pr_channel_message.txt'), 'r', encoding='utf-8').read()
-    MAIN_INFO = open(os.path.join(BasePATH._mcf_tg_storage, 'bot_info_message.txt'), 'r', encoding='utf-8').read()
-    BETS_INFO = open(os.path.join(BasePATH._mcf_tg_storage, 'bets_start_message.txt'), 'r', encoding='utf-8').read()
-    PREDICTS_ANSWER = open(os.path.join(BasePATH._mcf_tg_storage, 'predicts_answer_sample.txt'), 'r', encoding='utf-8').read()
-
 class PATH():
     
     base = BasePATH
@@ -225,6 +214,17 @@ class Snippet:
     SCORE = os.path.join(PATH.base._snips, 'score.txt')
     GAMESTART = os.path.join(PATH.base._snips, 'gamestart.txt')
     ONLYPREDICT = os.path.join(PATH.base._snips, 'onlypredict.txt')
+    
+class TGSMP():
+    """
+        Telegram messages for responsing /commands
+    """
+
+    GREET_MESSAGE = open(os.path.join(PATH.base._snips, 'greet_message.txt'), 'r', encoding='utf-8').read()
+    PR_CHANNEL_MESSAGE = open(os.path.join(PATH.base._snips, 'pr_channel_message.txt'), 'r', encoding='utf-8').read()
+    MAIN_INFO = open(os.path.join(PATH.base._snips, 'bot_info_message.txt'), 'r', encoding='utf-8').read()
+    BETS_INFO = open(os.path.join(PATH.base._snips, 'bets_start_message.txt'), 'r', encoding='utf-8').read()
+    PREDICTS_ANSWER = open(os.path.join(PATH.base._snips, 'predicts_answer_sample.txt'), 'r', encoding='utf-8').read()
 
 class TelegramStr:
     FAILURE = '❌'
