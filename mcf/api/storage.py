@@ -72,6 +72,10 @@ class uStorage():
         SafeJson.load_and_dump(cls.UPATH, key="PR_STATE", value=pr)
     
     @classmethod
+    def upd_current_game_status(cls, status=''):
+        SafeJson.load_and_dump(cls.UPATH, key="CURRENT_GAME_STATUS", value=status)
+    
+    @classmethod
     def upd_current_game_link(cls, link=None):
         if link is not None:
             SafeJson.load_and_dump(cls.UPATH, key="CURRENT_GAME_LINK", value=link)

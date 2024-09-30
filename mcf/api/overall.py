@@ -345,6 +345,7 @@ class MCFApi:
                 
                 timestamp = f"[{time_stamp[0]:02}:{time_stamp[1]:02}]"
                 TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
+                uStorage.upd_current_game_status("Окончена")
                 # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
                 pr_result = uStorage.save_predict_result(kills=kills)
                 if pr_result:

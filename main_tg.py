@@ -74,11 +74,12 @@ async def actual_mirror(update: Update, context: CallbackContext):
         await update.message.reply_text('Актуальное зеркало: %s' % mirror)
     elif msg == '/current_game':
         curr = uStorage.get_key("CURRENT_GAME_LINK")
+        status = uStorage.get_key("CURRENT_GAME_STATUS")
         
-        if curr == 'None':
-            resp = "В данный момент нет отслеживаемой игры"
-        else:
-            resp = f'Ссылка на актуальную игру: {curr}'
+        # if curr == 'None':
+        #     resp = "В данный момент нет отслеживаемой игры"
+        # else:
+        resp = f'Статус: {status}\n\nСсылка на актуальную игру: {curr}'
             
         await update.message.reply_text(resp)
 

@@ -59,9 +59,9 @@ class Chrome:
             
         self.RESTART_REQUIRED = True
 
-    def generate_mobile_page(self) -> str:
+    def generate_mobile_page(self, gameid: str) -> str:
         # return 'https://melbet-33933.top/ru/live/cyber-zone/league-of-legends/1690826-all-random-all-mid/560036806-team-1-team-2'
-        return self.URL + '/' + self.game_index_ended.replace('_', '/') + '?platform_type=mobile'
+        return self.URL + '/' + gameid.replace('_', '/') + '?platform_type=mobile'
     
     def open_mobile_page(self):
         self.driver.get(self.generate_mobile_page())
@@ -200,9 +200,13 @@ class Chrome:
                     if game_index != self.game_index_ended:
                         logger.info('Gamelink changed, refreshing driver')
                         self.open_league_page()
-                        time.sleep(6)
+                        time.sleep(4)
+                        # uStorage.upd_current_game_link()
                         self.game_index_new = game_index
                         self.game_index_ended = game_index
+                        
+                        uStorage.upd_current_game_status(status="В ожидании стрима")
+                        uStorage.upd_current_game_link(link=self.generate_mobile_page())
           
                     if game_index == self.game_index_new:
                         stream_btn = games[0].find_element(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM)
@@ -212,7 +216,8 @@ class Chrome:
                         if ScoreRecognition.is_game_started_browser():
                             logger.info('Game started: (from comparing stream)')
                             self.game_index_new = ''
-                            uStorage.upd_current_game_link(link=self.generate_mobile_page())
+                            uStorage.upd_current_game_status(status="Поиск игры в онлайне")
+                            # uStorage.upd_current_game_link(link=self.generate_mobile_page())
                             uStorage.upd_previous_game_id(game_id=self.game_index_ended)
                             return
                         else:

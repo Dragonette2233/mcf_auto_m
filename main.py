@@ -21,8 +21,7 @@ logger = logging.getLogger(__name__)
 
 def main():
     is_riot_apikey_valid()
-    uStorage.upd_current_game_link(link=None)
-    
+    # uStorage.upd_current_game_link(link=None)
     
     logger.info('BOT started')
     chrome = Chrome()        
@@ -60,7 +59,8 @@ def main():
         while not ScoreRecognition.is_game_started_spectator():
             time.sleep(2)
         
-
+        uStorage.upd_current_game_status("Online")
+        
         while CF.SW.request.is_active():
             autogui.doubleClick(x=658, y=828) # flash foward game
             score = generate_scoreboard() # generating score using kills, towers, gold and time info
