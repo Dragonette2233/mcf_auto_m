@@ -59,7 +59,7 @@ class Chrome:
             
         self.RESTART_REQUIRED = True
 
-    def generate_mobile_page(self) -> str:
+    def generate_mobile_page(self, ) -> str:
         # return 'https://melbet-33933.top/ru/live/cyber-zone/league-of-legends/1690826-all-random-all-mid/560036806-team-1-team-2'
         #gameid = uStorage.get_key("PREVIOUS_GAME_ID").replace('_', '/')
         return self.URL + '/' + self.game_index_new.replace('_', '/') + '?platform_type=mobile'
@@ -224,7 +224,7 @@ class Chrome:
 
                         if ScoreRecognition.is_game_started_browser():
                             logger.info('Game started: (from comparing stream)')
-                            self.game_index_new = ''
+                            # self.game_index_new = ''
                             uStorage.upd_current_game_status(status="Поиск игры в онлайне")
                             uStorage.upd_previous_game_id(game_id=game_index)
                             # uStorage.upd_current_game_link(link=self.generate_mobile_page())

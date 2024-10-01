@@ -120,7 +120,7 @@ async def mcf_status(update: Update, context: CallbackContext) -> None:
                     # Чтение всех строк и получение последних 10
                     lines = log_file.readlines()[-10:]
                     log_excerpt = ''.join(lines)  # Соединяем строки в один текст
-                    await update.message.reply_text(f"Last 10 lines of betcaster.log:\n\n{log_excerpt}")
+                    await update.message.reply_text(f"Last 10 lines of betcaster.log:\n\n{log_excerpt}", disable_web_page_preview=True)
             except Exception as e:
                 logger.error(f"Failed to read logs: {e}")
                 await update.message.reply_text("Failed to read logs.")
