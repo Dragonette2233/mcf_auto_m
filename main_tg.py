@@ -64,7 +64,8 @@ async def start(update: Update, context: CallbackContext):
     await update.message.reply_text(text=TGSMP.GREET_MESSAGE.format(visitor=visitor,
                                                                chat_link=CHAT_LINK,
                                                                nfa_link=NFA_LINK), 
-                                    reply_markup=reply_markup)
+                                    reply_markup=reply_markup,
+                                    disable_web_page_preview=True)
 async def actual_mirror(update: Update, context: CallbackContext):
     
     msg = update.message.text
@@ -92,7 +93,7 @@ async def change_actual_mirror(update: Update, context: CallbackContext):
         link_parts = message.split('/')
         new_link = '/'.join(link_parts[0:3]) + league_alt_rout
         uStorage.upd_mirror_page(link=new_link)
-        await update.message.reply_text(f'Зеркало добавлено: {new_link}')
+        await update.message.reply_text(f'Зеркало добавлено: {new_link}', disable_web_page_preview=True)
 
 @auth
 async def mcf_status(update: Update, context: CallbackContext) -> None:
