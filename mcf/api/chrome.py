@@ -185,6 +185,7 @@ class Chrome:
     def awaiting_for_start(self):
 
         # passages = 0
+        tst = 0
 
         while True:
 
@@ -196,6 +197,13 @@ class Chrome:
                 if aram_title_inner == 'All Random All Mid':
                     game_link = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_GAME_LINK).get_attribute('href')
                     game_index = '_'.join(game_link.split('/')[7:])
+                    
+                    tst += 1
+                    logger.info("Test %i", tst)
+                    
+                    if tst > 5:
+                        game_index = 'Something in the way, mmmmmmmmmmmm'
+                        logger.warning(game_index)
                     
                     if game_index != self.game_index_ended:
                         logger.info('Gamelink changed, refreshing driver')
@@ -211,7 +219,8 @@ class Chrome:
           
                     if game_index == self.game_index_new:
                         stream_btn = games[0].find_element(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM)
-                        stream_btn.find_element(By.CSS_SELECTOR, MelCSS.BUTTON_OPEN_STREAM).click()
+                        stream_btn.click()
+                        # stream_btn.find_element(By.CSS_SELECTOR, MelCSS.BUTTON_OPEN_STREAM).click()
                         time.sleep(2)
 
                         if ScoreRecognition.is_game_started_browser():
@@ -223,8 +232,6 @@ class Chrome:
                             return
                         else:
                             stream_btn.click()
-                    else:
-                        self.remove_cancel()
 
             except (AttributeError, IndexError, NoSuchElementException,
                     StaleElementReferenceException) as ex_:
@@ -242,11 +249,11 @@ class Chrome:
                 if not self.open_league_page():
                     self.force_quit()
                     return
-                self.PASSAGES += 1
+                # self.PASSAGES += 1
             elif self.PASSAGES == 160:
                 self.force_quit()
                 return
-            else:
-                time.sleep(0.75)
-                self.PASSAGES += 1
+            
+            time.sleep(0.75)
+            self.PASSAGES += 1
             
