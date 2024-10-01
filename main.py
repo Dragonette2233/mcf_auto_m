@@ -94,6 +94,7 @@ def main():
                 time.sleep(0.5)
         
     else:
+        uStorage.upd_current_game_status(status="Не состоялась или не найдена")
         if CF.SW.quick_end.is_active():
             status = TelegramStr.game_remake
         else:

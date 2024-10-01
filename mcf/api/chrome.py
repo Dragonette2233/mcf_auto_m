@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class Chrome:
 
     def __init__(self) -> None:
-        self.options = Options()
+        self.options = webdriver.ChromeOptions()
         
         self.options.add_argument("--disable-blink-features=AutomationControlled")
         self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
@@ -68,7 +68,6 @@ class Chrome:
         self.driver.get(self.generate_mobile_page())
     
     def open_league_page(self):
-        
         self.URL = uStorage.get_key("MIRROR_PAGE")
             
         try:
