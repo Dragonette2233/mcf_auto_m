@@ -207,6 +207,7 @@ class Chrome:
                         self.game_index_ended = game_index
                         
                         uStorage.upd_current_game_status(status="В ожидании стрима")
+                        uStorage.upd_previous_game_id(game_id=game_index)
                         uStorage.upd_current_game_link(link=self.generate_mobile_page())
           
                     if game_index == self.game_index_new:
@@ -219,7 +220,7 @@ class Chrome:
                             self.game_index_new = ''
                             uStorage.upd_current_game_status(status="Поиск игры в онлайне")
                             # uStorage.upd_current_game_link(link=self.generate_mobile_page())
-                            uStorage.upd_previous_game_id(game_id=self.game_index_ended)
+                            
                             return
                         else:
                             stream_btn.click()
