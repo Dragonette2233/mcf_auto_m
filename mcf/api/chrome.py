@@ -59,9 +59,10 @@ class Chrome:
             
         self.RESTART_REQUIRED = True
 
-    def generate_mobile_page(self, gameid: str) -> str:
+    def generate_mobile_page(self) -> str:
         # return 'https://melbet-33933.top/ru/live/cyber-zone/league-of-legends/1690826-all-random-all-mid/560036806-team-1-team-2'
-        return self.URL + '/' + gameid.replace('_', '/') + '?platform_type=mobile'
+        gameid = uStorage.get_key("PREVIOUS_GAME_ID").replace('_', '/')
+        return self.URL + '/' + gameid + '?platform_type=mobile'
     
     def open_mobile_page(self):
         self.driver.get(self.generate_mobile_page())

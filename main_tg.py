@@ -75,13 +75,10 @@ async def actual_mirror(update: Update, context: CallbackContext):
     elif msg == '/current_game':
         curr = uStorage.get_key("CURRENT_GAME_LINK")
         status = uStorage.get_key("CURRENT_GAME_STATUS")
-        
-        # if curr == 'None':
-        #     resp = "В данный момент нет отслеживаемой игры"
-        # else:
-        resp = f'Статус: {status}\n\nСсылка на актуальную игру: {curr}'
+
+        resp = f'Статус: {status}\n{curr}'
             
-        await update.message.reply_text(resp)
+        await update.message.reply_text(resp, disable_web_page_preview=True)
 
 @auth
 async def change_actual_mirror(update: Update, context: CallbackContext):
