@@ -185,7 +185,7 @@ class Chrome:
     def awaiting_for_start(self):
 
         # passages = 0
-        tst = 0
+        #tst = 0
 
         while True:
 
@@ -198,12 +198,12 @@ class Chrome:
                     game_link = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_GAME_LINK).get_attribute('href')
                     game_index = '_'.join(game_link.split('/')[7:])
                     
-                    tst += 1
-                    logger.info("Test %i", tst)
+                    # tst += 1
+                    # logger.info("Test %i", tst)
                     
-                    if tst > 5:
-                        game_index = 'Something in the way, mmmmmmmmmmmm'
-                        logger.warning(game_index)
+                    # if tst > 5:
+                    #     game_index = 'Something in the way, mmmmmmmmmmmm'
+                    #     logger.warning(game_index)
                     
                     if game_index != self.game_index_ended:
                         logger.info('Gamelink changed, refreshing driver')
