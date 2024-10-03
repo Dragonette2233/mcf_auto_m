@@ -42,6 +42,9 @@ class Chrome:
 
         self.URL: str = ''
         self.ACTIVE_TOTAL_VALUE = 0
+        self.MIN_MAX_BET_TOTAL = uStorage.get_key("MIN_MAX_BET_TOTAL")
+        
+        print(self.MIN_MAX_BET_TOTAL, type(self.MIN_MAX_BET_TOTAL))
     
     def start(self):
         self.driver = webdriver.Chrome(options=self.options)
@@ -134,14 +137,14 @@ class Chrome:
         predict_flet = message.split()[-1].split('_')[1].replace(TelegramStr.ARROW_DOWN, '')
         active_total = float(self.ACTIVE_TOTAL_VALUE)
 
-        if predict_direction == 'Б' and active_total < 117.5:
+        if predict_direction == 'Б' and active_total <= self.MIN_MAX_BET_TOTAL[1]:
             
             if CF.VAL.tb_approve != 7:
                 CF.VAL.tb_approve += 1
                 return
             return True
 
-        if predict_direction == 'М' and active_total > 96.5:
+        if predict_direction == 'М' and active_total >= self.MIN_MAX_BET_TOTAL[0]:
 
             if predict_flet == "0.5" and CF.VAL.tl_approve != 3:
                 CF.VAL.tl_approve += 1

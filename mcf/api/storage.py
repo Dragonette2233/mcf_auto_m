@@ -51,7 +51,7 @@ class uStorage():
         data = SafeJson.load(cls.UPATH)
         
         try:
-            return data[key].strip()
+            return data[key]
         except KeyError:
             logger.fatal("Key %s doesnt exist in `uparams` " % key)
     
