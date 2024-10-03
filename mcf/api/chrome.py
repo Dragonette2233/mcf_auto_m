@@ -46,6 +46,8 @@ class Chrome:
     def start(self):
         self.driver = webdriver.Chrome(options=self.options)
         self.driver.maximize_window()
+        self.driver.switch_to.window(self.driver.current_window_handle)  # Активировать окно Selenium
+# driver.maximize_window()  # Увеличить окно на весь экран
         time.sleep(3)
         autogui.click(x=1896, y=99) #disable infobar
         time.sleep(3)
