@@ -117,7 +117,7 @@ class ScoreRecognition:
             logger.info(similarity_index)
 
         if similarity_index > 0.949:
-            winscreen.make_league_foreground()
+            # winscreen.make_league_foreground()
             cmouse.open_score_tab()
             logger.info('Spectator activated')
             return True

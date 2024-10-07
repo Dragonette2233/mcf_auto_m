@@ -18,6 +18,7 @@ def double_click_left(x, y):
 def open_score_tab():
     sleep(1)
     click_left(x=271, y=1054)
+    click_left(x=271, y=1054)
     sleep(0.25)
     click_left(x=328, y=972)
 
