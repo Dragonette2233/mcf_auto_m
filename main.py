@@ -62,14 +62,14 @@ def main():
         uStorage.upd_current_game_status("Online")
         
         while CF.SW.request.is_active():
-            cmouse.double_click_mouse(x=658, y=828) # flash foward game
+            cmouse.double_click_left(x=658, y=828) # flash foward game
             score = generate_scoreboard() # generating score using kills, towers, gold and time info
             
             if not score:
                 MCFApi.spectate_active_game()
                 while not ScoreRecognition.is_game_started_spectator():
                     time.sleep(2)
-                cmouse.double_click_mouse(x=658, y=828)
+                cmouse.double_click_left(x=658, y=828)
                 score = generate_scoreboard()
             else:
                 chrome.generate_predict(score) # generating predict based on score data

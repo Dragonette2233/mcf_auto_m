@@ -10,18 +10,18 @@ MOUSEEVENTF_ABSOLUTE = 0x8000
 # Получаем доступ к user32.dll
 user32 = ctypes.WinDLL('user32', use_last_error=True)
 
-def double_click_mouse(x, y):
-    click_mouse(x, y)
+def double_click_left(x, y):
+    click_left(x, y)
     sleep(0.1)
-    click_mouse(x, y)
+    click_left(x, y)
 
 def open_score_tab():
     sleep(1)
-    click_mouse(x=271, y=1054)
+    click_left(x=271, y=1054)
     sleep(0.25)
-    click_mouse(x=328, y=972)
+    click_left(x=328, y=972)
 
-def click_mouse(x, y):
+def click_left(x, y):
     # Устанавливаем позицию курсора мыши (относительно экрана)
     ctypes.windll.user32.SetCursorPos(x, y)
 
@@ -46,5 +46,5 @@ def click_on_tower(coords: tuple[int]):
     """
     
     x, y, x1, y1 = coords
-    click_mouse(x, y)
-    click_mouse(x1, y1)
+    click_left(x, y)
+    click_left(x1, y1)

@@ -105,11 +105,12 @@ class Chrome:
             iframe = video_container.find_element(By.CSS_SELECTOR, 'iframe')
             self.driver.switch_to.frame(iframe)
             video_player = self.driver.find_element(By.CSS_SELECTOR, MelCSS.VIDEO_PLAYER)
+            self.actions.move_to_element(video_player).click().perform()
             self.driver.execute_script("arguments[0].requestFullscreen();", video_player)
             self.driver.switch_to.default_content()
         except Exception as e:
             logger.warning(e)
-            cmouse.click(x=1871, y=361)
+            cmouse.click_left(x=1871, y=361)
         
         print("FULL SCREEN DONE")
             
