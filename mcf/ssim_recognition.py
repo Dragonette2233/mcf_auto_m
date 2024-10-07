@@ -2,7 +2,7 @@
 import os
 import numpy as np
 import logging
-from mcf import autogui
+from mcf.api import cmouse
 from mcf.dynamic import CF
 from mcf import pillow
 from skimage.metrics import structural_similarity as ssim
@@ -117,7 +117,7 @@ class ScoreRecognition:
             logger.info(similarity_index)
 
         if similarity_index > 0.949:
-            autogui.open_score_tab()
+            cmouse.open_score_tab()
             logger.info('Spectator activated')
             return True
     

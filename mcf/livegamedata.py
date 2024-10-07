@@ -2,7 +2,7 @@ import urllib3
 import logging
 import requests
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-from mcf import autogui
+from mcf.api import cmouse
 from mcf.dynamic import CF
 from mcf.ssim_recognition import ScoreRecognition
 
@@ -24,7 +24,7 @@ def process_structure_health(score: dict, teams: tuple, click_coords_t1: tuple, 
     
     if score[f'{teams[0]}_towers'] == 0:
         t2_health = 100
-        autogui.click_on_tower(click_coords_t1)
+        cmouse.click_on_tower(click_coords_t1)
         t1_health = ScoreRecognition.towers_healh_recognition()
         if not t1_health or t1_health > CF.LD.tw_health_T1[teams[1]]:
             t1_health = CF.LD.tw_health_T1[teams[1]]
@@ -34,7 +34,7 @@ def process_structure_health(score: dict, teams: tuple, click_coords_t1: tuple, 
     elif score[f'{teams[0]}_towers'] == 1:
         CF.LD.tw_health_T1[teams[1]] = 0
         t1_health = 0
-        autogui.click_on_tower(click_coords_t2)
+        cmouse.click_on_tower(click_coords_t2)
         t2_health = ScoreRecognition.towers_healh_recognition()
         if not t2_health or t2_health > CF.LD.tw_health_T2[teams[1]]:
             t2_health = CF.LD.tw_health_T2[teams[1]]

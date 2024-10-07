@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 CF = ControlFlow()
 
 # command: str = input('Enter test command: ')
-command = 'pr_test'
+command = 'drv'
 match command:
     
     # case 'pr_test':
@@ -32,6 +32,65 @@ match command:
         CF.SR.red_characters = 'One less bool cool zed'
         
         TGApi.post_request(message=message, message_type='predict', link=chrome.generate_mobile_page())
+    case 'drv':
+        from selenium import webdriver
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.action_chains import ActionChains
+        # from static im
+
+                
+        def _fnd(drv: webdriver.Chrome, el):
+            
+            # Найти iframe и переключиться на него
+            container = drv.find_element(By.CSS_SELECTOR, 'section media-container media-container--theme-primary media-side__item'.replace(' ', '.'))
+            iframe = container.find_element(By.CSS_SELECTOR, 'iframe')
+            drv.switch_to.frame(iframe)
+
+            
+            video_player = drv.find_element(By.CSS_SELECTOR, el)
+            # video_player.
+
+            # Перевести видеоплеер в полноэкранный режим через JavaScript
+            # drv.switch_to.default_content()
+            # drv.switch_to.window(drv.current_window_handle)  # Активировать окно Selenium
+            actions = ActionChains(drv)
+            actions.move_to_element(video_player).click().perform()
+            drv.execute_script("arguments[0].requestFullscreen();", video_player)
+            # Теперь можно искать элементы внутри секции
+            # inner_element = drv.find_element(By.CSS_SELECTOR, el)
+            # print(inner_element)
+            # print(f"IS: {inner_element.is_displayed()}")
+            # actions = ActionChains(drv)
+            # actions.move_to_element(inner_element).click().perform()
+            # drv.execute_script("arguments[0].click();", inner_element)
+
+            # Вернуться обратно к основному контенту
+            drv.switch_to.default_content()
+
+            
+            
+            # media = drv.find_elements(By.CSS_SELECTOR, media_css)
+            
+            # if len(media) != 0:
+            #     nxt = media[0].find_elements(By.CSS_SELECTOR, el)
+            #     print(nxt)
+            
+        
+        from mcf.dynamic import CF
+        from mcf.api.telegram import TGApi
+        from mcf.api.chrome import Chrome
+        
+        chrome = Chrome()   
+        
+        chrome.start()
+        chrome.open_league_page()
+        
+        while True:
+            try:
+                el = input()
+                _fnd(chrome.driver, el.strip().replace(' ', '.'))
+            except Exception as e:
+                print(e)
         
     case 'spectate':
         from mcf_api import MCFApi

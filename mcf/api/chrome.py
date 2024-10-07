@@ -1,7 +1,8 @@
 import time
 import copy
 import logging
-import mcf.autogui as autogui
+from mcf.api import cmouse
+from selenium.webdriver.common.action_chains import ActionChains
 from mcf.ssim_recognition import ScoreRecognition
 from mcf.api.storage import MCFStorage, uStorage
 from mcf.predicts import PR
@@ -10,7 +11,6 @@ from mcf.api.telegram import TGApi
 from static import TelegramStr, MelCSS
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import (
     TimeoutException, 
     NoSuchElementException, 
@@ -30,7 +30,7 @@ class Chrome:
         self.options.add_argument("--disable-crash-reporter")
         self.options.add_argument("--no-sandbox")
         self.options.add_argument("--disable-logging")
-        self.options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        self.options.add_experimental_option("excludeSwitches", ["enable-logging", 'enable-automation'])
         self.options.add_experimental_option("detach", True)
         
         self.driver = None
@@ -50,9 +50,10 @@ class Chrome:
         self.driver = webdriver.Chrome(options=self.options)
         self.driver.switch_to.window(self.driver.current_window_handle)  # Активировать окно Selenium
         self.driver.maximize_window()
-        time.sleep(3)
-        autogui.click(x=1896, y=99) #disable infobar
-        time.sleep(3)
+        self.actions = ActionChains(self.driver)
+        # time.sleep(3)
+        # autogui.click(x=1896, y=99) #disable infobar
+        # time.sleep(3)
     
     def force_quit(self):
         try:
@@ -96,13 +97,23 @@ class Chrome:
     def delay(self, second: int):
         time.sleep(second)
 
-    def stream_close(self):
-        autogui.close_league_stream()
 
     def stream_fullscreen(self):
-        autogui.click(x=1871, y=361)
+        
+        try:
+            video_container = self.driver.find_element(By.CSS_SELECTOR, MelCSS.VIDEO_CONTAINER)
+            iframe = video_container.find_element(By.CSS_SELECTOR, 'iframe')
+            self.driver.switch_to.frame(iframe)
+            video_player = self.driver.find_element(By.CSS_SELECTOR, MelCSS.VIDEO_PLAYER)
+            self.driver.execute_script("arguments[0].requestFullscreen();", video_player)
+            self.driver.switch_to.default_content()
+        except Exception as e:
+            logger.warning(e)
+            cmouse.click(x=1871, y=361)
+        
+        print("FULL SCREEN DONE")
+            
         time.sleep(2.5)
-
 
     def is_total_coeff_opened(self, end_check=False):
 

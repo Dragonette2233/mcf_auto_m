@@ -118,8 +118,8 @@ class uStorage():
                 # data = SafeJson.load(predicts_path)
                 
                 for predict in data[pr_key].keys():
-                   data[predict][0] = 0
-                   data[predict][1] = 0
+                   data[pr_key][predict][0] = 0
+                   data[pr_key][predict][1] = 0
                 
                 SafeJson.dump(json_path=PATH.PR_TRACE, data=data)
                 

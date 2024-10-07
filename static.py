@@ -122,6 +122,9 @@ class MelCSS:
     SPAN_OPEN_STREAM = 'span.dashboard-game-action-bar__group'
     BUTTON_OPEN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
     BUTTON_REJECT_LIVE = 'button.ui-button.dashboard-redirect-message-timer__btn.ui-button--size-m.ui-button--theme-gray.ui-button--rounded'
+    
+    VIDEO_CONTAINER = 'section.media-container.media-container--theme-primary.media-side__item'
+    VIDEO_PLAYER = "video.video"
 
 class URL:
     
