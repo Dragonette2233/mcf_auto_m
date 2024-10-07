@@ -33,6 +33,7 @@ def click_left(x, y):
 
     # Эмулируем отпускание левой кнопки мыши
     ctypes.windll.user32.mouse_event(MOUSEEVENTF_LEFTUP, x, y, 0, 0)
+    sleep(0.05)
 
 def click_on_tower(coords: tuple[int]):
     
@@ -48,3 +49,4 @@ def click_on_tower(coords: tuple[int]):
     x, y, x1, y1 = coords
     click_left(x, y)
     click_left(x1, y1)
+    sleep(0.05)

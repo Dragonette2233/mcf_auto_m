@@ -3,7 +3,7 @@ import time
 import logging
 from mcf.api.storage import uStorage
 from mcf.ssim_recognition import ScoreRecognition
-from mcf.api import cmouse
+from mcf.api import cmouse, winscreen
 from mcf.dynamic import CF
 from mcf.utils import is_riot_apikey_valid
 from mcf.livegamedata import generate_scoreboard
@@ -58,7 +58,8 @@ def main():
 
         while not ScoreRecognition.is_game_started_spectator():
             time.sleep(2)
-        
+            
+        winscreen.make_league_foreground()
         uStorage.upd_current_game_status("Online")
         
         while CF.SW.request.is_active():

@@ -2,7 +2,7 @@
 import os
 import numpy as np
 import logging
-from mcf.api import cmouse
+from mcf.api import cmouse, winscreen
 from mcf.dynamic import CF
 from mcf import pillow
 from skimage.metrics import structural_similarity as ssim
@@ -117,6 +117,7 @@ class ScoreRecognition:
             logger.info(similarity_index)
 
         if similarity_index > 0.949:
+            winscreen.make_league_foreground()
             cmouse.open_score_tab()
             logger.info('Spectator activated')
             return True
@@ -209,7 +210,7 @@ class ScoreRecognition:
         if not cls.get_compare(greyshade_array(from_crop=(image, 20, 850, 59, 902)), 'tw_access'):
             return False
 
-        rect = pillow.crop_image(image, 76, 865, 174, 867)
+        rect = pillow.crop_image(image, 76, 853, 175, 855)
         result = green_fill_percents(rect)
         
         return result
