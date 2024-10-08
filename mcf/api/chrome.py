@@ -207,8 +207,8 @@ class Chrome:
 
             try:
                 games = self.driver.find_elements(By.CSS_SELECTOR, MelCSS.GAMES_DASHBOARD)
-                aram_title_outer = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_OUTER)
-                aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_INNER).get_attribute('innerText')
+                aram_title_outer = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_OUTER_alt)
+                aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_INNER_alt).get_attribute('innerText')
               
                 if aram_title_inner == 'All Random All Mid':
                     game_link = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_GAME_LINK).get_attribute('href')
@@ -252,6 +252,7 @@ class Chrome:
             except (AttributeError, IndexError, NoSuchElementException,
                     StaleElementReferenceException) as ex_:
                 ...
+                # logger.warning(ex_, exc_info=True)
             except Exception as ex_:
                 logger.info(self.game_index_new)
                 logger.info(self.game_index_ended)

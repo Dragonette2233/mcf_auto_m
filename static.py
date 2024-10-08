@@ -116,7 +116,9 @@ class MelCSS:
     
     GAMES_DASHBOARD = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
     ARAM_TITLE_OUTER = 'span.caption.ui-dashboard-champ-name__caption.caption--size-m'
+    ARAM_TITLE_OUTER_alt = 'div ui-dashboard-champ-name dashboard-champ__name ui-dashboard-cell ui-dashboard-champ-name dashboard-champ__name'.replace(' ', '.')
     ARAM_TITLE_INNER = 'span.caption__label'
+    ARAM_TITLE_INNER_alt = 'span ui-caption--size-m ui-caption--color-clr-strong-alt ui-caption--no-wrap ui-caption ui-dashboard-champ-name__caption'.replace(' ', '.')
     ARAM_GAME_LINK = 'a.dashboard-game-block__link.dashboard-game-block-link'
     
     SPAN_OPEN_STREAM = 'span.dashboard-game-action-bar__group'
