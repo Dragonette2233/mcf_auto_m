@@ -69,7 +69,14 @@ class uStorage():
             elif msg[-1] == 'Б':
                 pr = "PR_BIG"
         
-        SafeJson.load_and_dump(cls.UPATH, key="PR_STATE", value=pr)
+        profiles = SafeJson.load(PATH.CASTER_PROFILES_BASE)
+        
+        for k in profiles.keys():
+            profiles[k] = pr
+        
+        SafeJson.dump(PATH.CASTER_PROFILES_BASE, data=profiles)
+        
+        # SafeJson.load_and_dump(cls.UPATH, key="PR_STATE", value=pr)
     
     @classmethod
     def upd_current_game_status(cls, status=''):
@@ -219,50 +226,50 @@ class MCFStorage:
     #     with open(PATH.CURRENT_GAME_LINK, 'w+') as file:
     #         file.write(str(link))
 
-    @classmethod
-    def get_selective_data(cls, route: tuple):
-        data = json.load(open(PATH.JSON_GAMEDATA, 'r'))
-        if isinstance(route, tuple):
-            if len(route) > 1:
-                return data[route[0]][route[1]]
-            else:
-                return data[route[0]]
-        else:
-            raise TypeError('Provide touple for executing MCFData')
+    # @classmethod
+    # def get_selective_data(cls, route: tuple):
+    #     data = json.load(open(PATH.JSON_GAMEDATA, 'r'))
+    #     if isinstance(route, tuple):
+    #         if len(route) > 1:
+    #             return data[route[0]][route[1]]
+    #         else:
+    #             return data[route[0]]
+    #     else:
+    #         raise TypeError('Provide touple for executing MCFData')
 
 
-    @classmethod
-    def get_all_data(cls) -> dict:
-        data = json.load(open(PATH.JSON_GAMEDATA, 'r'))
-        return data
+    # @classmethod
+    # def get_all_data(cls) -> dict:
+    #     data = json.load(open(PATH.JSON_GAMEDATA, 'r'))
+    #     return data
 
-    @classmethod
-    def write_data(cls, route: tuple, value):
-        data = json.load(open(PATH.JSON_GAMEDATA, 'r'))
-        if isinstance(route, tuple):
-            if len(route) > 1:
-                data[route[0]][route[1]] = value
-            else:
-                data[route[0]] = value
-            json.dump(data, open(PATH.JSON_GAMEDATA, 'w+'), indent=4)
-        else:
-            raise TypeError('Provide tuple for executing MCFData')
+    # @classmethod
+    # def write_data(cls, route: tuple, value):
+    #     data = json.load(open(PATH.JSON_GAMEDATA, 'r'))
+    #     if isinstance(route, tuple):
+    #         if len(route) > 1:
+    #             data[route[0]][route[1]] = value
+    #         else:
+    #             data[route[0]] = value
+    #         json.dump(data, open(PATH.JSON_GAMEDATA, 'w+'), indent=4)
+    #     else:
+    #         raise TypeError('Provide tuple for executing MCFData')
     
-    @classmethod
-    def rgs_predicts_monitor(cls, message: str, idx: int):
-        try:
-            _tmp = message.split()
-            value = _tmp[1][0:-1]
-            direction = 'Т' + _tmp[1][-1]
-            flet = _tmp[2].split('_')[1][:-1]
+    # @classmethod
+    # def rgs_predicts_monitor(cls, message: str, idx: int):
+    #     try:
+    #         _tmp = message.split()
+    #         value = _tmp[1][0:-1]
+    #         direction = 'Т' + _tmp[1][-1]
+    #         flet = _tmp[2].split('_')[1][:-1]
             
-            CF.VAL.pr_cache = (value, direction, flet)
-            CF.VAL.pr_debug = idx
+    #         CF.VAL.pr_cache = (value, direction, flet)
+    #         CF.VAL.pr_debug = idx
 
-            logger.info(f"PR accepted: {value} | {direction} | {flet}")
+    #         logger.info(f"PR accepted: {value} | {direction} | {flet}")
             
-        except Exception as ex_:
-            logger.warning(ex_)
+    #     except Exception as ex_:
+    #         logger.warning(ex_)
 
     
 
