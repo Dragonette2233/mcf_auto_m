@@ -1,5 +1,9 @@
 from mcf.dynamic import CF
 from static import TelegramStr
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 class PR_IDXs:
 
@@ -131,6 +135,21 @@ class PR:
             case _:
                 ...
 
+    @classmethod
+    def rgs_predicts_monitor(cls, message: str, idx: int):
+        try:
+            _tmp = message.split()
+            value = _tmp[1][0:-1]
+            direction = 'Т' + _tmp[1][-1]
+            flet = _tmp[2].split('_')[1][:-1]
+            
+            CF.VAL.pr_cache = (value, direction, flet)
+            CF.VAL.pr_debug = idx
+
+            logger.info(f"PR accepted: {value} | {direction} | {flet}")
+            
+        except Exception as ex_:
+            logger.warning(ex_)
 
     @classmethod
     def gen_main_predict(cls):
