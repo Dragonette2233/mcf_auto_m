@@ -45,17 +45,27 @@ def auth(func):
 
 @auth
 async def caster_logs(update: Update, context):
-    
     _, log_type = update.message.text.split('_')
-    
+
     profiles = SafeJson.load(PATH.CASTER_PROFILES_BASE)
-    keyboard = [[]]
-    
-    for k in profiles.keys():
-        keyboard[0].append(InlineKeyboardButton(k, callback_data=log_type + '__' + k))
-    
+    keyboard = []
+    row = []
+
+    for i, k in enumerate(profiles.keys()):
+        row.append(InlineKeyboardButton(k, callback_data=log_type + '__' + k))
+        
+        # Если в ряду уже 2 кнопки, добавляем ряд в клавиатуру и начинаем новый
+        if len(row) == 2:
+            keyboard.append(row)
+            row = []
+
+    # Добавляем оставшийся ряд, если он не пуст
+    if row:
+        keyboard.append(row)
+
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Choose profile to discover logs:", reply_markup=reply_markup)
+
 
 # Функция обработки нажатий на кнопки
 async def inline_caster_logs(update: Update, context):
@@ -63,16 +73,18 @@ async def inline_caster_logs(update: Update, context):
     await query.answer()  # Обязательно подтверждаем получение callback запроса
 
     log_type, profile = query.data.split("__")
-    path = os.path.join(PATH.CASTER_PROFILES_BASE, profile + '.log')
-    
-    if log_type == 'less':
+    path = os.path.join(PATH.CASTER_PROFILES_LOGS, profile + '.log')
+    logger.info(path)
+    logger.info('log_t: %s', log_type)
+    if log_type == 'full':
         # path = os.path.join(PATH.CASTER_PROFILES_BASE, profile + '.log')
         try:
             with open(path, 'rb') as log_file:
-                await update.message.reply_document(document=log_file, filename=f'caster_{profile}.log')
+                await query.delete_message()
+                await query.message.reply_document(document=log_file, filename=f'caster_{profile}.log')
         except FileNotFoundError:
             await query.edit_message_text(f"Betcaster logs doesnt exists yet for `{profile}`")
-    elif log_type == 'full':
+    elif log_type == 'less':
         # Иначе отправляем последние 10 строк
         try:
             with open(path, 'r') as log_file:
