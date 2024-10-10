@@ -1,12 +1,13 @@
 import logging
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 from functools import wraps
-from telegram.ext import Application, CommandHandler, CallbackContext, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, CallbackContext, MessageHandler, filters, CallbackQueryHandler
 from io import BytesIO
 from PIL import ImageGrab
 from static import TGSMP
-from mcf.api.storage import uStorage
+from mcf.api.storage import uStorage, SafeJson
 from static import PATH
+import os
 
 
 # Enable logging
@@ -42,6 +43,50 @@ def auth(func):
             await update.message.reply_text("🚫 Unauthorized")
     return wrapper
 
+@auth
+async def caster_logs(update: Update, context):
+    
+    _, log_type = update.message.text.split('_')
+    
+    profiles = SafeJson.load(PATH.CASTER_PROFILES_BASE)
+    keyboard = [[]]
+    
+    for k in profiles.keys():
+        keyboard[0].append(InlineKeyboardButton(k, callback_data=log_type + '__' + k))
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Choose profile to discover logs:", reply_markup=reply_markup)
+
+# Функция обработки нажатий на кнопки
+async def inline_caster_logs(update: Update, context):
+    query = update.callback_query
+    await query.answer()  # Обязательно подтверждаем получение callback запроса
+
+    log_type, profile = query.data.split("__")
+    path = os.path.join(PATH.CASTER_PROFILES_BASE, profile + '.log')
+    
+    if log_type == 'less':
+        # path = os.path.join(PATH.CASTER_PROFILES_BASE, profile + '.log')
+        try:
+            with open(path, 'rb') as log_file:
+                await update.message.reply_document(document=log_file, filename=f'caster_{profile}.log')
+        except FileNotFoundError:
+            await query.edit_message_text(f"Betcaster logs doesnt exists yet for `{profile}`")
+    elif log_type == 'full':
+        # Иначе отправляем последние 10 строк
+        try:
+            with open(path, 'r') as log_file:
+                # Чтение всех строк и получение последних 10
+                lines = log_file.readlines()[-10:]
+                log_excerpt = ''.join(lines)  # Соединяем строки в один текст
+                await query.edit_message_text(f"Last 10 lines of {profile}:\n\n{log_excerpt}", disable_web_page_preview=True)
+        except Exception as e:
+            logger.error(f"Failed to read logs: {e}")
+            await  query.edit_message_text("Failed to read logs.")
+    # if query.data == 'button1':
+    #     await query.edit_message_text(text="You pressed Button 1!")
+    # elif query.data == 'button2':
+    #     await query.edit_message_text(text="You pressed Button 2!")
 
 async def info(update: Update, context: CallbackContext):
     
@@ -168,14 +213,15 @@ def main() -> None:
         ('mirror', actual_mirror),
         ('current_game', actual_mirror),
         ('mcf_status', mcf_status),
-        ('betcaster_full', mcf_status),
-        ('betcaster_less', mcf_status)
+        ('betcaster_full', caster_logs),
+        ('betcaster_less', caster_logs)
         
     )
     
     for cmd, hndl in command_handler:
         application.add_handler(CommandHandler(cmd, hndl))
-        
+    
+    application.add_handler(CallbackQueryHandler(inline_caster_logs))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'https\S+'), change_actual_mirror))
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 

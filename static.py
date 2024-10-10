@@ -180,6 +180,8 @@ class PATH():
     # SCORE_TRACE = os.path.join(base._untracking, 'score_trace.json')
     PR_TRACE = os.path.join(base._untracking, 'pr_trace.json')
     CASTER_PROFILES_BASE = os.path.join(base._untracking, 'caster_profiles_base.json')
+    CASTER_PROFILES_LOGS = os.path.join(base._untracking, 'caster-logs')
+     # CASTER_PROFILES = os.path.join(, 'betcaster', 'caster_profiles')
     # PREDICTS_TRACE_GLOBAL = os.path.join(base._untracking, 'predicts_trace.json')
     # PREDICTS_TRACE_DAILY = os.path.join(base._untracking, 'predicts_trace_daily.json')
     # PR_STATE_FILE = os.path.join(base._untracking, 'pr_state.txt')
@@ -212,7 +214,7 @@ class PATH():
                             for char in ALL_CHAMPIONS_IDs.values()
         }
     
-    BETCASTER_LOGS = os.path.join(base.MCF_BOT, 'untracking', 'betcaster.log')
+    # BETCASTER_LOGS = os.path.join(base.MCF_BOT, 'untracking', 'betcaster.log')
 
 class Snippet:
     
