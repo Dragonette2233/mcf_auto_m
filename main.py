@@ -3,7 +3,7 @@ import time
 import logging
 from mcf.api.storage import uStorage
 from mcf.ssim_recognition import ScoreRecognition
-from mcf.api import cmouse, winscreen
+from mcf.api import cmouse
 from mcf.dynamic import CF
 from mcf.utils import is_riot_apikey_valid
 from mcf.livegamedata import generate_scoreboard
