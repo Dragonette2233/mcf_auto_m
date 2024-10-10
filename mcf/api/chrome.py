@@ -142,7 +142,7 @@ class Chrome:
             
         return False
     
-    def predicts_is_accepted(self, message):
+    def predicts_is_accepted(self, message: str):
 
         predict_direction = message.split()[1][-1]
         predict_flet = message.split()[-1].split('_')[1].replace(TelegramStr.ARROW_DOWN, '')
@@ -174,12 +174,13 @@ class Chrome:
             TGApi.post_request(message=message,
                                message_type='predict',
                                link=self.generate_mobile_page())
+            
             uStorage.upd_pr_message(pr_message=message)
             logger.info(message)
             time.sleep(5)
 
             if self.is_total_coeff_opened():
-                MCFStorage.rgs_predicts_monitor(message=message, idx=idx)
+                PR.rgs_predicts_monitor(message=message, idx=idx)
             else:
                 CF.VAL.pr_cache = 'closed'
        
