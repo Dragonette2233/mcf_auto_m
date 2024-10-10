@@ -74,8 +74,8 @@ async def inline_caster_logs(update: Update, context):
 
     log_type, profile = query.data.split("__")
     path = os.path.join(PATH.CASTER_PROFILES_LOGS, profile + '.log')
-    logger.info(path)
-    logger.info('log_t: %s', log_type)
+    # logger.info(path)
+    # logger.info('log_t: %s', log_type)
     if log_type == 'full':
         # path = os.path.join(PATH.CASTER_PROFILES_BASE, profile + '.log')
         try:
@@ -93,7 +93,7 @@ async def inline_caster_logs(update: Update, context):
                 log_excerpt = ''.join(lines)  # Соединяем строки в один текст
                 await query.edit_message_text(f"Last 10 lines of {profile}:\n\n{log_excerpt}", disable_web_page_preview=True)
         except Exception as e:
-            logger.error(f"Failed to read logs: {e}")
+            # logger.error(f"Failed to read logs: {e}")
             await  query.edit_message_text("Failed to read logs.")
     # if query.data == 'button1':
     #     await query.edit_message_text(text="You pressed Button 1!")
@@ -155,33 +155,13 @@ async def change_actual_mirror(update: Update, context: CallbackContext):
 @auth
 async def mcf_status(update: Update, context: CallbackContext) -> None:
     
-    if update.message.from_user.id == OWNER:
-        
-        if update.message.text == '/mcf_status':
-            screen = ImageGrab.grab()
-            img_byte_array = BytesIO()
-            screen.save(img_byte_array, format='PNG')
-            img_byte_array.seek(0)
+    screen = ImageGrab.grab()
+    img_byte_array = BytesIO()
+    screen.save(img_byte_array, format='PNG')
+    img_byte_array.seek(0)
 
-            # Отправка изображения как фото
-            await update.message.reply_photo(photo=img_byte_array)
-        elif update.message.text == '/betcaster_full':
-            try:
-                with open(PATH.BETCASTER_LOGS, 'rb') as log_file:
-                    await update.message.reply_document(document=log_file, filename='betcaster.log')
-            except FileNotFoundError:
-                await update.message.reply_text("Betcaster logs doesnt exists yet")
-        elif update.message.text == '/betcaster_less':
-            # Иначе отправляем последние 10 строк
-            try:
-                with open(PATH.BETCASTER_LOGS, 'r') as log_file:
-                    # Чтение всех строк и получение последних 10
-                    lines = log_file.readlines()[-10:]
-                    log_excerpt = ''.join(lines)  # Соединяем строки в один текст
-                    await update.message.reply_text(f"Last 10 lines of betcaster.log:\n\n{log_excerpt}", disable_web_page_preview=True)
-            except Exception as e:
-                logger.error(f"Failed to read logs: {e}")
-                await update.message.reply_text("Failed to read logs.")
+    # Отправка изображения как фото
+    await update.message.reply_photo(photo=img_byte_array)
             
 
 
