@@ -4,7 +4,7 @@ import logging
 from mcf.api import cmouse
 from selenium.webdriver.common.action_chains import ActionChains
 from mcf.ssim_recognition import ScoreRecognition
-from mcf.api.storage import MCFStorage, uStorage
+from mcf.api.storage import uStorage
 from mcf.predicts import PR
 from mcf.dynamic import CF
 from mcf.api.telegram import TGApi
@@ -26,7 +26,7 @@ class Chrome:
         self.options = webdriver.ChromeOptions()
         
         self.options.add_argument("--disable-blink-features=AutomationControlled")
-        self.options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
+        self.options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
         self.options.add_argument("--disable-crash-reporter")
         self.options.add_argument("--no-sandbox")
         self.options.add_argument("--disable-logging")
@@ -51,10 +51,7 @@ class Chrome:
         self.driver.switch_to.window(self.driver.current_window_handle)  # Активировать окно Selenium
         self.driver.maximize_window()
         self.actions = ActionChains(self.driver)
-        # time.sleep(3)
-        # autogui.click(x=1896, y=99) #disable infobar
-        # time.sleep(3)
-    
+
     def force_quit(self):
         try:
             self.PASSAGES = 0
@@ -112,7 +109,7 @@ class Chrome:
             logger.warning(e)
             cmouse.click_left(x=1871, y=361)
         
-        print("FULL SCREEN DONE")
+        # print("FULL SCREEN DONE")
             
         time.sleep(2.5)
 
@@ -175,12 +172,12 @@ class Chrome:
                                message_type='predict',
                                link=self.generate_mobile_page())
             
-            uStorage.upd_pr_message(pr_message=message)
+            uStorage.upd_pr_signal(pr_message=message)
             logger.info(message)
             time.sleep(5)
 
             if self.is_total_coeff_opened():
-                PR.rgs_predicts_monitor(message=message, idx=idx)
+                PR.pr_message_to_tuple(message=message, idx=idx)
             else:
                 CF.VAL.pr_cache = 'closed'
        
@@ -188,9 +185,6 @@ class Chrome:
 
         if score['time'] > 660:
             return
-        
-        # if score['time'] in TRACE_RANGE and not CF.SW.tracer.is_active():
-        #     Trace.add_tracing(score=score)
 
         if not CF.VAL.pr_cache:
             PR.sc = copy.deepcopy(score)
@@ -200,9 +194,6 @@ class Chrome:
                 self.send_predict(message=main_predict[0], idx=main_predict[1])
 
     def awaiting_for_start(self):
-
-        # passages = 0
-        #tst = 0
 
         while True:
 
@@ -214,13 +205,6 @@ class Chrome:
                 if aram_title_inner == 'All Random All Mid':
                     game_link = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_GAME_LINK).get_attribute('href')
                     game_index = '_'.join(game_link.split('/')[7:])
-                    
-                    # tst += 1
-                    # logger.info("Test %i", tst)
-                    
-                    # if tst > 5:
-                    #     game_index = 'Something in the way, mmmmmmmmmmmm'
-                    #     logger.warning(game_index)
                     
                     if game_index != self.game_index_ended:
                         logger.info('Gamelink changed, refreshing driver')
@@ -241,10 +225,10 @@ class Chrome:
 
                         if ScoreRecognition.is_game_started_browser():
                             logger.info('Game started: (from comparing stream)')
-                            # self.game_index_new = ''
+
                             uStorage.upd_current_game_status(status="Поиск игры в онлайне")
                             uStorage.upd_previous_game_id(game_id=game_index)
-                            # uStorage.upd_current_game_link(link=self.generate_mobile_page())
+
                             
                             return
                         else:
@@ -262,12 +246,11 @@ class Chrome:
             time.sleep(1)
             self.remove_cancel()
 
-            # print(self.PASSAGES)
             if self.PASSAGES in (40, 80, 120):
                 if not self.open_league_page():
                     self.force_quit()
                     return
-                # self.PASSAGES += 1
+
             elif self.PASSAGES == 160:
                 self.force_quit()
                 return

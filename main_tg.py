@@ -1,7 +1,20 @@
 import logging
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import (
+    Update, 
+    ReplyKeyboardMarkup, 
+    KeyboardButton, 
+    InlineKeyboardButton, 
+    InlineKeyboardMarkup
+)
 from functools import wraps
-from telegram.ext import Application, CommandHandler, CallbackContext, MessageHandler, filters, CallbackQueryHandler
+from telegram.ext import (
+    Application, 
+    CommandHandler, 
+    CallbackContext, 
+    MessageHandler, 
+    filters, 
+    CallbackQueryHandler
+)
 from io import BytesIO
 from PIL import ImageGrab
 from static import TGSMP

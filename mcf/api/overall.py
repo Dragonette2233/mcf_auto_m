@@ -1,5 +1,8 @@
-import logging
+import os
 import time
+import logging
+import itertools
+
 from mcf import utils
 from mcf.dynamic import CF
 from mcf.api.telegram import TGApi
@@ -8,10 +11,10 @@ from static import (
     SPECTATOR_MODE,
     Snippet
 )
-import os
-import itertools
+
+
+from mcf.ssim_recognition import CharsRecognition as ChRec
 from mcf.api.chrome import Chrome
-from mcf.ssim_recognition import CharsRecognition as CharsRecog
 from mcf.api.storage import uStorage
 from mcf.api.riot import RiotAPI
 from mcf.api.poro import PoroAPI
@@ -31,10 +34,10 @@ class MCFApi:
     @classmethod
     def get_characters(cls) -> dict[str, list]:
 
-        CharsRecog.cut_from_screenshot()
+        ChRec.cut_from_screenshot()
         logger.info('Comparing icons...')
-        team_blue = CharsRecog.get_recognized_characters(team_color='blue')
-        team_red = CharsRecog.get_recognized_characters(team_color='red')
+        team_blue = ChRec.get_recognized_characters(team_color='blue')
+        team_red = ChRec.get_recognized_characters(team_color='red')
             
             
         logger.info(team_blue)
@@ -347,7 +350,7 @@ class MCFApi:
                 TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
                 uStorage.upd_current_game_status("Окончена")
                 # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
-                pr_result = uStorage.save_predict_result(kills=kills)
+                pr_result = uStorage.save_predict_result(kills=kills, pr_cache=CF.VAL.pr_cache)
                 if pr_result:
                     TGApi.update_predict_result(state=pr_result)
                 CF.SW.request.deactivate()

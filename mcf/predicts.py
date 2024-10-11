@@ -136,7 +136,7 @@ class PR:
                 ...
 
     @classmethod
-    def rgs_predicts_monitor(cls, message: str, idx: int):
+    def pr_message_to_tuple(cls, message: str, idx: int):
         try:
             _tmp = message.split()
             value = _tmp[1][0:-1]
@@ -160,8 +160,8 @@ class PR:
         predictions = {
 
                 TelegramStr.tb_predict_half: [
-                    (cls.gtime > 360 and cls.ktt_tb(fl='half')),
-                    (cls.gtime > 400 and cls.ktt_tb(fl="s_half") and CF.SR.tb_accepted()),
+                    (cls.gtime > 300 and cls.ktt_tb(fl='half')),
+                    (cls.gtime > 360 and cls.ktt_tb(fl="s_half") and CF.SR.tb_accepted()),
                 ],
                 
                 TelegramStr.tl_predict_full: [    
