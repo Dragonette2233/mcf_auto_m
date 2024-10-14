@@ -1,5 +1,5 @@
 from static import REGIONS_TUPLE
-from mcf.api.storage import uStorage
+from shared.storage import uStorage
 import logging
 import requests
 

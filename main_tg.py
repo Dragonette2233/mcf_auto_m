@@ -1,4 +1,4 @@
-import logging
+import shutil
 from telegram import (
     Update, 
     ReplyKeyboardMarkup, 
@@ -18,30 +18,31 @@ from telegram.ext import (
 from io import BytesIO
 from PIL import ImageGrab
 from static import TGSMP
-from mcf.api.storage import uStorage, SafeJson
+from shared.storage import uStorage, SafeJson
 from static import PATH
+from shared.logger import logger
 import os
 
-
-# Enable logging
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-# set higher logging level for httpx to avoid all GET and POST requests being logged
-logging.getLogger("httpx").setLevel(logging.WARNING)
-
-logger = logging.getLogger(__name__)
 
 OWNER = int(uStorage.get_key('OWNER'))
 AUTH_COMMAND = uStorage.get_key('AUTH_COMMAND')
 BOT_TOKEN = uStorage.get_key("BOT_TOKEN")
 CHAT_LINK = '\nhttps://t.me/' + uStorage.get_key('CHAT_LINK')
 NFA_LINK = '\nhttps://t.me/' + uStorage.get_key('NFA_LINK')
+SYSTEM_TEMP_FOLDER = os.path.join("C:\\", "Windows", "SystemTemp")
+
+print(SYSTEM_TEMP_FOLDER)
 
 keyboard = [
-        [KeyboardButton("/mcf_status")], 
-        [KeyboardButton("/betcaster_full")],
-        [KeyboardButton("/betcaster_less")]
+    [
+        KeyboardButton("/mcf_status"), 
+        KeyboardButton("/betcaster_full")],
+    [
+        KeyboardButton("/betcaster_less"),
+        KeyboardButton("/cl_systemp")
+        ]
+        
+        
     ]
 
 def auth(func):
@@ -79,7 +80,20 @@ async def caster_logs(update: Update, context):
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Choose profile to discover logs:", reply_markup=reply_markup)
 
-
+async def clear_system_temp_foulder(update: Update, context):
+    
+    # temp_dir = "C:\Windows\SystemTemp"
+    try:
+        shutil.rmtree(SYSTEM_TEMP_FOLDER)
+        os.makedirs(SYSTEM_TEMP_FOLDER)
+        msg = "SystemTemp clear OK"
+    except PermissionError as err_:
+        msg = err_
+    except Exception as o_err_:
+        msg = o_err_
+    
+    await update.message.reply_text(str(msg))
+    
 # Функция обработки нажатий на кнопки
 async def inline_caster_logs(update: Update, context):
     query = update.callback_query
@@ -219,7 +233,8 @@ def main() -> None:
         ('current_game', actual_mirror),
         ('mcf_status', mcf_status),
         ('betcaster_full', caster_logs),
-        ('betcaster_less', caster_logs)
+        ('betcaster_less', caster_logs),
+        ('cl_systemp', clear_system_temp_foulder)
         
     )
     

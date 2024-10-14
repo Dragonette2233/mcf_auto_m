@@ -1,7 +1,7 @@
 import requests
 import os
 import logging
-from mcf.api.storage import uStorage
+from shared.storage import uStorage
 from static import (
     TelegramStr
 )
@@ -118,8 +118,9 @@ class TGApi:
                 all_kills = score['blue_kills'] + score['red_kills']
                 if not CF.SW.total_diff.is_active() and abs(all_kills - int(float(total_value))) < 20:
                     
-                    alert = f"⚠️ Тотал: {all_kills} | На сайте: {total_value} | Время: {score['time']}"
+                    alert = f"⚠️ В игре: {all_kills} | ТБ: {total_value} | {TelegramStr.CLOCK}: {score['time']}"
                     cls.post_send(message=alert, chat_id=cls.CHAT_ID_PR)
+                    uStorage.upd_pr_signal(diff_total=all_kills)
                     CF.SW.total_diff.activate()
 
             else:

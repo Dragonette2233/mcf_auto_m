@@ -4,7 +4,7 @@ import logging
 from mcf.api import cmouse
 from selenium.webdriver.common.action_chains import ActionChains
 from mcf.ssim_recognition import ScoreRecognition
-from mcf.api.storage import uStorage
+from shared.storage import uStorage
 from mcf.predicts import PR
 from mcf.dynamic import CF
 from mcf.api.telegram import TGApi
@@ -44,7 +44,7 @@ class Chrome:
         self.ACTIVE_TOTAL_VALUE = 0
         self.MIN_MAX_BET_TOTAL = uStorage.get_key("MIN_MAX_BET_TOTAL")
         
-        print(self.MIN_MAX_BET_TOTAL, type(self.MIN_MAX_BET_TOTAL))
+        # print(self.MIN_MAX_BET_TOTAL, type(self.MIN_MAX_BET_TOTAL))
     
     def start(self):
         self.driver = webdriver.Chrome(options=self.options)
@@ -183,7 +183,7 @@ class Chrome:
        
     def generate_predict(self, score):
 
-        if score['time'] > 660:
+        if score['time'] > 840:
             return
 
         if not CF.VAL.pr_cache:

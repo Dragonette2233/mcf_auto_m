@@ -1,7 +1,7 @@
 import requests
 import logging
 import asyncio
-from mcf.api.storage import uStorage
+from shared.storage import uStorage
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import (
     ClientProxyConnectionError,

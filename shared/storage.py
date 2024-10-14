@@ -55,11 +55,13 @@ class uStorage():
             logger.fatal("Key %s doesnt exist in `uparams` " % key)
     
     @classmethod
-    def upd_pr_signal(cls, pr_message: str = "", endgame_total=None):
+    def upd_pr_signal(cls, pr_message: str = "", endgame_total=None, diff_total=None):
         # msg example PR 108.5М FL_0.75
         
         if endgame_total:
             pr = f"PR_E{endgame_total}"
+        elif diff_total:
+            pr = f"PR_DIFF{diff_total}"
         else:
             _, msg, _ = pr_message.split()
             

@@ -2,7 +2,7 @@
 import os
 import numpy as np
 import logging
-from mcf.api import cmouse, winscreen
+from mcf.api import cmouse
 from mcf.dynamic import CF
 from mcf import pillow
 from skimage.metrics import structural_similarity as ssim

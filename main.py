@@ -1,7 +1,7 @@
 
 import time
-import logging
-from mcf.api.storage import uStorage
+from shared.logger import logger
+from shared.storage import uStorage
 from mcf.ssim_recognition import ScoreRecognition
 from mcf.api import cmouse
 from mcf.dynamic import CF
@@ -15,9 +15,8 @@ from static import (
     TelegramStr,
 )
 
-logging.basicConfig(level=logging.INFO)
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+
+
 
 def main():
     is_riot_apikey_valid()

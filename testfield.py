@@ -1,20 +1,14 @@
-import logging
+
 import time
-# from PIL import ImageGrab
-# import numpy as np
-# from mcf_data import GREYSHADE_CLOCKS_CUT
+import sys
 from mcf import utils
-from mcf.dynamic import ControlFlow
+from mcf.dynamic import CF
 from skimage.metrics import structural_similarity as ssim
-logging.basicConfig(level=logging.INFO)
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
-CF = ControlFlow()
+from shared.logger import logger
 
 # command: str = input('Enter test command: ')
-command = 'drv'
-match command:
-    
+command = sys.argv[1]
+match command:    
     # case 'pr_test':
         
     #     from mcf.livegamedata import generate_scoreboard
@@ -117,8 +111,37 @@ match command:
 
         MCFApi.search_game(nick_region='VendettaCorrida#RU1:RU')
 
+    case 'ktt':
+        from shared.storage import uStorage
+        from mcf.api.telegram import TGApi
+        from mcf.predicts import PR
+        import copy
+
+        CF.SR.tb_rate[1] = CF.SR.WINNER
+        CF.SR.games_all = 1
+
+        score = {
+            'time': 520,
+            'blue_kills': 23,
+            'red_kills': 22,
+            'blue_towers': 0,
+            'red_towers': 0,
+            'blue_gold': 24.8,
+            'red_gold': 27.6,
+            'blue_t1_hp': 55,
+            'red_t1_hp': 80,
+            'blue_t2_hp': 100,
+            'red_t2_hp': 100
+        }
+        
+        PR.sc = copy.deepcopy(score)
+        PR.prepare_predict_values()
+        pr = PR.gen_main_predict()
+        
+        print(pr)
+    
     case 'pr_test':
-        from mcf.api.storage import uStorage, MCFStorage
+        from shared.storage import uStorage
         from mcf.api.telegram import TGApi
         from mcf.predicts import PR
         import copy
@@ -128,8 +151,8 @@ match command:
 
         score = {
             'time': 370,
-            'blue_kills': 5,
-            'red_kills': 6,
+            'blue_kills': 11,
+            'red_kills': 12,
             'blue_towers': 0,
             'red_towers': 0,
             'blue_gold': 24.8,
@@ -144,16 +167,16 @@ match command:
         PR.prepare_predict_values()
         
         # pr = PR.gen_main_predict()
-        pr = ('🔽PR 110.5М FL_1🔽', 0)
+        pr = '🔽PR 110.5М FL_1🔽'
         if pr:
 
-            MCFStorage.rgs_predicts_monitor(message=pr[0], idx=pr[1])
+            PR.pr_message_to_tuple(message='🔽PR 110.5М FL_1🔽')
             
         
             CF.SR.blue_characters = 'Gnar Pyke Leblanc Darius Vayne'
             CF.SR.red_characters = 'Rengar Illaoi Jinx Smolder Morgana'
 
-            TGApi.post_request(message=pr[0], message_type='predict')
+            # TGApi.post_request(message=pr[0], message_type='predict')
             
             total = 112
             uStorage.save_predict_result(kills=total)

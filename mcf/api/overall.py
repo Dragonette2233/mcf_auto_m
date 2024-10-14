@@ -15,7 +15,7 @@ from static import (
 
 from mcf.ssim_recognition import CharsRecognition as ChRec
 from mcf.api.chrome import Chrome
-from mcf.api.storage import uStorage
+from shared.storage import uStorage
 from mcf.api.riot import RiotAPI
 from mcf.api.poro import PoroAPI
 logger = logging.getLogger(__name__)
@@ -350,7 +350,7 @@ class MCFApi:
                 TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
                 uStorage.upd_current_game_status("Окончена")
                 # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
-                pr_result = uStorage.save_predict_result(kills=kills, pr_cache=CF.VAL.pr_cache)
+                pr_result = uStorage.save_predict_result(kills=kills, pr_data=CF.VAL.pr_cache)
                 if pr_result:
                     TGApi.update_predict_result(state=pr_result)
                 CF.SW.request.deactivate()

@@ -7,13 +7,13 @@ logger = logging.getLogger(__name__)
 
 class PR_IDXs:
 
-    KTT_HALF = 10.9
-    KTT_T_HALF = 11.5
-    KTT_MIDDLE = 11.9
-    KTT_FULL = 12.5
+    KTT_HALF = 10.3
+    KTT_T_HALF = 11.2
+    KTT_MIDDLE = 11.7
+    KTT_FULL = 12.3
 
-    KTT_TW_HALF = 4.8
-    KTT_TW_MIDDLE = 12
+    KTT_TW_HALF = 10
+    KTT_TW_MIDDLE = 23
 
 class PR:
 
@@ -41,11 +41,18 @@ class PR:
         cls.module_gold = abs(cls.sc['blue_gold'] - cls.sc['red_gold'])
         cls.gold_equals = cls.module_gold < 1.5
 
-        cls.tl_ktt_idx = ( 1200 - cls.gtime ) / ( 95 - cls.all_kills )
+        cls.tl_ktt_idx = ( 1100 - cls.gtime ) / ( 95 - cls.all_kills )
+        
+        logger.info("KTT TL: %f", cls.tl_ktt_idx)
+        
         cls.tb_ktt_idx = ( 1000 + cls.gtime ) / ( 120 + cls.all_kills )
-        cls.wretched_tower = min(cls.sc['blue_t1_hp'], cls.sc['red_t1_hp'])
+        cls.wretched_tower_t1 = min(cls.sc['blue_t1_hp'], cls.sc['red_t1_hp'])
+        cls.wretched_tower_t2 = min(cls.sc['blue_t2_hp'], cls.sc['red_t2_hp'])
 
-        cls.towers_idx = ( 660 - cls.gtime ) / ( 0.1 + cls.wretched_tower)
+        # return to 660
+        cls.tl_tower_idx = ( 1200 - cls.gtime ) / ( 0.1 + cls.wretched_tower_t1)
+        
+        logger.info("KTT TW HALF: %f", cls.tl_tower_idx)
 
         if cls.sc['blue_towers'] < 2 and cls.sc['red_towers'] < 2:
             cls.tb_towers_idx = ( 900 - cls.gtime ) / ( 100 + cls.wretched_tower)
@@ -83,11 +90,13 @@ class PR:
         """
         
         if some_side:
-            return cls.sc['blue_towers'] > 1 or cls.sc['red_towers'] > 1
+            tw_low = cls.sc['blue_t2_hp'] < 20 or cls.sc['red_t2_hp'] < 20
+            tw_off = cls.sc['blue_towers'] > 1 or cls.sc['red_towers'] > 1
+            return tw_off or tw_low
         
         if one_side:
-            blue_leader = cls.sc['blue_towers'] > 1 and cls.sc['red_towers'] == 0
-            red_leader = cls.sc['red_towers'] > 1 and cls.sc['blue_towers'] == 0
+            blue_leader = (cls.sc['blue_towers'] > 1 or cls.sc['red_t2_hp'] < 20) and cls.sc['red_towers'] == 0
+            red_leader = (cls.sc['red_towers'] > 1 or cls.sc['blue_t2_hp'] < 20) and cls.sc['blue_towers'] == 0
             return blue_leader or red_leader
 
         if equals:
@@ -119,16 +128,16 @@ class PR:
             case 'half':
                 
                 return any([
-                    cls.tl_ktt_idx < PR_IDXs.KTT_T_HALF and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
+                    cls.tl_ktt_idx < PR_IDXs.KTT_T_HALF and cls.tl_tower_idx >= PR_IDXs.KTT_TW_HALF,
                     cls.tl_ktt_idx < PR_IDXs.KTT_HALF
                 ])
             case 's_half':
                 return any([
                     cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE,
-                    cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
+                    cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.tl_tower_idx >= PR_IDXs.KTT_TW_HALF,
                 ])
             case 'middle':
-                return cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE and cls.towers_idx >= PR_IDXs.KTT_TW_MIDDLE
+                return cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE and cls.tl_tower_idx >= PR_IDXs.KTT_TW_MIDDLE
                 
             case 'full':
                 return cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.ktt_straigh_leader()
@@ -165,14 +174,14 @@ class PR:
                 ],
                 
                 TelegramStr.tl_predict_full: [    
-                    (cls.gtime > 239 and cls.ktt_tl(fl='full')),
+                    (cls.gtime > 200 and cls.ktt_tl(fl='full')),
                 ],
                 TelegramStr.tl_predict_middle: [   
-                    (cls.gtime > 239 and cls.ktt_tl(fl='middle')),
+                    (cls.gtime > 200 and cls.ktt_tl(fl='middle')),
                 ],
                 TelegramStr.tl_predict_half: [
-                    (cls.gtime > 239 and cls.ktt_tl(fl='half')),
-                    (cls.gtime > 300 and cls.ktt_tl(fl="s_half") and CF.SR.tl_accepted()),
+                    (cls.gtime > 181 and cls.ktt_tl(fl='half')),
+                    (cls.gtime > 239 and cls.ktt_tl(fl="s_half") and CF.SR.tl_accepted()),
        
                     # Optional predicts
                     (cls.all_kills <= 30 and cls.module_kills >= 15 and cls.gtime > 420),
@@ -186,7 +195,9 @@ class PR:
                 ]
 
             }
-                 
+        
+        # print(predictions)
+        
         for mess, pr in predictions.items():
             for i, p in enumerate(pr):
                 if p:
