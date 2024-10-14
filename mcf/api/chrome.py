@@ -147,14 +147,14 @@ class Chrome:
 
         if predict_direction == 'Б' and active_total <= self.MIN_MAX_BET_TOTAL[1]:
             
-            if CF.VAL.tb_approve != 7:
+            if CF.VAL.tb_approve != 5:
                 CF.VAL.tb_approve += 1
                 return
             return True
 
         if predict_direction == 'М' and active_total >= self.MIN_MAX_BET_TOTAL[0]:
 
-            if predict_flet == "0.5" and CF.VAL.tl_approve != 3:
+            if predict_flet == "0.5" and CF.VAL.tl_approve != 2:
                 CF.VAL.tl_approve += 1
                 return
 
