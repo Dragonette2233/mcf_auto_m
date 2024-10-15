@@ -121,9 +121,9 @@ match command:
         CF.SR.games_all = 1
 
         score = {
-            'time': 520,
-            'blue_kills': 23,
-            'red_kills': 22,
+            'time': 240,
+            'blue_kills': 5,
+            'red_kills': 7,
             'blue_towers': 0,
             'red_towers': 0,
             'blue_gold': 24.8,

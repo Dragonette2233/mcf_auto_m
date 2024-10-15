@@ -41,7 +41,7 @@ class PR:
         cls.module_gold = abs(cls.sc['blue_gold'] - cls.sc['red_gold'])
         cls.gold_equals = cls.module_gold < 1.5
 
-        cls.tl_ktt_idx = ( 1100 - cls.gtime ) / ( 95 - cls.all_kills )
+        cls.tl_ktt_idx = ( 1100 - cls.gtime ) / abs(( 95 - cls.all_kills ) + 0.1)
         
         logger.info("KTT TL: %f", cls.tl_ktt_idx)
         
