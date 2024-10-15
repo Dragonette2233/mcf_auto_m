@@ -77,6 +77,8 @@ class TGApi:
             logger.info(result)
             cls.active_pr_id = result['result']['message_id']
             cls.active_pr_text = result['result']['text']
+            
+            
 
         if message_type == 'winner_opened':
             cls.post_send(message=message, chat_id=cls.CHAT_ID_PR)

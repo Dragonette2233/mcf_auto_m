@@ -172,6 +172,12 @@ class Chrome:
                                message_type='predict',
                                link=self.generate_mobile_page())
             
+            CF.VAL.pr_track += [CF.SR.blue_characters,
+                CF.SR.red_characters,
+                message,
+                f"TL KTT: {PR.tl_ktt_idx}",
+                f"TL KTT TW: {PR.tl_tower_idx}"]
+            
             uStorage.upd_pr_signal(pr_message=message)
             logger.info(message)
             time.sleep(5)

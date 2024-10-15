@@ -197,7 +197,7 @@ class LiveData(gData):
 class Validator(gData):
     def __init__(self) -> None:
         self.pr_cache: tuple = None
-        self.pr_debug: int = None
+        self.pr_track: list = []
         self.findgame = 0
         self.recognition = 0
         self.tb_approve = 0
@@ -205,7 +205,7 @@ class Validator(gData):
 
     def _reset(self):
         self.pr_cache = None
-        self.pr_debug = None
+        self.pr_track.clear()
         self.findgame = 0
         self.recognition = 0
         self.tb_approve = 0

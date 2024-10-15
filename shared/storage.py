@@ -5,6 +5,10 @@ from static import PATH
 
 logger = logging.getLogger(__name__)
 
+def track_pr(msg):
+    with open(PATH.PR_TRACK, 'a+', encoding='utf-8') as f:
+        f.writelines(msg + '\n')
+
 class SafeJson:
 
     @staticmethod

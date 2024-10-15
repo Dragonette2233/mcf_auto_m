@@ -179,6 +179,7 @@ class PATH():
     # ACTIVE_GAMESCORE = os.path.join(base._untracking, 'activegame_score.json')
     # SCORE_TRACE = os.path.join(base._untracking, 'score_trace.json')
     PR_TRACE = os.path.join(base._untracking, 'pr_trace.json')
+    PR_TRACK = os.path.join(base._untracking, 'pr_tracking.txt')
     CASTER_PROFILES_BASE = os.path.join(base._untracking, 'caster_profiles_base.json')
     CASTER_PROFILES_LOGS = os.path.join(base._untracking, 'caster-logs')
      # CASTER_PROFILES = os.path.join(, 'betcaster', 'caster_profiles')

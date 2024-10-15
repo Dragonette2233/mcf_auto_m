@@ -43,7 +43,7 @@ class PR:
 
         cls.tl_ktt_idx = ( 1100 - cls.gtime ) / abs(( 95 - cls.all_kills ) + 0.1)
         
-        logger.info("KTT TL: %f", cls.tl_ktt_idx)
+        # logger.info("KTT TL: %f", cls.tl_ktt_idx)
         
         cls.tb_ktt_idx = ( 1000 + cls.gtime ) / ( 120 + cls.all_kills )
         cls.wretched_tower_t1 = min(cls.sc['blue_t1_hp'], cls.sc['red_t1_hp'])
@@ -52,7 +52,7 @@ class PR:
         # return to 660
         cls.tl_tower_idx = ( 1200 - cls.gtime ) / ( 0.1 + cls.wretched_tower_t1)
         
-        logger.info("KTT TW HALF: %f", cls.tl_tower_idx)
+        # logger.info("KTT TW HALF: %f", cls.tl_tower_idx)
 
         if cls.sc['blue_towers'] < 2 and cls.sc['red_towers'] < 2:
             cls.tb_towers_idx = ( 900 - cls.gtime ) / ( 100 + cls.wretched_tower)
@@ -153,7 +153,7 @@ class PR:
             flet = _tmp[2].split('_')[1][:-1]
             
             CF.VAL.pr_cache = (value, direction, flet)
-            CF.VAL.pr_debug = idx
+            # CF.VAL.pr_debug = idx
 
             logger.info(f"PR accepted: {value} | {direction} | {flet}")
             

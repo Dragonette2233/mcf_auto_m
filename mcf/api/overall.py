@@ -15,7 +15,7 @@ from static import (
 
 from mcf.ssim_recognition import CharsRecognition as ChRec
 from mcf.api.chrome import Chrome
-from shared.storage import uStorage
+from shared.storage import uStorage, track_pr
 from mcf.api.riot import RiotAPI
 from mcf.api.poro import PoroAPI
 logger = logging.getLogger(__name__)
@@ -345,6 +345,12 @@ class MCFApi:
                     is_opened = False
 
                 winner = 'blue' if response['info']['teams'][0]['win'] else 'red'
+                
+                # pr tracking
+                CF.VAL.pr_track.append(str(kills))
+                pr_track_message = ' | '.join(CF.VAL.pr_track)
+                track_pr(pr_track_message)
+                
                 
                 timestamp = f"[{time_stamp[0]:02}:{time_stamp[1]:02}]"
                 TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
