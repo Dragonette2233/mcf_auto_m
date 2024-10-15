@@ -12,7 +12,7 @@ class PR_IDXs:
     KTT_MIDDLE = 11.7
     KTT_FULL = 12.3
 
-    KTT_TW_HALF = 10
+    KTT_TW_HALF = 10.7
     KTT_TW_MIDDLE = 23
 
 class PR:
