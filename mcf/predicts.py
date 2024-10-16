@@ -7,10 +7,10 @@ logger = logging.getLogger(__name__)
 
 class PR_IDXs:
 
-    KTT_HALF = 10.3
+    KTT_HALF = 10.25
     KTT_T_HALF = 10.5
-    KTT_MIDDLE = 11
-    KTT_FULL = 11.5
+    KTT_MIDDLE = 10.75
+    KTT_FULL = 11
 
     KTT_TW_HALF = 10.7
     KTT_TW_MIDDLE = 23
