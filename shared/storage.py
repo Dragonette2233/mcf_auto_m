@@ -77,7 +77,8 @@ class uStorage():
         profiles = SafeJson.load(PATH.CASTER_PROFILES_BASE)
         
         for k in profiles.keys():
-            profiles[k] = pr
+            if profiles[k] != "WARMING_STATE":
+                profiles[k] = pr
         
         SafeJson.dump(PATH.CASTER_PROFILES_BASE, data=profiles)
         
