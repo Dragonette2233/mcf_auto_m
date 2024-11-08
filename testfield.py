@@ -87,7 +87,7 @@ match command:
                 print(e)
         
     case 'spectate':
-        from mcf_api import MCFApi
+        from mcf.api.overall import MCFApi
         
         spec_file = open('stats_field/LoG.bat').readlines()
         g_data = spec_file[-21].split()

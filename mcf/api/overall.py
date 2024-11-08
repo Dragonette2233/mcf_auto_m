@@ -130,7 +130,8 @@ class MCFApi:
                 logger.info('Games parsed succesfully.')
                 break
             except Exception as ex:
-                logger.warning(str(ex))
+                print('op')
+                logger.warning(str(ex), exc_info=True)
                 time.sleep(4)
                 continue
     
@@ -353,6 +354,8 @@ class MCFApi:
                 
                 
                 timestamp = f"[{time_stamp[0]:02}:{time_stamp[1]:02}]"
+                
+                
                 TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
                 uStorage.upd_current_game_status("Окончена")
                 # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)

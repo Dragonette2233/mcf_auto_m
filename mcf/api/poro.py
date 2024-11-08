@@ -56,6 +56,8 @@ class PoroAPI:
             'regions': [team.find('a', class_='liveGameLink').get('href') for i, team in enumerate(soup) if i % 2 == 0],
         }
         
+        # print(games)
+        
         nicknames_blue = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 == 0]
         nicknames_red = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 != 0]
         
@@ -85,7 +87,6 @@ class PoroAPI:
         
 
         for c, n, r in zip(games['champions'], nicknames, games['regions']): # games['elorank']):
-            
             champs = ' | '.join(c)
             names_region = '_|_'.join([f"{name}:{r.split('/')[2].upper()}" for name in n])
             whole_string = f"{champs}-|-{names_region}"
@@ -145,7 +146,10 @@ class PoroAPI:
                 async with session.get(url=url, timeout=timeout, headers=HEADERS) as response:
                     
                     result = await response.text(encoding='utf8')
-                    featured_games[region] = cls.get_games_from_parse(parse_result=result)
+                    try:
+                        featured_games[region] = cls.get_games_from_parse(parse_result=result)
+                    except AttributeError as ex_:
+                        logger.warning(f"{region} parse fail: ", ex_)
                 
                     
         async def main_aram(champion_name):
