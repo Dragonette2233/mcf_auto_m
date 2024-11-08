@@ -65,7 +65,7 @@ TEN_ROLES_DICT = {
            'Leesin', 'Renekton', 'Viego', 'Sett', 'Hecarim', 'Mordekaiser', 'Riven', 'Violet', # Vi is Violet
            'Kled', 'Warwick', 'Naafiri'),
     '1': ('Swain', 'Sylas', 'Jax', 'Yone', 'Yasuo', 'Trundle', 'Xinzhao', 'Graves', 'Monkeyking',
-           'Tryndamere', 'Gnar', 'Wukong', 'Olaf', 'Nasus'),
+           'Tryndamere', 'Gnar', 'Wukong', 'Olaf', 'Nasus', 'Ambessa'),
     '2': ('Akali', 'Kassadin', 'Masteryi', 'Rengar', 'Khazix', 'Evelynn', 'Talon', 'Zed', 'Nocturne',
            'Qiyana', 'Katarina', 'Pyke', 'Samira', 'Briar'),
     '3': ('Azir', 'Cassiopeia', 'Lillia', 'Ryze', 'Viktor',  'Ekko', 'Gangplank', 'Anivia', 'Heimerdinger', 
