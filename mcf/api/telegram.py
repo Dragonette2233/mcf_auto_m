@@ -1,5 +1,4 @@
 import requests
-import os
 import logging
 from shared.storage import uStorage
 from static import (
@@ -21,8 +20,8 @@ class TGApi:
     tg_api_url = 'https://api.telegram.org/bot{token}/{method}'
     RES_FOR_PREDICT = False
     # CHAT_ID = os.getenv('CHAT_ID')
-    CHAT_ID_PUB = os.getenv('CHAT_ID_PUB')
-    CHAT_ID_PR = os.getenv('CHAT_ID_PR')
+    CHAT_ID_PUB = uStorage.get_key("CHAT_ID_PUB")
+    CHAT_ID_PR = uStorage.get_key("CHAT_ID_PR")
     # CHAT_ID_TRIAL = os.getenv('CHAT_ID_TRIAL')
 
     

@@ -1,15 +1,31 @@
 from mcf.dynamic import CF
 from static import TelegramStr
 import logging
-
+import sys
 
 logger = logging.getLogger(__name__)
+print(sys.argv)
 
 class PR_IDXs:
 
-    KTT_HALF = 10.25
-    KTT_T_HALF = 10.5
-    KTT_MIDDLE = 10.75
+    if "--kttarcane" in sys.argv:
+        logger.info("KTT Arcane values activated")
+        KTT_HALF = 9.5
+        KTT_T_HALF = 9.75
+        KTT_MIDDLE = 10
+        
+        KTT_TB = 8.5
+        KTT_S_TB = 10.3
+        KTT_TB_TW = 10.5
+    else:
+        KTT_HALF = 10.25
+        KTT_T_HALF = 10.5
+        KTT_MIDDLE = 10.75
+        
+        KTT_TB = 8.45
+        KTT_S_TB = 8.8
+        KTT_TB_TW = 8.5
+        
     KTT_FULL = 11
 
     KTT_TW_HALF = 10.7
@@ -46,18 +62,21 @@ class PR:
         # logger.info("KTT TL: %f", cls.tl_ktt_idx)
         
         cls.tb_ktt_idx = ( 1000 + cls.gtime ) / ( 120 + cls.all_kills )
+        print("KTT TB: ", cls.tb_ktt_idx)
         cls.wretched_tower_t1 = min(cls.sc['blue_t1_hp'], cls.sc['red_t1_hp'])
         cls.wretched_tower_t2 = min(cls.sc['blue_t2_hp'], cls.sc['red_t2_hp'])
 
         # return to 660
-        cls.tl_tower_idx = ( 1200 - cls.gtime ) / ( 0.1 + cls.wretched_tower_t1)
+        cls.towers_idx = ( 1200 - cls.gtime ) / ( 0.1 + cls.wretched_tower_t1)
         
         # logger.info("KTT TW HALF: %f", cls.tl_tower_idx)
 
-        if cls.sc['blue_towers'] < 2 and cls.sc['red_towers'] < 2:
-            cls.tb_towers_idx = ( 900 - cls.gtime ) / ( 100 + cls.wretched_tower)
-        else:
-            cls.tb_towers_idx = 4
+        # if cls.sc['blue_towers'] < 2 and cls.sc['red_towers'] < 2:
+        #     cls.towers_idx = ( 900 - cls.gtime ) / ( 100 + cls.wretched_tower)
+        # else:
+        #     cls.towers_idx = 4
+            
+        print("KTT TW: ", cls.towers_idx)
 
         cls.module_kills_idx = min(cls.sc['blue_kills'], cls.sc['red_kills']) / (max(cls.sc['blue_kills'], cls.sc['red_kills']) + 0.01)
 
@@ -112,10 +131,10 @@ class PR:
         """
         match fl:
             case 'half':
-                if cls.tb_ktt_idx <= 8.45 and cls.tb_towers_idx <= 3.6 and cls.module_kills_idx >= 0.75:
+                if cls.tb_ktt_idx <= PR_IDXs.KTT_TB and cls.towers_idx <= PR_IDXs.KTT_TB_TW and cls.module_kills_idx >= 0.75:
                     return True
             case 's_half':
-                if cls.tb_ktt_idx <= 8.8 and cls.tb_towers_idx <= 3.9 and cls.module_kills_idx >= 0.7:
+                if cls.tb_ktt_idx <= PR_IDXs.KTT_S_TB and cls.towers_idx <= PR_IDXs.KTT_TB_TW and cls.module_kills_idx >= 0.7:
                     return True
 
     @classmethod
@@ -128,16 +147,16 @@ class PR:
             case 'half':
                 
                 return any([
-                    cls.tl_ktt_idx < PR_IDXs.KTT_T_HALF and cls.tl_tower_idx >= PR_IDXs.KTT_TW_HALF,
+                    cls.tl_ktt_idx < PR_IDXs.KTT_T_HALF and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
                     cls.tl_ktt_idx < PR_IDXs.KTT_HALF
                 ])
             case 's_half':
                 return any([
                     cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE,
-                    cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.tl_tower_idx >= PR_IDXs.KTT_TW_HALF,
+                    cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
                 ])
             case 'middle':
-                return cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE and cls.tl_tower_idx >= PR_IDXs.KTT_TW_MIDDLE
+                return cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE and cls.towers_idx >= PR_IDXs.KTT_TW_MIDDLE
                 
             case 'full':
                 return cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.ktt_straigh_leader()
