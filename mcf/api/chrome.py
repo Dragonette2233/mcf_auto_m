@@ -176,7 +176,7 @@ class Chrome:
                 CF.SR.red_characters,
                 message,
                 f"TL KTT: {PR.tl_ktt_idx}",
-                f"TL KTT TW: {PR.tl_tower_idx}"]
+                f"TL KTT TW: {PR.towers_idx}"]
             
             uStorage.upd_pr_signal(pr_message=message)
             logger.info(message)
