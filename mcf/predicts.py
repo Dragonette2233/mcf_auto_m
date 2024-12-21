@@ -18,9 +18,9 @@ class PR_IDXs:
         KTT_S_TB = 10.3
         KTT_TB_TW = 10.5
     else:
-        KTT_HALF = 10.25
-        KTT_T_HALF = 10.5
-        KTT_MIDDLE = 10.75
+        KTT_HALF = 9.9
+        KTT_T_HALF = 10.2
+        KTT_MIDDLE = 10.4
         
         KTT_TB = 8.45
         KTT_S_TB = 8.8
