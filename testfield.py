@@ -117,28 +117,32 @@ match command:
         from mcf.predicts import PR
         import copy
 
-        CF.SR.tb_rate[1] = CF.SR.WINNER
-        CF.SR.games_all = 1
+        def ktt_round(values: tuple = (420, 12, 14)):
+            CF.SR.tb_rate[1] = CF.SR.WINNER
+            CF.SR.games_all = 1
 
-        score = {
-            'time': 420,
-            'blue_kills': 12,
-            'red_kills': 14,
-            'blue_towers': 0,
-            'red_towers': 0,
-            'blue_gold': 24.8,
-            'red_gold': 27.6,
-            'blue_t1_hp': 20,
-            'red_t1_hp': 100,
-            'blue_t2_hp': 100,
-            'red_t2_hp': 100
-        }
+            score = {
+                'time': values[0],
+                'blue_kills': values[1],
+                'red_kills': values[2],
+                'blue_towers': 0,
+                'red_towers': 0,
+                'blue_gold': 27.8,
+                'red_gold': 27.6,
+                'blue_t1_hp': 100,
+                'red_t1_hp': 100,
+                'blue_t2_hp': 100,
+                'red_t2_hp': 100
+            }
+            
+            PR.sc = copy.deepcopy(score)
+            PR.prepare_predict_values()
+            pr = PR.gen_main_predict()
+            
+            print(pr)
         
-        PR.sc = copy.deepcopy(score)
-        PR.prepare_predict_values()
-        pr = PR.gen_main_predict()
-        
-        print(pr)
+        # ktt_round((240, 16, 16))
+        ktt_round((201, 14, 12))
     
     case 'pr_test':
         from shared.storage import uStorage

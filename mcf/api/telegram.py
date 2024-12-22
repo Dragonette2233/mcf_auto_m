@@ -22,8 +22,6 @@ class TGApi:
     # CHAT_ID = os.getenv('CHAT_ID')
     CHAT_ID_PUB = uStorage.get_key("CHAT_ID_PUB")
     CHAT_ID_PR = uStorage.get_key("CHAT_ID_PR")
-    print(CHAT_ID_PR)
-    print(CHAT_ID_PUB)
     # CHAT_ID_TRIAL = os.getenv('CHAT_ID_TRIAL')
 
     

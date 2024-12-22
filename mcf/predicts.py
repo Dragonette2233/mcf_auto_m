@@ -8,17 +8,17 @@ print(sys.argv)
 
 class PR_IDXs:
 
-    if "--kttarcane" in sys.argv:
+    if True:# "--kttarcane" in sys.argv:
         logger.info("KTT Arcane values activated")
-        KTT_HALF = 9.5
-        KTT_T_HALF = 9.75
-        KTT_MIDDLE = 10
+        KTT_HALF = 14.625
+        KTT_T_HALF = 15.1
+        KTT_MIDDLE = 15.46
         
-        KTT_TB = 8.5
-        KTT_S_TB = 10.3
-        KTT_TB_TW = 10.5
+        KTT_TB = 11.32
+        KTT_S_TB = 11.62
+        KTT_TB_TW = 11.42
     else:
-        KTT_HALF = 9.9
+        KTT_HALF = 11.32
         KTT_T_HALF = 10.2
         KTT_MIDDLE = 10.4
         
@@ -57,12 +57,9 @@ class PR:
         cls.module_gold = abs(cls.sc['blue_gold'] - cls.sc['red_gold'])
         cls.gold_equals = cls.module_gold < 1.5
 
-        cls.tl_ktt_idx = ( 1100 - cls.gtime ) / abs(( 95 - cls.all_kills ) + 0.1)
+        cls.tl_ktt_idx = ( 1600 - cls.gtime ) / abs(( 106 - cls.all_kills ) + 0.1)
+        cls.tb_ktt_idx = ( 1800 - cls.gtime ) / abs(( 165 - cls.all_kills ) + 0.1)
         
-        # logger.info("KTT TL: %f", cls.tl_ktt_idx)
-        
-        cls.tb_ktt_idx = ( 1000 + cls.gtime ) / ( 120 + cls.all_kills )
-        print("KTT TB: ", cls.tb_ktt_idx)
         cls.wretched_tower_t1 = min(cls.sc['blue_t1_hp'], cls.sc['red_t1_hp'])
         cls.wretched_tower_t2 = min(cls.sc['blue_t2_hp'], cls.sc['red_t2_hp'])
 
@@ -77,6 +74,8 @@ class PR:
         #     cls.towers_idx = 4
             
         print("KTT TW: ", cls.towers_idx)
+        print("KTT TB: ", cls.tb_ktt_idx)
+        print("KTT TL: ", cls.tl_ktt_idx)
 
         cls.module_kills_idx = min(cls.sc['blue_kills'], cls.sc['red_kills']) / (max(cls.sc['blue_kills'], cls.sc['red_kills']) + 0.01)
 
@@ -145,7 +144,7 @@ class PR:
         """
         match fl:
             case 'half':
-                
+                print(cls.tl_ktt_idx)
                 return any([
                     cls.tl_ktt_idx < PR_IDXs.KTT_T_HALF and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
                     cls.tl_ktt_idx < PR_IDXs.KTT_HALF
