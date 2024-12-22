@@ -142,7 +142,7 @@ match command:
             print(pr)
         
         # ktt_round((240, 16, 16))
-        ktt_round((600, 17, 21))
+        ktt_round((300, 15, 14))
     
     case 'pr_test':
         from shared.storage import uStorage

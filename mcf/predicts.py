@@ -144,7 +144,6 @@ class PR:
         """
         match fl:
             case 'half':
-                print(cls.tl_ktt_idx)
                 return any([
                     cls.tl_ktt_idx < PR_IDXs.KTT_T_HALF and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
                     cls.tl_ktt_idx < PR_IDXs.KTT_HALF
@@ -187,19 +186,19 @@ class PR:
         predictions = {
 
                 TelegramStr.tb_predict_half: [
-                    (cls.gtime > 300 and cls.ktt_tb(fl='half')),
-                    (cls.gtime > 360 and cls.ktt_tb(fl="s_half") and CF.SR.tb_accepted()),
+                    (cls.gtime >= 300 and cls.ktt_tb(fl='half')),
+                    (cls.gtime >= 360 and cls.ktt_tb(fl="s_half") and CF.SR.tb_accepted()),
                 ],
                 
                 TelegramStr.tl_predict_full: [    
-                    (cls.gtime > 200 and cls.ktt_tl(fl='full')),
+                    (cls.gtime >= 200 and cls.ktt_tl(fl='full')),
                 ],
                 TelegramStr.tl_predict_middle: [   
-                    (cls.gtime > 200 and cls.ktt_tl(fl='middle')),
+                    (cls.gtime >= 200 and cls.ktt_tl(fl='middle')),
                 ],
                 TelegramStr.tl_predict_half: [
-                    (cls.gtime > 181 and cls.ktt_tl(fl='half')),
-                    (cls.gtime > 239 and cls.ktt_tl(fl="s_half") and CF.SR.tl_accepted()),
+                    (cls.gtime >= 181 and cls.ktt_tl(fl='half')),
+                    (cls.gtime >= 239 and cls.ktt_tl(fl="s_half") and CF.SR.tl_accepted()),
        
                     # Optional predicts
                     (cls.all_kills <= 30 and cls.module_kills >= 15 and cls.gtime > 420),
