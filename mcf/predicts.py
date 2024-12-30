@@ -23,7 +23,6 @@ class PR_IDXs:
     # must be greater then
     KTT_TB_TW = 247
     
-
 class PR:
 
     sc = None
@@ -56,20 +55,7 @@ class PR:
         cls.wretched_tower_t1 = min(cls.sc['blue_t1_hp'], cls.sc['red_t1_hp'])
         cls.wretched_tower_t2 = min(cls.sc['blue_t2_hp'], cls.sc['red_t2_hp'])
 
-        # return to 660
         cls.towers_idx = cls.gtime * (cls.wretched_tower_t1 / 100)
-        
-        # logger.info("KTT TW HALF: %f", cls.tl_tower_idx)
-        # <= 165
-        # if cls.sc['blue_towers'] < 2 and cls.sc['red_towers'] < 2:
-        #     cls.towers_idx = ( 900 - cls.gtime ) / ( 100 + cls.wretched_tower)
-        # else:
-        #     cls.towers_idx = 4
-            
-        print("KTT TW: ", cls.towers_idx)
-        print("KTT TB: ", cls.tb_ktt_idx)
-        print("KTT TL: ", cls.tl_ktt_idx)
-
         cls.module_kills_idx = min(cls.sc['blue_kills'], cls.sc['red_kills']) / (max(cls.sc['blue_kills'], cls.sc['red_kills']) + 0.01)
 
     @classmethod
