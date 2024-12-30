@@ -124,19 +124,19 @@ class PR:
         match fl:
             case 'half':
                 return any([
-                    cls.tl_ktt_idx < PR_IDXs.KTT_T_HALF and cls.towers_idx <= PR_IDXs.KTT_TW_HALF,
-                    cls.tl_ktt_idx < PR_IDXs.KTT_HALF
+                    cls.tl_ktt_idx <= PR_IDXs.KTT_T_HALF and cls.towers_idx <= PR_IDXs.KTT_TW_HALF,
+                    cls.tl_ktt_idx <= PR_IDXs.KTT_HALF
                 ])
             case 's_half':
                 return any([
-                    cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE,
-                    cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.towers_idx <= PR_IDXs.KTT_TW_HALF,
+                    cls.tl_ktt_idx <= PR_IDXs.KTT_MIDDLE,
+                    cls.tl_ktt_idx <= PR_IDXs.KTT_FULL and cls.towers_idx <= PR_IDXs.KTT_TW_HALF,
                 ])
             case 'middle':
-                return cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE and cls.towers_idx <= PR_IDXs.KTT_TW_MIDDLE
+                return cls.tl_ktt_idx <= PR_IDXs.KTT_MIDDLE and cls.towers_idx <= PR_IDXs.KTT_TW_MIDDLE
                 
             case 'full':
-                return cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.ktt_straigh_leader()
+                return cls.tl_ktt_idx <= PR_IDXs.KTT_FULL and cls.ktt_straigh_leader()
             case _:
                 ...
 
