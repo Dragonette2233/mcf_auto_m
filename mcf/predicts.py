@@ -8,26 +8,15 @@ print(sys.argv)
 
 class PR_IDXs:
 
-    if True:# "--kttarcane" in sys.argv:
-        logger.info("KTT Arcane values activated")
-        KTT_HALF = 14.625
-        KTT_T_HALF = 15.1
-        KTT_MIDDLE = 15.46
+    KTT_HALF = 14.625
+    KTT_T_HALF = 14.825
+    KTT_MIDDLE = 15.025
+    KTT_FULL = 15.250
+    
+    KTT_TB = 11.32
+    KTT_S_TB = 11.37
+    KTT_TB_TW = 11.42
         
-        KTT_TB = 11.32
-        KTT_S_TB = 11.22
-        KTT_TB_TW = 11.42
-    else:
-        KTT_HALF = 11.32
-        KTT_T_HALF = 10.2
-        KTT_MIDDLE = 10.4
-        
-        KTT_TB = 8.45
-        KTT_S_TB = 8.8
-        KTT_TB_TW = 8.5
-        
-    KTT_FULL = 11
-
     KTT_TW_HALF = 10.7
     KTT_TW_MIDDLE = 23
 
@@ -92,8 +81,8 @@ class PR:
         blue_gold_lead = cls.sc['blue_gold'] > cls.sc['red_gold'] and cls.sc['red_gold'] / cls.sc['blue_gold'] < 0.9
         red_gold_lead = cls.sc['red_gold'] > cls.sc['blue_gold'] and cls.sc['blue_gold'] / cls.sc['red_gold'] < 0.9
 
-        blue_towers_lead = cls.sc['blue_t1_hp'] > 45 and cls.sc['red_t1_hp'] < 30
-        red_towers_lead = cls.sc['red_t1_hp'] > 45 and cls.sc['blue_t1_hp'] < 30
+        blue_towers_lead = cls.sc['blue_t1_hp'] > 55 and cls.sc['red_t1_hp'] < 28
+        red_towers_lead = cls.sc['red_t1_hp'] > 55 and cls.sc['blue_t1_hp'] < 28
 
         blue_leader = blue_kills_lead and blue_gold_lead and blue_towers_lead
         red_leader = red_kills_lead and red_gold_lead and red_towers_lead
@@ -212,8 +201,6 @@ class PR:
                 ]
 
             }
-        
-        # print(predictions)
         
         for mess, pr in predictions.items():
             for i, p in enumerate(pr):

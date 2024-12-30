@@ -108,9 +108,7 @@ class Chrome:
         except Exception as e:
             logger.warning(e)
             cmouse.click_left(x=1871, y=361)
-        
-        # print("FULL SCREEN DONE")
-            
+                 
         time.sleep(2.5)
 
     def is_total_coeff_opened(self, end_check=False):

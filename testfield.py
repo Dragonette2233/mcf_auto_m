@@ -125,12 +125,12 @@ match command:
                 'time': values[0],
                 'blue_kills': values[1],
                 'red_kills': values[2],
-                'blue_towers': 0,
+                'blue_towers': 1,
                 'red_towers': 0,
-                'blue_gold': 27.8,
-                'red_gold': 27.6,
-                'blue_t1_hp': 100,
-                'red_t1_hp': 100,
+                'blue_gold': 32.6,
+                'red_gold': 30.9,
+                'blue_t1_hp': 49,
+                'red_t1_hp': 0,
                 'blue_t2_hp': 100,
                 'red_t2_hp': 100
             }
@@ -142,7 +142,7 @@ match command:
             print(pr)
         
         # ktt_round((240, 16, 16))
-        ktt_round((300, 15, 14))
+        ktt_round((535, 30, 27))
     
     case 'pr_test':
         from shared.storage import uStorage
