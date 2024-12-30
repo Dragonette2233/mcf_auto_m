@@ -17,8 +17,8 @@ class PR_IDXs:
     KTT_S_TB = 11.37
     KTT_TB_TW = 11.42
         
-    KTT_TW_HALF = 10.7
-    KTT_TW_MIDDLE = 23
+    KTT_TW_HALF = 165
+    KTT_TW_MIDDLE = 145
 
 class PR:
 
@@ -53,10 +53,10 @@ class PR:
         cls.wretched_tower_t2 = min(cls.sc['blue_t2_hp'], cls.sc['red_t2_hp'])
 
         # return to 660
-        cls.towers_idx = ( 1200 - cls.gtime ) / ( 0.1 + cls.wretched_tower_t1)
+        cls.towers_idx = cls.gtime * (cls.wretched_tower_t1 / 100)
         
         # logger.info("KTT TW HALF: %f", cls.tl_tower_idx)
-
+        # <= 165
         # if cls.sc['blue_towers'] < 2 and cls.sc['red_towers'] < 2:
         #     cls.towers_idx = ( 900 - cls.gtime ) / ( 100 + cls.wretched_tower)
         # else:
@@ -134,16 +134,16 @@ class PR:
         match fl:
             case 'half':
                 return any([
-                    cls.tl_ktt_idx < PR_IDXs.KTT_T_HALF and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
+                    cls.tl_ktt_idx < PR_IDXs.KTT_T_HALF and cls.towers_idx <= PR_IDXs.KTT_TW_HALF,
                     cls.tl_ktt_idx < PR_IDXs.KTT_HALF
                 ])
             case 's_half':
                 return any([
                     cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE,
-                    cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.towers_idx >= PR_IDXs.KTT_TW_HALF,
+                    cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.towers_idx <= PR_IDXs.KTT_TW_HALF,
                 ])
             case 'middle':
-                return cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE and cls.towers_idx >= PR_IDXs.KTT_TW_MIDDLE
+                return cls.tl_ktt_idx < PR_IDXs.KTT_MIDDLE and cls.towers_idx <= PR_IDXs.KTT_TW_MIDDLE
                 
             case 'full':
                 return cls.tl_ktt_idx < PR_IDXs.KTT_FULL and cls.ktt_straigh_leader()
