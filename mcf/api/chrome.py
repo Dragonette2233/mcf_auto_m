@@ -173,8 +173,8 @@ class Chrome:
             CF.VAL.pr_track += [CF.SR.blue_characters,
                 CF.SR.red_characters,
                 message,
-                f"TL KTT: {PR.tl_ktt_idx}",
-                f"TL KTT TW: {PR.towers_idx}"]
+                f"TL KTT IDX: {PR.tl_ktt_idx}",
+                f"TOWER IDX: {PR.towers_idx}"]
             
             uStorage.upd_pr_signal(pr_message=message)
             logger.info(message)

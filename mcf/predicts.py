@@ -15,10 +15,14 @@ class PR_IDXs:
     
     KTT_TB = 11.32
     KTT_S_TB = 11.37
-    KTT_TB_TW = 11.42
-        
+    
+    # must be lower than
     KTT_TW_HALF = 165
     KTT_TW_MIDDLE = 145
+    
+    # must be greater then
+    KTT_TB_TW = 247
+    
 
 class PR:
 
@@ -119,10 +123,10 @@ class PR:
         """
         match fl:
             case 'half':
-                if cls.tb_ktt_idx >= PR_IDXs.KTT_TB and cls.towers_idx <= PR_IDXs.KTT_TB_TW and cls.module_kills_idx >= 0.75:
+                if cls.tb_ktt_idx >= PR_IDXs.KTT_TB and cls.towers_idx >= PR_IDXs.KTT_TB_TW and cls.module_kills_idx >= 0.75:
                     return True
             case 's_half':
-                if cls.tb_ktt_idx >= PR_IDXs.KTT_S_TB and cls.towers_idx <= PR_IDXs.KTT_TB_TW and cls.module_kills_idx >= 0.7:
+                if cls.tb_ktt_idx >= PR_IDXs.KTT_S_TB and cls.towers_idx >= PR_IDXs.KTT_TB_TW and cls.module_kills_idx >= 0.7:
                     return True
 
     @classmethod
