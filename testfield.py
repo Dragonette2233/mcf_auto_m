@@ -233,6 +233,7 @@ match command:
         from mcf import pillow
         pillow.is_league_stream_active(debug=True)
     case 'scrgrab':
+        from PIL import ImageGrab
         ImageGrab.grab().crop((862, 2, 951, 22)).save('spectator_compare.png')
         # ImageGrab.grab().save('screenshot.png')
     case 'last':
