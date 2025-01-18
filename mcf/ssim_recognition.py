@@ -268,7 +268,7 @@ class ScoreRecognition:
             red_golds = 10.0
         
         blue_towers = cls.get_compare(greyshade_array(from_crop=(image, 60, 13, 75, 29)), 'towers', 'blue')
-        red_towers = cls.get_compare(greyshade_array(from_crop=(image, 498, 13, 514, 29)), 'towers', 'red')
+        red_towers = cls.get_compare(greyshade_array(from_crop=(image, 503, 13, 519, 29)), 'towers', 'red')
         
         if blue_towers == '':
             blue_towers = 0

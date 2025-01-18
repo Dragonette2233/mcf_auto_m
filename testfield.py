@@ -198,7 +198,20 @@ match command:
 
         # message = input('message?: ')
         TGApi.post_request(message='kak nehui delat', predicts_chat=True)
-
+    case 'gettime':
+        from mcf.ssim_recognition import ScoreRecognition
+        from PIL import ImageGrab
+        
+        data = ScoreRecognition.screen_score_recognition()
+        
+        red_tw_img = ImageGrab.grab().crop((681, 7, 1261, 99)).crop((503, 13, 519, 29))
+        
+        print(red_tw_img.size)
+        red_tw_img.show()
+        
+        print(data)
+        
+       # data = ssim_recognition
     case 'sim_start':
         from mcf.pillow import is_game_started
         from mcf.dynamic import Validator
