@@ -334,26 +334,34 @@ class MCFApi:
             if finished_game and finished_game.status_code == 200:
 
                 response = finished_game.json()
-                kills = sum(response['info']['participants'][k]['kills'] for k in range(10))
-                time_stamp = divmod(response['info']['gameDuration'], 60)
+                try:
+                    kills = sum(response['info']['participants'][k]['kills'] for k in range(10))
+                    time_stamp = divmod(response['info']['gameDuration'], 60)
+                    
+                    if chrome is not None:
+                        is_opened = chrome.is_total_coeff_opened(end_check=True)
+                        if is_opened:
+                            CF.SW.coeff_opened.activate()
+                    else:
+                        is_opened = False
+
+                    winner = 'blue' if response['info']['teams'][0]['win'] else 'red'
+                    
+                    # pr tracking
+                    CF.VAL.pr_track.append(str(kills))
+                    pr_track_message = ' | '.join(CF.VAL.pr_track)
+                    track_pr(pr_track_message)
+                    
+                    
+                    timestamp = f"[{time_stamp[0]:02}:{time_stamp[1]:02}]"
+                    TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
+                except KeyError:
+                    TGApi.winner_is(winner='Connection error', kills=0, timestamp="[00:00]", opened=False)
+                    # if connection failed
+                
                 
             
-                if chrome is not None:
-                    is_opened = chrome.is_total_coeff_opened(end_check=True)
-                    if is_opened:
-                        CF.SW.coeff_opened.activate()
-                else:
-                    is_opened = False
-
-                winner = 'blue' if response['info']['teams'][0]['win'] else 'red'
                 
-                # pr tracking
-                CF.VAL.pr_track.append(str(kills))
-                pr_track_message = ' | '.join(CF.VAL.pr_track)
-                track_pr(pr_track_message)
-                
-                
-                timestamp = f"[{time_stamp[0]:02}:{time_stamp[1]:02}]"
                 
                 
                 TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
