@@ -359,12 +359,7 @@ class MCFApi:
                     TGApi.winner_is(winner='Connection error', kills=0, timestamp="[00:00]", opened=False)
                     # if connection failed
                 
-                
-            
-                
-                
-                
-                TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
+
                 uStorage.upd_current_game_status("Окончена")
                 # Trace.complete_trace(team=winner, kills=kills, timestamp=timestamp)
                 pr_result = uStorage.save_predict_result(kills=kills, pr_data=CF.VAL.pr_cache)
