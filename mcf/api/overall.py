@@ -356,6 +356,7 @@ class MCFApi:
                     timestamp = f"[{time_stamp[0]:02}:{time_stamp[1]:02}]"
                     TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
                 except KeyError:
+                    kills = 0
                     TGApi.winner_is(winner='Connection error', kills=0, timestamp="[00:00]", opened=False)
                     # if connection failed
                 
