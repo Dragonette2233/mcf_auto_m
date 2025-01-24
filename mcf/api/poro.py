@@ -85,12 +85,14 @@ class PoroAPI:
 
         featured_games = []
         
-
         for c, n, r in zip(games['champions'], nicknames, games['regions']): # games['elorank']):
-            champs = ' | '.join(c)
-            names_region = '_|_'.join([f"{name}:{r.split('/')[2].upper()}" for name in n])
-            whole_string = f"{champs}-|-{names_region}"
-            featured_games.append(whole_string)
+            try:
+                champs = ' | '.join(c)
+                names_region = '_|_'.join([f"{name}:{r.split('/')[2].upper()}" for name in n])
+                whole_string = f"{champs}-|-{names_region}"
+                featured_games.append(whole_string)
+            except TypeError:
+                logger.warning(f"There is: {games}")
         
         return featured_games
     
