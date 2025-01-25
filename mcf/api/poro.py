@@ -57,27 +57,27 @@ class PoroAPI:
         # }
         
         games = {
-    'teams': [],
-    'champions': [],
-    'regions': []
-}
+                'teams': [],
+                'champions': [],
+                'regions': []
+            }
 
-for i, team in enumerate(soup):
-    if i % 2 == 0 and team is not None:
-        # Обработка команд
-        team_images = team.find_all('img')
-        if team_images:
-            games['teams'].append(team_images)
+        for i, team in enumerate(soup):
+            if i % 2 == 0 and team is not None:
+                # Обработка команд
+                team_images = team.find_all('img')
+                if team_images:
+                    games['teams'].append(team_images)
 
-        # Обработка регионов
-        region_link = team.find('a', class_='liveGameLink')
-        if region_link and region_link.get('href') is not None:
-            games['regions'].append(region_link.get('href'))
+                # Обработка регионов
+                region_link = team.find('a', class_='liveGameLink')
+                if region_link and region_link.get('href') is not None:
+                    games['regions'].append(region_link.get('href'))
 
-        # Обработка чемпионов
-        for img in team_images:
-            if img.get('alt') is not None:
-                games['champions'].append(img['alt'])
+                # Обработка чемпионов
+                for img in team_images:
+                    if img.get('alt') is not None:
+                        games['champions'].append(img['alt'])
         
         # print(games)
         
