@@ -50,11 +50,34 @@ class PoroAPI:
         
         soup: bs = bs(parse_result, "html.parser").find_all('div', class_='cardTeam')
         
+        # games = {
+        #     'teams': [team.find_all('img') for i, team in enumerate(soup) if i % 2 == 0],
+        #     'champions': [],
+        #     'regions': [team.find('a', class_='liveGameLink').get('href') for i, team in enumerate(soup) if i % 2 == 0],
+        # }
+        
         games = {
-            'teams': [team.find_all('img') for i, team in enumerate(soup) if i % 2 == 0],
-            'champions': [],
-            'regions': [team.find('a', class_='liveGameLink').get('href') for i, team in enumerate(soup) if i % 2 == 0],
-        }
+    'teams': [],
+    'champions': [],
+    'regions': []
+}
+
+for i, team in enumerate(soup):
+    if i % 2 == 0 and team is not None:
+        # Обработка команд
+        team_images = team.find_all('img')
+        if team_images:
+            games['teams'].append(team_images)
+
+        # Обработка регионов
+        region_link = team.find('a', class_='liveGameLink')
+        if region_link and region_link.get('href') is not None:
+            games['regions'].append(region_link.get('href'))
+
+        # Обработка чемпионов
+        for img in team_images:
+            if img.get('alt') is not None:
+                games['champions'].append(img['alt'])
         
         # print(games)
         
