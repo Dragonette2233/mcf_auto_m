@@ -124,7 +124,7 @@ class MCFApi:
                 cls.PARSED['PORO_REGIONS'] = PoroAPI.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
                 cls.PARSED['PORO_BRONZE'] = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
                 cls.PARSED['PORO_SILVER'] = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
-                cls.PARSED['PORO_DIRECT'] = PoroAPI.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
+                # cls.PARSED['PORO_DIRECT'] = PoroAPI.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
                 cls.PARSED['RIOT_API'] = RiotAPI.async_riot_parse() # Parse featured games from Riot API
 
                 logger.info('Games parsed succesfully.')
