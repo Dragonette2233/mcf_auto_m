@@ -59,6 +59,18 @@ class uStorage():
             logger.fatal("Key %s doesnt exist in `uparams` " % key)
     
     @classmethod
+    def reset_pr_signal(cls):
+        # msg example PR 108.5М FL_0.75
+                
+        profiles = SafeJson.load(PATH.CASTER_PROFILES_BASE)
+        
+        for k in profiles.keys():
+            if profiles[k] != "WARMING_STATE":
+                profiles[k] = "PR_AWAITING"
+        
+        SafeJson.dump(PATH.CASTER_PROFILES_BASE, data=profiles)
+    
+    @classmethod
     def upd_pr_signal(cls, pr_message: str = "", endgame_total=None, diff_total=None):
         # msg example PR 108.5М FL_0.75
         

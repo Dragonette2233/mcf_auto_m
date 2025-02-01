@@ -82,16 +82,17 @@ def main():
 
         TGApi.update_score(score=False) # deleting score info from game notification in telegram channel
         MCFApi.close_league_of_legends() # clong Leaguee of Legends process
+        uStorage.reset_pr_signal()
 
         logger.info('Game ended.')
         
-        if not CF.SW.coeff_opened.is_active():
-            for _ in range(136):
-                is_opened = chrome.is_total_coeff_opened(end_check=True)
-                if is_opened:
-                    TGApi.post_send(message='🟢 Открыты', chat_id=TGApi.CHAT_ID_PR)
-                    break
-                time.sleep(0.5)
+        # if not CF.SW.coeff_opened.is_active():
+        #     for _ in range(136):
+        #         is_opened = chrome.is_total_coeff_opened(end_check=True)
+        #         if is_opened:
+        #             TGApi.post_send(message='🟢 Открыты', chat_id=TGApi.CHAT_ID_PR)
+        #             break
+        #         time.sleep(0.5)
         
     else:
         uStorage.upd_current_game_status(status="Не состоялась или не найдена")
