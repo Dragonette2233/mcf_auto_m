@@ -8,16 +8,16 @@ print(sys.argv)
 
 class PR_IDXs:
 
-    KTT_HALF = 14.625
-    KTT_T_HALF = 14.825
-    KTT_MIDDLE = 15.025
-    KTT_FULL = 15.250
+    KTT_HALF = 14.575
+    KTT_T_HALF = 14.775
+    KTT_MIDDLE = 14.975
+    KTT_FULL = 15.175
     
     KTT_TB = 11.32
     KTT_S_TB = 11.37
     
     # must be lower than
-    KTT_TW_HALF = 165
+    KTT_TW_HALF = 160
     KTT_TW_MIDDLE = 145
     
     # must be greater then
@@ -170,13 +170,13 @@ class PR:
                 ],
                 
                 TelegramStr.tl_predict_full: [    
-                    (cls.gtime >= 200 and cls.ktt_tl(fl='full')),
+                    (cls.gtime >= 225 and cls.ktt_tl(fl='full')),
                 ],
                 TelegramStr.tl_predict_middle: [   
-                    (cls.gtime >= 200 and cls.ktt_tl(fl='middle')),
+                    (cls.gtime >= 225 and cls.ktt_tl(fl='middle')),
                 ],
                 TelegramStr.tl_predict_half: [
-                    (cls.gtime >= 181 and cls.ktt_tl(fl='half')),
+                    (cls.gtime >= 210 and cls.ktt_tl(fl='half')),
                     (cls.gtime >= 239 and cls.ktt_tl(fl="s_half") and CF.SR.tl_accepted()),
        
                     # Optional predicts
