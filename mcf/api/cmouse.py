@@ -24,23 +24,24 @@ def double_click_left(x, y):
 
 def forward_game():
     # print('frwd')
-    keyboard.press('=')
-    sleep(0.2)
-    keyboard.release('=')
+    # keyboard.press('=')
+    # sleep(0.2)
+    # keyboard.release('=')
+    double_click_left(x=658, y=828) # flash foward game
 
 def open_score_tab():
     sleep(1)
     
     # # opening scoreboard
-    keyboard.press('o')
-    sleep(0.2)
-    keyboard.release('o')
+    # keyboard.press('o')
+    # sleep(0.2)
+    # keyboard.release('o')
     # keyboard.release('o')
     #E keyboard.write("Hello, world!")
-    # click_left(x=271, y=1054)
-    # click_left(x=271, y=1054)
-    # sleep(0.25)
-    # click_left(x=328, y=972)
+    click_left(x=271, y=1054)
+    click_left(x=271, y=1054)
+    sleep(0.25)
+    click_left(x=328, y=972)
 
 def click_left(x, y):
     
