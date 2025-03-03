@@ -116,13 +116,13 @@ class TGApi:
             if is_total_opened:
                 open_snip = TelegramStr.events_opened.format(total_value=total_value)
 
-                all_kills = score['blue_kills'] + score['red_kills']
-                if not CF.SW.total_diff.is_active() and abs(all_kills - int(float(total_value))) < 20:
+                # all_kills = score['blue_kills'] + score['red_kills']
+                # if not CF.SW.total_diff.is_active() and abs(all_kills - int(float(total_value))) < 20:
                     
-                    alert = f"⚠️ В игре: {all_kills} | ТБ: {total_value} | {TelegramStr.CLOCK}: {score['time']}"
-                    cls.post_send(message=alert, chat_id=cls.CHAT_ID_PR)
-                    uStorage.upd_pr_signal(diff_total=all_kills)
-                    CF.SW.total_diff.activate()
+                #     alert = f"⚠️ В игре: {all_kills} | ТБ: {total_value} | {TelegramStr.CLOCK}: {score['time']}"
+                #     cls.post_send(message=alert, chat_id=cls.CHAT_ID_PR)
+                #     uStorage.upd_pr_signal(diff_total=all_kills)
+                #     CF.SW.total_diff.activate()
 
             else:
                 open_snip = TelegramStr.events_closed
