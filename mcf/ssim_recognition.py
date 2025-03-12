@@ -97,7 +97,7 @@ class CharsRecognition:
         
 class ScoreRecognition:
     gold_shift = 1
-    y_shift = 10
+    y_shift = 12
     
     @classmethod
     def is_game_started_spectator(cls, debug=False):
