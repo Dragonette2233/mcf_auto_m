@@ -98,6 +98,8 @@ class CharsRecognition:
 class ScoreRecognition:
     gold_shift = 1
     y_shift = 12
+
+    # makee Y shift flexible  from 10 to 13
     
     @classmethod
     def is_game_started_spectator(cls, debug=False):
