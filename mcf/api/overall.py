@@ -336,7 +336,7 @@ class MCFApi:
                 response = finished_game.json()
                 try:
                     kills = sum(response['info']['participants'][k]['kills'] for k in range(10))
-                    time_stamp = divmod(response['info']['gameDuration'], 60)
+                    time_stamp_num = divmod(response['info']['gameDuration'], 60)
                     
                     if chrome is not None:
                         is_opened = chrome.is_total_coeff_opened(end_check=True)
@@ -353,8 +353,7 @@ class MCFApi:
                     track_pr(pr_track_message)
                     
                     
-                    timestamp = f"[{time_stamp[0]:02}:{time_stamp[1]:02}]"
-                    TGApi.winner_is(winner=winner, kills=kills, timestamp=timestamp, opened=is_opened)
+                    TGApi.winner_is(winner=winner, kills=kills, timestamp=time_stamp_num, opened=is_opened)
                 except KeyError:
                     kills = 0
                     TGApi.winner_is(winner='Connection error', kills=0, timestamp="[00:00]", opened=False)

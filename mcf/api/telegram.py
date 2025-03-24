@@ -159,24 +159,26 @@ class TGApi:
     @classmethod
     def winner_is(cls, winner: str, kills: int, timestamp: str, opened=False):
         
-        minutes = int(timestamp.replace("[", "").replace("]", "").split(':')[0])
+        minutes = timestamp[0]
+
+        timestamp_string = f"{timestamp[0]:02}:{timestamp[1]:02}"
         
         match winner, opened:
             case 'blue', True:
-                message = TelegramStr.winner_blue_opened.format(kills, timestamp)
+                message = TelegramStr.winner_blue_opened.format(kills, timestamp_string)
                 if minutes >= 10:
                     uStorage.upd_pr_signal(endgame_total=kills)
                 cls.post_request(message=message, message_type='winner_opened')
             case 'blue', False:
-                message = TelegramStr.winner_blue.format(kills, timestamp)
+                message = TelegramStr.winner_blue.format(kills, timestamp_string)
                 cls.post_request(message=message)
             case 'red', True:
-                message = TelegramStr.winner_red_opened.format(kills, timestamp)
+                message = TelegramStr.winner_red_opened.format(kills, timestamp_string)
                 if minutes >= 10:
                     uStorage.upd_pr_signal(endgame_total=kills)
                 cls.post_request(message=message, message_type='winner_opened')
             case 'red', False:
-                message = TelegramStr.winner_red.format(kills, timestamp)
+                message = TelegramStr.winner_red.format(kills, timestamp_string)
                 cls.post_request(message=message)
             case _:
                 pass
