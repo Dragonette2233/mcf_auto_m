@@ -115,7 +115,8 @@ class PoroAPI:
                 whole_string = f"{champs}-|-{names_region}"
                 featured_games.append(whole_string)
             except TypeError:
-                logger.warning(f"There is: {games}")
+                ...
+                # logger.warning(f"There is: {games}")
         
         return featured_games
     

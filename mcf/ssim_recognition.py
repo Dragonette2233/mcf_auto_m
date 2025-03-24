@@ -191,7 +191,7 @@ class ScoreRecognition:
             case 'towers', 'red':
                 main_images = [pillow.open_image(PATH.fRED_TOWER.format(tw=i)) for i in range(5)]
             case _:
-                print(type, team)
+                # print(type, team)
                 raise ValueError('Undefined value in get_compare()') 
                 # return
         

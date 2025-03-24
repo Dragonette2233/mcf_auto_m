@@ -4,7 +4,7 @@ import logging
 import sys
 
 logger = logging.getLogger(__name__)
-print(sys.argv)
+# print(sys.argv)
 
 class PR_IDXs:
 
