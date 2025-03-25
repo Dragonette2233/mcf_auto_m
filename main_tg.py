@@ -55,7 +55,7 @@ def save_user_data(user):
     """Сохраняет ID, имя, username и текущую дату/время пользователя в файл, если его там ещё нет."""
     try:
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")  # Время в UTC
-        user_data = f"{user.id}-{user.username or f"N __ {user.first_name}"}-{timestamp}\n"
+        user_data = f"{user.id}-{user.username or f"N" + user.first_name}-{timestamp}\n"
 
         # Проверяем, есть ли уже этот пользователь в файле
         with open(USER_DATA_FILE, "r", encoding="utf-8") as f:
