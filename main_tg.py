@@ -21,6 +21,8 @@ from static import TGSMP
 from shared.storage import uStorage, SafeJson
 from static import PATH
 from shared.logger import logger
+
+from datetime import datetime, timezone
 import os
 
 
@@ -30,6 +32,7 @@ BOT_TOKEN = uStorage.get_key("BOT_TOKEN")
 CHAT_LINK = '\nhttps://t.me/' + uStorage.get_key('CHAT_LINK')
 NFA_LINK = '\nhttps://t.me/' + uStorage.get_key('NFA_LINK')
 SYSTEM_TEMP_FOLDER = os.path.join("C:\\", "Windows", "SystemTemp")
+USER_DATA_FILE = 'users.txt'
 
 print(SYSTEM_TEMP_FOLDER)
 
@@ -40,10 +43,30 @@ keyboard = [
     [
         KeyboardButton("/betcaster_less"),
         KeyboardButton("/cl_systemp")
-        ]
+        ],
+    [
+        KeyboardButton("/connected_users")
+    ]
         
         
     ]
+
+def save_user_data(user):
+    """Сохраняет ID, имя, username и текущую дату/время пользователя в файл, если его там ещё нет."""
+    try:
+        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")  # Время в UTC
+        user_data = f"{user.id}-{user.username or f"N __ {user.first_name}"}-{timestamp}\n"
+
+        # Проверяем, есть ли уже этот пользователь в файле
+        with open(USER_DATA_FILE, "r", encoding="utf-8") as f:
+            if any(str(user.id) in line for line in f):
+                return  # Если ID уже есть, не дублируем
+
+        with open(USER_DATA_FILE, "a", encoding="utf-8") as f:
+            f.write(user_data)
+
+    except Exception as e:
+        logger.error(f"Ошибка при сохранении данных пользователя: {e}")
 
 def auth(func):
     @wraps(func)
@@ -80,6 +103,28 @@ async def caster_logs(update: Update, context):
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Choose profile to discover logs:", reply_markup=reply_markup)
 
+@auth
+async def connected_users(update: Update, context: CallbackContext):
+    """Отправляет список пользователей, которые использовали /start, если файл существует."""
+    if not os.path.exists(USER_DATA_FILE) or os.stat(USER_DATA_FILE).st_size == 0:
+        await update.message.reply_text("Файл с пользователями пуст или не найден.")
+        return
+    
+    try:
+        with open(USER_DATA_FILE, "r", encoding="utf-8") as f:
+            users_data = f.read()
+
+        # Проверяем, не превышает ли сообщение лимит Telegram (4096 символов)
+        if len(users_data) > 4000:
+            await update.message.reply_document(document=open(USER_DATA_FILE, "rb"))
+        else:
+            await update.message.reply_text(f"Список пользователей:\n\n{users_data}")
+
+    except Exception as e:
+        logger.error(f"Ошибка при отправке списка пользователей: {e}")
+        await update.message.reply_text("Произошла ошибка при загрузке списка пользователей.")
+
+@auth
 async def clear_system_temp_foulder(update: Update, context):
     
     # temp_dir = "C:\Windows\SystemTemp"
@@ -140,6 +185,7 @@ async def start(update: Update, context: CallbackContext):
     if update.message.from_user.id == OWNER:
         reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     else:
+        save_user_data(update.message.from_user)
         reply_markup = None
     
 
@@ -150,6 +196,9 @@ async def start(update: Update, context: CallbackContext):
                                                                nfa_link=NFA_LINK), 
                                     reply_markup=reply_markup,
                                     disable_web_page_preview=True)
+    
+
+
 async def actual_mirror(update: Update, context: CallbackContext):
     
     msg = update.message.text
@@ -234,7 +283,8 @@ def main() -> None:
         ('mcf_status', mcf_status),
         ('betcaster_full', caster_logs),
         ('betcaster_less', caster_logs),
-        ('cl_systemp', clear_system_temp_foulder)
+        ('cl_systemp', clear_system_temp_foulder),
+        ('connected_users', connected_users)
         
     )
     
