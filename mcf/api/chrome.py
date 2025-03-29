@@ -16,6 +16,8 @@ from selenium.common.exceptions import (
     NoSuchElementException, 
     StaleElementReferenceException,
     WebDriverException,
+    NoSuchWindowException,
+    InvalidSessionIdException
     )
 
 logger = logging.getLogger(__name__)
@@ -242,6 +244,9 @@ class Chrome:
                     StaleElementReferenceException) as ex_:
                 ...
                 # logger.warning(ex_, exc_info=True)
+            except (NoSuchWindowException, InvalidSessionIdException):
+                logger.warning("Chrome closed. Bot shutdown")
+                exit(0)
             except Exception as ex_:
                 logger.info(self.game_index_new)
                 logger.info(self.game_index_ended)
