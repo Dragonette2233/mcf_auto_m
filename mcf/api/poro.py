@@ -175,7 +175,7 @@ class PoroAPI:
                     try:
                         featured_games[region] = cls.get_games_from_parse(parse_result=result)
                     except AttributeError as ex_:
-                        logger.warning(f"{region} parse fail: ", ex_)
+                        logger.warning(f"{region} parse fail: ", exc_info=True)
                 
                     
         async def main_aram(champion_name):

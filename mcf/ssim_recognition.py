@@ -134,12 +134,12 @@ class ScoreRecognition:
         """
         image_ = pillow.take_screenshot()
 
-        if not CF.SW.cache_done.is_active():
-            np_mcmp_active = np.array(image_.crop((1648, 245, 1722, 331)).convert('L'))
-            if ssim(np_mcmp_active, GREYSHADE.mCMP_LOADING) > 0.93:
-                from mcf.api.overall import MCFApi
-                MCFApi.cache_before_stream()
-                CF.SW.cache_done.activate()
+        # if not CF.SW.cache_done.is_active():
+        #     np_mcmp_active = np.array(image_.crop((1648, 245, 1722, 331)).convert('L'))
+        #     # if ssim(np_mcmp_active, GREYSHADE.mCMP_LOADING) > 0.93:
+        #     #     from mcf.api.overall import MCFApi
+        #     #     #MCFApi.cache_before_stream()
+        #     #     CF.SW.cache_done.activate()
         
         cut_cmp_riot = image_.crop((1645, 366 + cls.y_shift, 1683, 380 + cls.y_shift)).convert('L')
         cut_cmp_blue = image_.crop((1689, 243 + cls.y_shift, 1705, 250 + cls.y_shift)).convert('L')

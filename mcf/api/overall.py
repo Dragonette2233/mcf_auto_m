@@ -125,7 +125,7 @@ class MCFApi:
                 cls.PARSED['PORO_BRONZE'] = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
                 cls.PARSED['PORO_SILVER'] = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
                 # cls.PARSED['PORO_DIRECT'] = PoroAPI.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
-                cls.PARSED['RIOT_API'] = RiotAPI.async_riot_parse() # Parse featured games from Riot API
+                # cls.PARSED['RIOT_API'] = RiotAPI.async_riot_parse() # Parse featured games from Riot API
 
                 logger.info('Games parsed succesfully.')
                 break
@@ -144,10 +144,10 @@ class MCFApi:
          # Нахождение пересечения множеств
          return len(set_1 & set_2)
 
-    @classmethod
-    def cache_before_stream(cls):
-        cls.PARSED['RIOT_API_CACHE'] = RiotAPI.async_riot_parse() # Parse featured games from Riot API
-        logger.info('Games cached successfull!')
+    # @classmethod
+    # def cache_before_stream(cls):
+    #     cls.PARSED['RIOT_API_CACHE'] = RiotAPI.async_riot_parse() # Parse featured games from Riot API
+    #     logger.info('Games cached successfull!')
 
     @classmethod
     def get_activegame_by_teams(cls, teams: dict, from_cache=False) -> list:
@@ -370,4 +370,4 @@ class MCFApi:
                 finished_game.close()
                 break
             
-            time.sleep(1.25)
+            time.sleep(1.3)

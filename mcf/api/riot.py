@@ -1,17 +1,17 @@
 import requests
 import logging
-import asyncio
+# import asyncio
 from shared.storage import uStorage
-from aiohttp import ClientSession
-from aiohttp.client_exceptions import (
-    ClientProxyConnectionError,
-    ClientConnectionError,
-    ContentTypeError
-    )
+# from aiohttp import ClientSession
+# from aiohttp.client_exceptions import (
+#     ClientProxyConnectionError,
+#     ClientConnectionError,
+#     ContentTypeError
+#     )
 from static import (
     URL,
-    ALL_CHAMPIONS_IDs,
-    REGIONS_TUPLE
+    # ALL_CHAMPIONS_IDs,
+    # REGIONS_TUPLE
 )
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,8 @@ class RiotAPI:
     
     HEADERS = {
             'headers': { "X-Riot-Token": uStorage.get_key("RIOT_API") },
-            'timeout': 3
+            'timeout': 3,
+            'proxies': uStorage.get_key("PROXIES")
         }
     
     @staticmethod
@@ -86,73 +87,73 @@ class RiotAPI:
             return result
         return result.json()
     
-    @staticmethod
-    def async_riot_parse():
+    # @staticmethod
+    # def async_riot_parse():
 
 
-        """
-            This function parsing games from Riot API Featured Games into
-            GameData.json and returning count of missing regions
+    #     """
+    #         This function parsing games from Riot API Featured Games into
+    #         GameData.json and returning count of missing regions
         
-        """
+    #     """
 
-        featured_games = {}
+    #     featured_games = {}
 
-        async def parsing(region):
-            nonlocal missing_regions, featured_games
+    #     async def parsing(region):
+    #         nonlocal missing_regions, featured_games
             
-            async with ClientSession() as session:
-                async with session.get(URL.FEATURED_GAMES.format(region=region), 
-                                    **RiotAPI.HEADERS) as response:
+    #         async with ClientSession() as session:
+    #             async with session.get(URL.FEATURED_GAMES.format(region=region), 
+    #                                 **RiotAPI.AIO_HTTP_HEADERS) as response:
                     
-                    data = await response.json()
+    #                 data = await response.json()
                     
-                    try:
-                        gameList = data['gameList']
-                        if len(gameList) < 1:
-                            missing_regions += 1
-                            return
-                    except KeyError as key_err:
-                        logger.warning(f"{key_err}")
-                        missing_regions += 1
-                        return
+    #                 try:
+    #                     gameList = data['gameList']
+    #                     if len(gameList) < 1:
+    #                         missing_regions += 1
+    #                         return
+    #                 except KeyError as key_err:
+    #                     logger.warning(f"{key_err}")
+    #                     missing_regions += 1
+    #                     return
 
-                    routelist = []
-                    for s in range(0, len(gameList)):
+    #                 routelist = []
+    #                 for s in range(0, len(gameList)):
                         
-                        # Создаем список из id персонажей для дальнейшей конвертации в имени
-                        id_names = [int(gameList[s]['participants'][k]['championId']) for k in range(5)]
+    #                     # Создаем список из id персонажей для дальнейшей конвертации в имени
+    #                     id_names = [int(gameList[s]['participants'][k]['championId']) for k in range(5)]
 
-                        # Создаем список конвертированных id в имена персонажей
-                        champ_list = [ALL_CHAMPIONS_IDs.get(id_name) for id_name in id_names]
+    #                     # Создаем список конвертированных id в имена персонажей
+    #                     champ_list = [ALL_CHAMPIONS_IDs.get(id_name) for id_name in id_names]
                         
-                        champ_string = ' | '.join([str(item) for item in champ_list])
-                        summoners = '_|_'.join([f"{i['riotId']}:{gameList[s]['platformId']}" for i in gameList[s]['participants']])
+    #                     champ_string = ' | '.join([str(item) for item in champ_list])
+    #                     summoners = '_|_'.join([f"{i['riotId']}:{gameList[s]['platformId']}" for i in gameList[s]['participants']])
                                 
-                        routelist.append(f"{champ_string}-|-{summoners}")
+    #                     routelist.append(f"{champ_string}-|-{summoners}")
 
-                    featured_games[region] = routelist.copy()
+    #                 featured_games[region] = routelist.copy()
          
-        async def main_aram():
+    #     async def main_aram():
 
-            nonlocal missing_regions
+    #         nonlocal missing_regions
 
-            tasks = []
-            for region in REGIONS_TUPLE:
-                tasks.append(asyncio.create_task(parsing(region[1])))
+    #         tasks = []
+    #         for region in REGIONS_TUPLE:
+    #             tasks.append(asyncio.create_task(parsing(region[1])))
 
-            for task in tasks:
-                try: 
-                    await asyncio.gather(task)
-                except asyncio.exceptions.TimeoutError:
-                    missing_regions += 1
-                except (ClientConnectionError, 
-                        ClientProxyConnectionError, 
-                        ContentTypeError):
-                    missing_regions = 20
+    #         for task in tasks:
+    #             try: 
+    #                 await asyncio.gather(task)
+    #             except asyncio.exceptions.TimeoutError:
+    #                 missing_regions += 1
+    #             except (ClientConnectionError, 
+    #                     ClientProxyConnectionError, 
+    #                     ContentTypeError):
+    #                 missing_regions = 20
                     
-        missing_regions = 0
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-        asyncio.run(main_aram())
+    #     missing_regions = 0
+    #     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    #     asyncio.run(main_aram())
         
-        return featured_games
+    #     return featured_games

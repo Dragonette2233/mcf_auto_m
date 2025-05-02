@@ -21,7 +21,7 @@ from static import (
 def main():
     is_riot_apikey_valid()
     # uStorage.upd_current_game_link(link=None)
-    
+    exit(0)
     logger.info('BOT started')
     chrome = Chrome()        
     chrome.start()
