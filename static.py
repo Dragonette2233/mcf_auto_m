@@ -112,6 +112,7 @@ class MelCSS:
     MARKETS_CONTENT = 'div.game-markets-content'
     MARKETS_GROUP = 'div.ui-accordion.game-markets-group'
     LOCK_ICON = 'span.ico.ui-market__lock'
+    LOCK_ICON_SVG = 'svg.ui-ico--lock.ui-ico.ui-market__lock'
     MARKET_BUTTON = 'span.ui-market__name'
     
     GAMES_DASHBOARD = 'li.ui-dashboard-champ.dashboard-champ.dashboard__champ.ui-dashboard-champ--theme-gray'
