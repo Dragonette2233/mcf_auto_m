@@ -121,7 +121,8 @@ class Chrome:
 
             if end_check:
                 lock_ico = markets[0].find_elements(By.CSS_SELECTOR, MelCSS.LOCK_ICON)
-                if len(lock_ico) == 0: return True
+                lock_icon_svg = markets[0].find_elements(By.CSS_SELECTOR, MelCSS.LOCK_ICON_SVG)
+                if len(lock_ico) == 0 or len(lock_icon_svg) == 0: return True
             
             else:
                 for _, mrk in enumerate(markets):
