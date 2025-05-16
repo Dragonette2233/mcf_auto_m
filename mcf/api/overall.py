@@ -339,10 +339,12 @@ class MCFApi:
                     time_stamp_num = divmod(response['info']['gameDuration'], 60)
                     
                     if chrome is not None:
+                        link = chrome.generate_mobile_page()
                         is_opened = chrome.is_total_coeff_opened(end_check=True)
                         if is_opened:
                             CF.SW.coeff_opened.activate()
                     else:
+                        link = None
                         is_opened = False
 
                     winner = 'blue' if response['info']['teams'][0]['win'] else 'red'
@@ -353,7 +355,7 @@ class MCFApi:
                     track_pr(pr_track_message)
                     
                     
-                    TGApi.winner_is(winner=winner, kills=kills, timestamp=time_stamp_num, opened=is_opened)
+                    TGApi.winner_is(winner=winner, kills=kills, timestamp=time_stamp_num, opened=is_opened, link=link)
                 except KeyError:
                     kills = 0
                     TGApi.winner_is(winner='Connection error', kills=0, timestamp="[00:00]", opened=False)

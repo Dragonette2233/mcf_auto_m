@@ -131,7 +131,7 @@ class Chrome:
                     if mrk_text.endswith('Б'):
                         total_value = mrk_text.split()[0]
                         self.ACTIVE_TOTAL_VALUE = total_value
-                        # print(total_value)
+
                         lock_ico = mrk.find_elements(By.CSS_SELECTOR, MelCSS.LOCK_ICON)
                         lock_icon_svg = mrk.find_elements(By.CSS_SELECTOR, MelCSS.LOCK_ICON_SVG)
                         if len(lock_ico) == 0 and len(lock_icon_svg) == 0: return True
