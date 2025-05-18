@@ -23,6 +23,7 @@ from static import PATH
 from shared.logger import logger
 
 from datetime import datetime, timezone
+import configparser
 import os
 
 
@@ -32,20 +33,24 @@ BOT_TOKEN = uStorage.get_key("BOT_TOKEN")
 CHAT_LINK = '\nhttps://t.me/' + uStorage.get_key('CHAT_LINK')
 NFA_LINK = '\nhttps://t.me/' + uStorage.get_key('NFA_LINK')
 SYSTEM_TEMP_FOLDER = os.path.join("C:\\", "Windows", "SystemTemp")
+BETCASTER_CFG_PATH = os.path.join(os.getenv("BETCASTER"),'betcaster', 'caster_profiles')
+BETCASTER_PROFILES = SafeJson.load(PATH.CASTER_PROFILES_BASE).keys()
 USER_DATA_FILE = 'users.txt'
 
-print(SYSTEM_TEMP_FOLDER)
+config = configparser.ConfigParser()
 
 keyboard = [
     [
-        KeyboardButton("/mcf_status"), 
-        KeyboardButton("/betcaster_full")],
+        KeyboardButton("/mcf_status"),],
     [
-        KeyboardButton("/betcaster_less"),
-        KeyboardButton("/cl_systemp")
+        KeyboardButton("/logs_full"),
+        KeyboardButton("/logs_less"),
+        KeyboardButton("/bc_balance")
+        
         ],
     [
-        KeyboardButton("/connected_users")
+        KeyboardButton("/users"),
+        KeyboardButton("/cl_systemp"),
     ]
         
         
@@ -81,15 +86,14 @@ def auth(func):
     return wrapper
 
 @auth
-async def caster_logs(update: Update, context):
-    _, log_type = update.message.text.split('_')
+async def caster_calls(update: Update, context):
+    msg = update.message.text
 
-    profiles = SafeJson.load(PATH.CASTER_PROFILES_BASE)
     keyboard = []
     row = []
 
-    for i, k in enumerate(profiles.keys()):
-        row.append(InlineKeyboardButton(k, callback_data=log_type + '__' + k))
+    for i, k in enumerate(BETCASTER_PROFILES):
+        row.append(InlineKeyboardButton(k, callback_data=msg + '__' + k)) #example /logs_full__econ26
         
         # Если в ряду уже 2 кнопки, добавляем ряд в клавиатуру и начинаем новый
         if len(row) == 2:
@@ -101,7 +105,7 @@ async def caster_logs(update: Update, context):
         keyboard.append(row)
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("Choose profile to discover logs:", reply_markup=reply_markup)
+    await update.message.reply_text("Caster profile:", reply_markup=reply_markup)
 
 @auth
 async def connected_users(update: Update, context: CallbackContext):
@@ -138,17 +142,19 @@ async def clear_system_temp_foulder(update: Update, context):
         msg = o_err_
     
     await update.message.reply_text(str(msg))
-    
+
 # Функция обработки нажатий на кнопки
-async def inline_caster_logs(update: Update, context):
+async def inline_caster_calls(update: Update, context):
     query = update.callback_query
     await query.answer()  # Обязательно подтверждаем получение callback запроса
 
-    log_type, profile = query.data.split("__")
+    msg, profile = query.data.split("__")
     path = os.path.join(PATH.CASTER_PROFILES_LOGS, profile + '.log')
+
+    # print(msg)
     # logger.info(path)
     # logger.info('log_t: %s', log_type)
-    if log_type == 'full':
+    if msg == '/logs_full':
         # path = os.path.join(PATH.CASTER_PROFILES_BASE, profile + '.log')
         try:
             with open(path, 'rb') as log_file:
@@ -156,7 +162,7 @@ async def inline_caster_logs(update: Update, context):
                 await query.message.reply_document(document=log_file, filename=f'caster_{profile}.log')
         except FileNotFoundError:
             await query.edit_message_text(f"Betcaster logs doesnt exists yet for `{profile}`")
-    elif log_type == 'less':
+    elif msg == '/logs_less':
         # Иначе отправляем последние 10 строк
         try:
             with open(path, 'r') as log_file:
@@ -167,10 +173,14 @@ async def inline_caster_logs(update: Update, context):
         except Exception as e:
             # logger.error(f"Failed to read logs: {e}")
             await  query.edit_message_text("Failed to read logs.")
-    # if query.data == 'button1':
-    #     await query.edit_message_text(text="You pressed Button 1!")
-    # elif query.data == 'button2':
-    #     await query.edit_message_text(text="You pressed Button 2!")
+    elif msg == '/bc_balance':
+        
+        cfg_path = os.path.join(BETCASTER_CFG_PATH, profile + '.cfg')
+        config.read(cfg_path)
+        # Возвращаем значение как целое число
+        balance = config.get('PARAMS', 'BALANCE')
+        await query.edit_message_text(balance)
+    
 
 async def info(update: Update, context: CallbackContext):
     
@@ -281,8 +291,9 @@ def main() -> None:
         ('mirror', actual_mirror),
         ('current_game', actual_mirror),
         ('mcf_status', mcf_status),
-        ('betcaster_full', caster_logs),
-        ('betcaster_less', caster_logs),
+        ('logs_full', caster_calls),
+        ('logs_less', caster_calls),
+        ('bc_balance', caster_calls),
         ('cl_systemp', clear_system_temp_foulder),
         ('connected_users', connected_users)
         
@@ -291,7 +302,7 @@ def main() -> None:
     for cmd, hndl in command_handler:
         application.add_handler(CommandHandler(cmd, hndl))
     
-    application.add_handler(CallbackQueryHandler(inline_caster_logs))
+    application.add_handler(CallbackQueryHandler(inline_caster_calls))
     application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r'https\S+'), change_actual_mirror))
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
