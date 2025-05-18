@@ -18,14 +18,19 @@ match command:
         from mcf.dynamic import CF
         from mcf.api.telegram import TGApi
         from mcf.api.chrome import Chrome
+        from shared.storage import uStorage
         
-        chrome = Chrome()   
+        link = uStorage.get_key(key="CURRENT_GAME_LINK")
+
+
+        chrome = Chrome()
         
-        message = 'PR 108.5M FL_0.69'
+        message = '🔽PR 108.5M FL_0.69🔽'
         CF.SR.blue_characters = 'One two bool free zed'
         CF.SR.red_characters = 'One less bool cool zed'
         
-        TGApi.post_request(message=message, message_type='predict', link=chrome.generate_mobile_page())
+        # TGApi.post_request(message=message, message_type='predict', link=link)
+        TGApi.winner_is(winner='blue', kills=67, timestamp=(10, 1), opened=True, link=link)
     case 'drv':
         from selenium import webdriver
         from selenium.webdriver.common.by import By

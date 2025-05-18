@@ -79,9 +79,9 @@ class TGApi:
             
             
 
-        if message_type == 'winner_opened':
+        # if message_type == 'winner_opened':
             
-            cls.post_send(message=message + '\n' + link, chat_id=cls.CHAT_ID_PR)
+        #     cls.post_send(message=message + '\n' + link, chat_id=cls.CHAT_ID_PR)
         
         request = cls.post_send(message=message, chat_id=cls.CHAT_ID_PUB)
 
@@ -169,6 +169,8 @@ class TGApi:
                 message = TelegramStr.winner_blue_opened.format(kills, timestamp_string)
                 if minutes >= 10:
                     uStorage.upd_pr_signal(endgame_total=kills)
+                    cls.post_send(message=message + '\n\n' + link, chat_id=cls.CHAT_ID_PR)
+                    
                 cls.post_request(message=message, message_type='winner_opened', link=link)
             case 'blue', False:
                 message = TelegramStr.winner_blue.format(kills, timestamp_string)
