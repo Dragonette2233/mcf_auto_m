@@ -264,10 +264,15 @@ class TelegramStr:
         Telegram notifications about ended game
         First argument - kills, second argument - time
     '''
-    winner_blue = BLUE_CIRCLE + ' П1 -- {0} -- {1}'
-    winner_red = RED_CIRCLE + ' П2 -- {0} -- {1}'
-    winner_blue_opened = GREEN_CIRCLE + BLUE_CIRCLE + ' П1 -- {0} -- {1}'
-    winner_red_opened = GREEN_CIRCLE + RED_CIRCLE + ' П2 -- {0} -- {1}'
+    winner = {
+        'blue': BLUE_CIRCLE + ' П1 -- {0} -- {1}',
+        'red': RED_CIRCLE + ' П2 -- {0} -- {1}'
+    }
+
+    winner_opened = {
+        'blue': GREEN_CIRCLE + BLUE_CIRCLE + ' П1 -- {0} -- {1}',
+        'red': GREEN_CIRCLE + RED_CIRCLE + ' П2 -- {0} -- {1}'
+    }
 
     '''
         Telegram notification for started game
