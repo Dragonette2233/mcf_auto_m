@@ -111,6 +111,7 @@ def get_live_gamedata() -> dict:
         'time': int(time_nix),
         'blue_kills': int(blue_kills),
         'red_kills': int(red_kills),
+        'atv': 0
         # 'blue_towers': sum(turrets_red.values()),
         # 'red_towers': sum(turrets_blue.values())
     }

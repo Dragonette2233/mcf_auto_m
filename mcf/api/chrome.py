@@ -63,13 +63,12 @@ class Chrome:
             
         self.RESTART_REQUIRED = True
 
-    def generate_mobile_page(self, ) -> str:
-        # return 'https://melbet-33933.top/ru/live/cyber-zone/league-of-legends/1690826-all-random-all-mid/560036806-team-1-team-2'
-        #gameid = uStorage.get_key("PREVIOUS_GAME_ID").replace('_', '/')
+    def get_mobile_page(self):
+
         return self.URL + '/' + self.game_index_new.replace('_', '/') + '?platform_type=mobile'
     
     def open_mobile_page(self):
-        self.driver.get(self.generate_mobile_page())
+        self.driver.get(self.get_mobile_page())
     
     def open_league_page(self):
         self.URL = uStorage.get_key("MIRROR_PAGE")
@@ -91,11 +90,10 @@ class Chrome:
                 TimeoutException,
                 StaleElementReferenceException,
                 WebDriverException):
-            pass
+            ...
 
     def delay(self, second: int):
         time.sleep(second)
-
 
     def stream_fullscreen(self):
         
@@ -111,7 +109,7 @@ class Chrome:
             logger.warning(e)
             cmouse.click_left(x=1871, y=361)
                  
-        time.sleep(2.5)
+        self.delay(2.5)
 
     def is_total_coeff_opened(self, end_check=False):
 
@@ -134,7 +132,8 @@ class Chrome:
 
                         lock_ico = mrk.find_elements(By.CSS_SELECTOR, MelCSS.LOCK_ICON)
                         lock_icon_svg = mrk.find_elements(By.CSS_SELECTOR, MelCSS.LOCK_ICON_SVG)
-                        if len(lock_ico) == 0 and len(lock_icon_svg) == 0: return True
+                        if len(lock_ico) == 0 and len(lock_icon_svg) == 0: 
+                            return True
         except:
             ...
             
@@ -171,7 +170,7 @@ class Chrome:
             
             TGApi.post_request(message=message,
                                message_type='predict',
-                               link=self.generate_mobile_page())
+                               link=self.get_mobile_page())
             
             CF.VAL.pr_track += [CF.SR.blue_characters,
                 CF.SR.red_characters,
@@ -222,7 +221,7 @@ class Chrome:
                         self.game_index_ended = game_index
                         
                         uStorage.upd_current_game_status(status="В ожидании стрима")
-                        uStorage.upd_current_game_link(link=self.generate_mobile_page())
+                        uStorage.upd_current_game_link(link=self.get_mobile_page())
           
                     if game_index == self.game_index_new:
                         stream_btn = games[0].find_element(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM)
