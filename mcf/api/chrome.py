@@ -224,8 +224,15 @@ class Chrome:
                         uStorage.upd_current_game_link(link=self.get_mobile_page())
           
                     if game_index == self.game_index_new:
-                        stream_btn = games[0].find_element(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM)
-                        stream_btn.click()
+                        stream_btn = games[0].find_elements(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM)
+                        stream_btn_alt = games[0].find_elements(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM_ALT)
+                        
+                        if len(stream_btn) > 0:
+                            stream_btn[0].click()
+                        
+                        elif len(stream_btn_alt) > 0:
+                            stream_btn_alt[0].click()
+
                         # stream_btn.find_element(By.CSS_SELECTOR, MelCSS.BUTTON_OPEN_STREAM).click()
                         time.sleep(2)
 

@@ -123,7 +123,9 @@ class MelCSS:
     ARAM_GAME_LINK = 'a.dashboard-game-block__link.dashboard-game-block-link'
     
     SPAN_OPEN_STREAM = 'span.dashboard-game-action-bar__group'
+    SPAN_OPEN_STREAM_ALT = 'span.ico--play-circle.ico--size-xxs.ico dashboard-game-action-bar__ico'
     BUTTON_OPEN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
+    BUTTON_OPEN_STREAM_ALT = 'button.dashboard-game-action-bar__item.has-tooltip'
     BUTTON_REJECT_LIVE = 'button.ui-button.dashboard-redirect-message-timer__btn.ui-button--size-m.ui-button--theme-gray.ui-button--rounded'
     
     VIDEO_CONTAINER = 'section.media-container.media-container--theme-primary.media-side__item'
