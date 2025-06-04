@@ -72,6 +72,7 @@ def main():
                 cmouse.forward_game()
                 score = generate_scoreboard()
             else:
+                score['act'] = chrome.ACTIVE_TOTAL_VALUE
                 chrome.generate_predict(score) # generating predict based on score data
                 TGApi.update_score(score,
                                     is_total_opened=chrome.is_total_coeff_opened(),

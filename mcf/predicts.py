@@ -35,7 +35,9 @@ class PR:
 
     tl_ktt_idx = 0
     wretched_tower = 0
-    towers_idx = 0 
+    towers_idx = 0
+
+    active_total_value = 0
 
     @classmethod
     def prepare_predict_values(cls):
@@ -43,6 +45,8 @@ class PR:
             Prepare values for prediction based on the current game state.
 
         """
+        cls.active_total_value = cls.sc['act']
+
         cls.gtime = cls.sc['time']
         cls.all_kills = cls.sc['blue_kills'] + cls.sc['red_kills']
         cls.module_kills = abs(cls.sc['blue_kills'] - cls.sc['red_kills'])

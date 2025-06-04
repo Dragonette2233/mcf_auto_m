@@ -189,7 +189,7 @@ class Chrome:
        
     def generate_predict(self, score):
 
-        if score['time'] > 700:
+        if score['time'] > 600:
             return
 
         if not CF.VAL.pr_cache:

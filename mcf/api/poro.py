@@ -56,31 +56,6 @@ class PoroAPI:
             'regions': [team.find('a', class_='liveGameLink').get('href') for i, team in enumerate(soup) if i % 2 == 0],
         }
         
-        # games = {
-        #         'teams': [],
-        #         'champions': [],
-        #         'regions': []
-        #     }
-
-        # for i, team in enumerate(soup):
-        #     if i % 2 == 0 and team is not None:
-        #         # Обработка команд
-        #         team_images = team.find_all('img')
-        #         if team_images:
-        #             games['teams'].append(team_images)
-
-        #         # Обработка регионов
-        #         region_link = team.find('a', class_='liveGameLink')
-        #         if region_link and region_link.get('href') is not None:
-        #             games['regions'].append(region_link.get('href'))
-
-        #         # Обработка чемпионов
-        #         for img in team_images:
-        #             if img.get('alt') is not None:
-        #                 games['champions'].append(img['alt'])
-        
-        # print(games)
-        
         nicknames_blue = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 == 0]
         nicknames_red = [[ch.text.strip() for ch in team.find_all('div', class_='name')] for i, team in enumerate(soup) if i % 2 != 0]
         
@@ -116,7 +91,6 @@ class PoroAPI:
                 featured_games.append(whole_string)
             except TypeError:
                 ...
-                # logger.warning(f"There is: {games}")
         
         return featured_games
     
