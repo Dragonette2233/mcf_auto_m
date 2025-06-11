@@ -253,7 +253,6 @@ class Chrome:
             except (AttributeError, IndexError, NoSuchElementException,
                     StaleElementReferenceException) as ex_:
                 ...
-                logger.warning(ex_, exc_info=True)
                 # logger.warning(ex_, exc_info=True)
             except (NoSuchWindowException, InvalidSessionIdException):
                 logger.warning("Chrome closed. Bot shutdown")
