@@ -120,6 +120,8 @@ class MelCSS:
     ARAM_TITLE_OUTER = 'span.caption.ui-dashboard-champ-name__caption.caption--size-m'
     ARAM_TITLE_OUTER_alt = 'div ui-dashboard-champ-name dashboard-champ__name ui-dashboard-cell ui-dashboard-champ-name dashboard-champ__name'.replace(' ', '.')
     ARAM_TITLE_OUTER_alt_s = 'div.dashboard-champ-name.dashboard-champ__name'
+    ARAM_TITLE_OUTER_alt_s2 = 'span.ui-caption--size-m.ui-caption--color-clr-strong-alt.ui-caption--no-wrap.ui-caption.dashboard-champ-name__caption'
+
     ARAM_TITLE_INNER = 'span.caption__label'
     ARAM_TITLE_INNER_alt = 'span ui-caption--size-m ui-caption--color-clr-strong-alt ui-caption--no-wrap ui-caption ui-dashboard-champ-name__caption'.replace(' ', '.')
     ARAM_TITLE_INNER_alt_s = 'span ui-caption--size-m ui-caption--color-clr-strong-alt ui-caption--no-wrap ui-caption dashboard-champ-name__caption'.replace(' ', '.')
@@ -127,8 +129,10 @@ class MelCSS:
 
     
     SPAN_OPEN_STREAM = 'span.dashboard-game-action-bar__group'
-    SPAN_OPEN_STREAM_ALT = 'span.ico--play-circle.ico--size-xxs.ico dashboard-game-action-bar__ico'
-    BUTTON_OPEN_STREAM = 'button.ui-dashboard-game-button.dashboard-game-action-bar__item'
+    SPAN_OPEN_STREAM_ALT = 'span.ico--play-circle.ico--size-xxs.ico.dashboard-game-action-bar__ico'
+    
+    
+    BUTTON_OPEN_STREAM = 'button.dashboard-game-action-bar__item.has-tooltip'
     BUTTON_OPEN_STREAM_ALT = 'button.dashboard-game-action-bar__item.has-tooltip'
     BUTTON_REJECT_LIVE = 'button.ui-button.dashboard-redirect-message-timer__btn.ui-button--size-m.ui-button--theme-gray.ui-button--rounded'
     

@@ -339,7 +339,7 @@ class MCFApi:
                     time_stamp_num = divmod(response['info']['gameDuration'], 60)
                     
                     if chrome is not None:
-                        link = chrome.generate_mobile_page()
+                        link = chrome.get_mobile_page()
                         is_opened = chrome.is_total_coeff_opened(end_check=True)
                         if is_opened:
                             CF.SW.coeff_opened.activate()

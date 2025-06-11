@@ -204,9 +204,9 @@ class Chrome:
         while True:
 
             try:
-                games = self.driver.find_elements(By.CSS_SELECTOR, MelCSS.GAMES_DASHBOARD)
-                aram_title_outer = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_OUTER_alt)
-                aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_INNER_alt).get_attribute('innerText')
+                # games = self.driver.find_elements(By.CSS_SELECTOR, MelCSS.GAMES_DASHBOARD)
+                # aram_title_outer = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_OUTER_alt_s2)
+                # aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_INNER_alt).get_attribute('innerText')
                 games = self.driver.find_elements(By.CSS_SELECTOR, MelCSS.GAMES_DASHBOARD_alt)
                 aram_title_outer = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_OUTER_alt_s)
                 aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_INNER_alt_s).get_attribute('innerText')
@@ -227,17 +227,17 @@ class Chrome:
                         uStorage.upd_current_game_link(link=self.get_mobile_page())
           
                     if game_index == self.game_index_new:
-                        stream_btn = games[0].find_elements(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM)
+                        # stream_btn = games[0].find_elements(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM)
                         stream_btn_alt = games[0].find_elements(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM_ALT)
                         
-                        if len(stream_btn) > 0:
-                            stream_btn[0].click()
+                        # if len(stream_btn) > 0:
+                        #     stream_btn[0].click()
                         
-                        elif len(stream_btn_alt) > 0:
+                        if len(stream_btn_alt) > 0:
                             stream_btn_alt[0].click()
 
                         # stream_btn.find_element(By.CSS_SELECTOR, MelCSS.BUTTON_OPEN_STREAM).click()
-                        time.sleep(2)
+                        time.sleep(3)
 
                         if ScoreRecognition.is_game_started_browser():
                             logger.info('Game started: (from comparing stream)')
@@ -248,11 +248,12 @@ class Chrome:
                             
                             return
                         else:
-                            stream_btn.click()
+                            stream_btn_alt[0].click()
 
             except (AttributeError, IndexError, NoSuchElementException,
                     StaleElementReferenceException) as ex_:
                 ...
+                logger.warning(ex_, exc_info=True)
                 # logger.warning(ex_, exc_info=True)
             except (NoSuchWindowException, InvalidSessionIdException):
                 logger.warning("Chrome closed. Bot shutdown")
@@ -260,7 +261,8 @@ class Chrome:
             except Exception as ex_:
                 logger.info(self.game_index_new)
                 logger.info(self.game_index_ended)
-                logger.warning(ex_)
+                logger.warning(ex_, exc_info=True)
+
 
             time.sleep(1)
             self.remove_cancel()
