@@ -1,6 +1,7 @@
 import time
 import copy
 import logging
+from pathlib import Path
 from mcf.api import cmouse
 from selenium.webdriver.common.action_chains import ActionChains
 from mcf.ssim_recognition import ScoreRecognition
@@ -100,21 +101,42 @@ class Chrome:
     def delay(self, second: int):
         time.sleep(second)
 
-    def stream_fullscreen(self):
+    def _capture_element_screenshot(self, element, save_to: str | Path | None = None) -> bytes:
+        """
+        Captures a screenshot of a Selenium element and optionally saves it.
+        """
+        screenshot = element.screenshot_as_png
+        if save_to:
+            save_path = Path(save_to).expanduser()
+            if not save_path.is_absolute():
+                save_path = Path.cwd() / save_path
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+            save_path.write_bytes(screenshot)
+        return screenshot
+
+    def stream_fullscreen(self, capture: bool = False, capture_path: str | Path | None = None):
         
+        screenshot = None
         try:
             video_container = self.driver.find_element(By.CSS_SELECTOR, MelCSS.VIDEO_CONTAINER)
             iframe = video_container.find_element(By.CSS_SELECTOR, 'iframe')
             self.driver.switch_to.frame(iframe)
             video_player = self.driver.find_element(By.CSS_SELECTOR, MelCSS.VIDEO_PLAYER)
+            if capture or capture_path:
+                screenshot = self._capture_element_screenshot(video_player, capture_path)
             self.actions.move_to_element(video_player).click().perform()
             self.driver.execute_script("arguments[0].requestFullscreen();", video_player)
-            self.driver.switch_to.default_content()
         except Exception as e:
             logger.warning(e)
             cmouse.click_left(x=1871, y=361)
+        finally:
+            try:
+                self.driver.switch_to.default_content()
+            except Exception:
+                ...
                  
         self.delay(2.5)
+        return screenshot
 
     def is_total_coeff_opened(self, end_check=False):
 
