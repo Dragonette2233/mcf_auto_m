@@ -149,7 +149,7 @@ class ScoreRecognition:
         ssim_cut_riot: float | Any = ssim(np.array(cut_cmp_riot), GREYSHADE.CMP_RIOT)
         ssim_cut_blue: float | Any = ssim(np.array(cut_cmp_blue), GREYSHADE.CMP_BLUE)
         ssim_cut_red: float | Any = ssim(np.array(cut_cmp_red), GREYSHADE.CMP_RED)
-
+        print(ssim_cut_blue, ssim_cut_red, ssim_cut_riot)
         similarity = (
             ssim_cut_riot > 0.95,
             ssim_cut_red > 0.95,
