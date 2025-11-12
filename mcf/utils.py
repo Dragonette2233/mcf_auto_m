@@ -8,15 +8,18 @@ PROXIES = Config.proxies()
 
 
 def is_riot_apikey_valid():
+
+    league_status_link = f"https://euw1.api.riotgames.com/lol/status/v4/platform-data?api_key={Config.riot_api_key()}"
+
     try:
-        res = requests.get(
-            f"https://euw1.api.riotgames.com/lol/spectator/v5/featured-games?api_key={Config.riot_api_key()}",
-            verify=False,
-            proxies=PROXIES,
+        res = requests.get(league_status_link, verify=False, proxies=PROXIES,
         )
 
         if res.status_code == 403:
             logger.error("Riot API key invalid")
+            return False
+        elif res.status_code != 200:
+            logger.error(f"League server error: {res.status_code}")
             return False
         
         logger.info('Riot API key is correct!')

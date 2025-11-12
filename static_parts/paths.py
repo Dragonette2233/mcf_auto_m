@@ -5,6 +5,7 @@ from .ids import ALL_CHAMPIONS_IDs
 class BasePATH:
     
     MCF_BOT: str = os.environ.get('MCF_BOT')
+    BETCASTER: str = os.environ.get('BETCASTER')
     _mcf_tg_storage = os.path.join(MCF_BOT, 'mcf_telegram', 'storage')
     _untracking = os.path.join(MCF_BOT, 'untracking')
     _snips = os.path.join(MCF_BOT, 'mcf', 'snips')
@@ -31,8 +32,8 @@ class PATH():
     UPARAMS = os.path.join(base.MCF_BOT, 'untracking', 'uparams.json')
     PR_TRACE = os.path.join(base._untracking, 'pr_trace.json')
     PR_TRACK = os.path.join(base._untracking, 'pr_tracking.txt')
-    CASTER_PROFILES_BASE = os.path.join(base._untracking, 'caster_profiles_base.json')
-    CASTER_PROFILES_LOGS = os.path.join(base._untracking, 'caster-logs')
+    CASTER_PROFILES_BASE = os.path.join(base.BETCASTER,'betcaster', 'caster-profiles', 'caster_profiles_base.json')
+    CASTER_PROFILES_LOGS = os.path.join(base.BETCASTER,'betcaster', 'caster-logs')
 
     """
         Data for screen score recognizing (Time, kills, towers)

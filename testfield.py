@@ -8,7 +8,10 @@ from shared.logger import logger
 
 # command: str = input('Enter test command: ')
 command = sys.argv[1]
-match command:    
+match command:
+    case 'prsignal':
+        from shared.storage import uStorage
+        uStorage.upd_pr_signal("PR 108.5Б FL_0.75")
     # case 'pr_test':
         
     #     from mcf.livegamedata import generate_scoreboard
