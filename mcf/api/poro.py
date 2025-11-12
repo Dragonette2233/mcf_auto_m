@@ -131,7 +131,7 @@ class PoroAPI:
 
         featured_games = {}
 
-        async def parsing(champion, region):
+        async def parsing(session: ClientSession, champion, region):
             nonlocal missing_regions, featured_games
             # print('inhere')
             if advance_elo:
@@ -139,32 +139,27 @@ class PoroAPI:
             else:
                 url = URL.PORO_BY_REGIONS.format(region=region, champion=champion)
             
-            async with ClientSession() as session:
-                
-                
-                timeout = ClientTimeout(total=3)
-                async with session.get(url=url, timeout=timeout, headers=HEADERS) as response:
-                    
-                    result = await response.text(encoding='utf8')
-                    try:
-                        featured_games[region] = cls.get_games_from_parse(parse_result=result)
-                    except AttributeError as ex_:
-                        logger.warning(f"{region} parse fail: ", exc_info=True)
-                
-                    
+            timeout = ClientTimeout(total=3)
+            async with session.get(url=url, timeout=timeout, headers=HEADERS) as response:
+                result = await response.text(encoding='utf8')
+                try:
+                    featured_games[region] = cls.get_games_from_parse(parse_result=result)
+                except AttributeError:
+                    logger.warning(f"{region} parse fail: ", exc_info=True)
         async def main_aram(champion_name):
 
             nonlocal missing_regions
 
             converted_champion = cls.convert_income_character(champion_name)
-                
-            tasks = []
-            for region in REGIONS_TUPLE:
-                tasks.append(asyncio.create_task(parsing(champion=converted_champion, region=region[0])))
 
-            for task in tasks:
-                try: 
-                    await asyncio.gather(task)
+            async with ClientSession() as session:
+                tasks = [
+                    asyncio.create_task(parsing(session=session, champion=converted_champion, region=region[0]))
+                    for region in REGIONS_TUPLE
+                ]
+
+                try:
+                    await asyncio.gather(*tasks)
                 except (asyncio.exceptions.TimeoutError, ContentTypeError):
                     missing_regions += 1
                 except (ClientConnectionError, ClientProxyConnectionError):

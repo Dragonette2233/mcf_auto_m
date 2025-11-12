@@ -35,7 +35,7 @@ class Chrome:
         self.options.add_experimental_option("excludeSwitches", ["enable-logging", 'enable-automation'])
         self.options.add_experimental_option("detach", True)
         
-        self.driver = None
+        self.driver: webdriver.Chrome | None = None
         self.game_index_new = ''
         self.game_index_ended = uStorage.get_key("PREVIOUS_GAME_ID")
         
@@ -47,6 +47,10 @@ class Chrome:
         self.MIN_MAX_BET_TOTAL = uStorage.get_key("MIN_MAX_BET_TOTAL")
         
         # print(self.MIN_MAX_BET_TOTAL, type(self.MIN_MAX_BET_TOTAL))
+
+    # Steps at which page reload or force quit is triggered during awaiting loop
+    RELOAD_STEPS = (40, 80, 120)
+    FORCE_QUIT_STEP = 160
     
     def start(self):
         self.driver = webdriver.Chrome(options=self.options)
@@ -57,9 +61,10 @@ class Chrome:
     def force_quit(self):
         try:
             self.PASSAGES = 0
-            self.driver.quit()
-        except:
-            ...
+            if self.driver:
+                self.driver.quit()
+        except Exception as ex:
+            logger.warning("Driver quit failed: %s", ex, exc_info=True)
             
         self.RESTART_REQUIRED = True
 
@@ -207,7 +212,7 @@ class Chrome:
                 # games = self.driver.find_elements(By.CSS_SELECTOR, MelCSS.GAMES_DASHBOARD)
                 # aram_title_outer = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_OUTER_alt_s2)
                 # aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_INNER_alt).get_attribute('innerText')
-                games = self.driver.find_elements(By.CSS_SELECTOR, MelCSS.GAMES_DASHBOARD_alt)
+                games = self.driver.find_elements(By.XPATH, MelCSS.GAMES_DASHBOARD_XPATH)
                 aram_title_outer = games[0].find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_OUTER_alt_s)
                 aram_title_inner: str = aram_title_outer.find_element(By.CSS_SELECTOR, MelCSS.ARAM_TITLE_INNER_alt_s).get_attribute('innerText')
               
@@ -228,7 +233,7 @@ class Chrome:
           
                     if game_index == self.game_index_new:
                         # stream_btn = games[0].find_elements(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM)
-                        stream_btn_alt = games[0].find_elements(By.CSS_SELECTOR, MelCSS.SPAN_OPEN_STREAM_ALT)
+                        stream_btn_alt = games[0].find_elements(By.XPATH, MelCSS.SPAN_OPEN_STREAM_XPATH)
                         
                         # if len(stream_btn) > 0:
                         #     stream_btn[0].click()
@@ -266,12 +271,12 @@ class Chrome:
             time.sleep(1)
             self.remove_cancel()
 
-            if self.PASSAGES in (40, 80, 120):
+            if self.PASSAGES in self.RELOAD_STEPS:
                 if not self.open_league_page():
                     self.force_quit()
                     return
 
-            elif self.PASSAGES == 160:
+            elif self.PASSAGES == self.FORCE_QUIT_STEP:
                 self.force_quit()
                 return
             

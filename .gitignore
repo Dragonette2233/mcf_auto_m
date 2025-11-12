@@ -1,4 +1,4 @@
-.env/
+.mcfenv/
 __pycache__/
 server_mcf_backup/
 APIKEY

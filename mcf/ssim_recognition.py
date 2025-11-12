@@ -1,9 +1,10 @@
 # from mcf import pillow
 import os
 import numpy as np
+from numpy.typing import NDArray
 import logging
+from typing import Any
 from mcf.api import cmouse
-from mcf.dynamic import CF
 from mcf import pillow
 from skimage.metrics import structural_similarity as ssim
 from static import PATH, CropCoords
@@ -23,13 +24,13 @@ class GREYSHADE:
     }
 
 
-    CMP_RIOT = greyshade_array(os.path.join(PATH.base._comparable, 'cmp_riot.png'))
-    CMP_BLUE = greyshade_array(os.path.join(PATH.base._comparable, 'cmp_blue.png'))
-    CMP_RED = greyshade_array(os.path.join(PATH.base._comparable, 'cmp_red.png'))
-    mCMP_RIOT = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_riot.png'))
-    mCMP_BLUE = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_blue.png'))
-    mCMP_RED = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_red.png'))
-    mCMP_LOADING = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_loading.png'))
+    CMP_RIOT = greyshade_array(os.path.join(PATH.base._comparable, 'ncmp_riot.png'))
+    CMP_BLUE = greyshade_array(os.path.join(PATH.base._comparable, 'ncmp_blue.png'))
+    CMP_RED = greyshade_array(os.path.join(PATH.base._comparable, 'ncmp_red.png'))
+    # mCMP_RIOT = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_riot.png'))
+    # mCMP_BLUE = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_blue.png'))
+    # mCMP_RED = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_red.png'))
+    # mCMP_LOADING = greyshade_array(os.path.join(PATH.base._comparable, 'mcmp_loading.png'))
 
 class CharsRecognition:
     
@@ -113,7 +114,7 @@ class ScoreRecognition:
         np_active = np.array(compare_slice_active)
         np_main = np.array(compare_slice_main)
 
-        similarity_index = ssim(np_main, np_active)
+        similarity_index: float | Any = ssim(np_main, np_active)
 
         if debug:
             logger.info(similarity_index)
@@ -141,22 +142,19 @@ class ScoreRecognition:
         #     #     #MCFApi.cache_before_stream()
         #     #     CF.SW.cache_done.activate()
         
-        cut_cmp_riot = image_.crop((1645, 366 + cls.y_shift, 1683, 380 + cls.y_shift)).convert('L')
-        cut_cmp_blue = image_.crop((1689, 243 + cls.y_shift, 1705, 250 + cls.y_shift)).convert('L')
-        cut_cmp_red = image_.crop((1832, 243 + cls.y_shift, 1847, 250 + cls.y_shift)).convert('L')
+        cut_cmp_riot = image_.crop((1649, 372, 1686, 386)).convert('L')# .save('ncmp_riot.png')
+        cut_cmp_blue = image_.crop((1693, 249, 1707, 256)).convert('L')# .save('ncmp_blue.png')
+        cut_cmp_red = image_.crop((1836, 249, 1851, 256)).convert('L')# .save('ncmp_red.png')
         
-        np_cut_riot = np.array(cut_cmp_riot)
-        np_cut_blue = np.array(cut_cmp_blue)
-        np_cut_red = np.array(cut_cmp_red)
+        ssim_cut_riot: float | Any = ssim(np.array(cut_cmp_riot), GREYSHADE.CMP_RIOT)
+        ssim_cut_blue: float | Any = ssim(np.array(cut_cmp_blue), GREYSHADE.CMP_BLUE)
+        ssim_cut_red: float | Any = ssim(np.array(cut_cmp_red), GREYSHADE.CMP_RED)
 
-        similarity = [
-            ssim(np_cut_riot, GREYSHADE.CMP_RIOT) > 0.93,
-            ssim(np_cut_blue, GREYSHADE.CMP_BLUE) > 0.93,
-            ssim(np_cut_red, GREYSHADE.CMP_RED) > 0.93,
-            ssim(np_cut_riot, GREYSHADE.mCMP_RIOT) > 0.93,
-            ssim(np_cut_blue, GREYSHADE.mCMP_BLUE) > 0.93,
-            ssim(np_cut_red, GREYSHADE.mCMP_RED) > 0.93,
-                ]
+        similarity = (
+            ssim_cut_riot > 0.95,
+            ssim_cut_red > 0.95,
+            ssim_cut_blue > 0.95
+        )
         
         if any(similarity):
             return True
@@ -164,7 +162,7 @@ class ScoreRecognition:
         return False
     
     @classmethod
-    def is_similar(cls, image_1: pillow.ImageType, image_2: pillow.ImageType, idx=0.75) -> bool:
+    def is_similar(cls, image_arr_1: NDArray, image_arr_2: NDArray, idx=0.75) -> bool:
         
         """
         Checking if one image is similar to another
@@ -173,7 +171,9 @@ class ScoreRecognition:
             bool: if image similarity index is greater than deafult `idx`
         """
         
-        return ssim(image_1, image_2, win_size=3) > idx
+        similarity_index: float | Any = ssim(image_arr_1, image_arr_2, win_size=3)
+        
+        return  similarity_index > idx
         
     
     @classmethod
@@ -209,7 +209,10 @@ class ScoreRecognition:
         
         image = pillow.take_screenshot()
         
-        if not cls.get_compare(greyshade_array(from_crop=(image, 20, 850, 59, 902)), 'tw_access'):
+        if not cls.get_compare(
+            greyshade_array(
+                from_crop=(image, 20, 850, 59, 902)
+                ), 'tw_access'):
             return False
 
         rect = pillow.crop_image(image, 76, 853, 175, 855)

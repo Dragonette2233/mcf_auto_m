@@ -1,7 +1,8 @@
 import requests
 import logging
-# import asyncio
-from shared.storage import uStorage
+from typing import Callable, Any
+from shared.config import Config
+from mcf.api.common import get_session, retry_on_network
 # from aiohttp import ClientSession
 # from aiohttp.client_exceptions import (
 #     ClientProxyConnectionError,
@@ -16,28 +17,22 @@ from static import (
 
 logger = logging.getLogger(__name__)
 
+SESSION = get_session()
+
 class RiotAPI:
     
-    HEADERS = {
-            'headers': { "X-Riot-Token": uStorage.get_key("RIOT_API") },
+    @staticmethod
+    def _req_kwargs() -> dict:
+        return {
+            'headers': {"X-Riot-Token": Config.riot_api_key()},
             'timeout': 3,
-            'proxies': uStorage.get_key("PROXIES")
+            'proxies': Config.proxies(),
         }
     
     @staticmethod
-    def connection_handler(func):
-        def wrapper(*args, **kwargs):
-            try:
-                result = func(*args, **kwargs)
-                return result
-            except (requests.exceptions.ConnectTimeout, 
-                    requests.exceptions.ConnectionError,
-                    requests.exceptions.ReadTimeout):
-                logger.warning("No connection | Timeout")
-            except Exception as exc:
-                logger.warning(exc, exc_info=True)
-            
-        return wrapper
+    def connection_handler(func: Callable[..., Any]):
+        # Backward compatible wrapper around common retry decorator
+        return retry_on_network()(func)
 
     @connection_handler
     @staticmethod
@@ -47,8 +42,10 @@ class RiotAPI:
             area = 'asia'
         
         nickName, tagLine = name.split('#')
-        result = requests.get(URL.SUMMONER_BY_RIOTID.format(area=area, nickName=nickName, tagLine=tagLine), 
-                              **RiotAPI.HEADERS)
+        result = SESSION.get(
+            URL.SUMMONER_BY_RIOTID.format(area=area, nickName=nickName, tagLine=tagLine),
+            **RiotAPI._req_kwargs()
+        )
         # print('im here', result.text)
         
         status = result.status_code
@@ -63,16 +60,20 @@ class RiotAPI:
     @connection_handler
     @staticmethod
     def get_matches_by_puuid(area: str, puuid: int):
-        result = requests.get(URL.MATCHES_BY_PUUID.format(area=area, puuid=puuid),
-                              **RiotAPI.HEADERS)
+        result = SESSION.get(
+            URL.MATCHES_BY_PUUID.format(area=area, puuid=puuid),
+            **RiotAPI._req_kwargs()
+        )
 
         return result.json()
     
     @connection_handler
     @staticmethod
     def get_match_by_gameid(area: str, gameid: int, status=False):
-        result = requests.get(URL.MATCH_BY_GAMEID.format(area=area, gameid=gameid), 
-                              **RiotAPI.HEADERS)
+        result = SESSION.get(
+            URL.MATCH_BY_GAMEID.format(area=area, gameid=gameid),
+            **RiotAPI._req_kwargs()
+        )
         
         if status:
             return result
@@ -81,8 +82,10 @@ class RiotAPI:
     @connection_handler
     @staticmethod
     def get_active_by_summonerid(region: str, summid: int, status=False):
-        result = requests.get(URL.ACTIVEGAME_BY_SUMMID.format(region=region, summid=summid), 
-                              **RiotAPI.HEADERS)
+        result = SESSION.get(
+            URL.ACTIVEGAME_BY_SUMMID.format(region=region, summid=summid),
+            **RiotAPI._req_kwargs()
+        )
         if status:
             return result
         return result.json()

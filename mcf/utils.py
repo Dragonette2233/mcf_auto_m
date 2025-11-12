@@ -1,15 +1,19 @@
 from static import REGIONS_TUPLE
-from shared.storage import uStorage
+from shared.config import Config
 import logging
 import requests
 
 logger = logging.getLogger(__name__)
-PROXIES = uStorage.get_key("PROXIES")
+PROXIES = Config.proxies()
 
 
 def is_riot_apikey_valid():
     try:
-        res = requests.get(f"https://euw1.api.riotgames.com/lol/spectator/v5/featured-games?api_key={uStorage.get_key('RIOT_API')}", verify=False, proxies=PROXIES)
+        res = requests.get(
+            f"https://euw1.api.riotgames.com/lol/spectator/v5/featured-games?api_key={Config.riot_api_key()}",
+            verify=False,
+            proxies=PROXIES,
+        )
 
         if res.status_code == 403:
             logger.error("Riot API key invalid")

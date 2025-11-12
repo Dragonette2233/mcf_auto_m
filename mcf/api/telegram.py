@@ -1,6 +1,9 @@
 import requests
 import logging
+from functools import wraps
+from shared.config import Config
 from shared.storage import uStorage
+from mcf.api.common import get_session, retry_on_network
 from static import (
     TelegramStr
 )
@@ -14,34 +17,28 @@ class TGApi:
     active_pr_text = ''
     active_post_id = 0
     active_post_text = ''
-    token = uStorage.get_key(key="BOT_TOKEN")
+    token = Config.tg_token()
     method_send = 'sendMessage'
     method_edit = 'editMessageText'
     tg_api_url = 'https://api.telegram.org/bot{token}/{method}'
     RES_FOR_PREDICT = False
     # CHAT_ID = os.getenv('CHAT_ID')
-    CHAT_ID_PUB = uStorage.get_key("CHAT_ID_PUB")
-    CHAT_ID_PR = uStorage.get_key("CHAT_ID_PR")
+    CHAT_ID_PUB = Config.tg_chat_pub()
+    CHAT_ID_PR = Config.tg_chat_pr()
     # CHAT_ID_TRIAL = os.getenv('CHAT_ID_TRIAL')
 
     
+    # Shared HTTP session with retries (common)
+    _session = get_session()
+
     def timeout_handler(func):
-        def wrapper(*args, **kwargs):
-            while True:
-                try:
-                    return func(*args, **kwargs)
-                except (requests.exceptions.ConnectTimeout,
-                        requests.exceptions.ConnectionError,
-                        requests.exceptions.ReadTimeout) as ex_:
-                    logger.warning(ex_)
-                    pass
-    
-        return wrapper
+        # Backward-compatible alias using common retry decorator
+        return wraps(func)(retry_on_network()(func))
 
     @timeout_handler
     def post_edit(message: str, chat_id: int, post_id: int):
 
-        requests.post(
+        TGApi._session.post(
             url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_edit),
             data={'chat_id': chat_id, 
                 'message_id': post_id,
@@ -52,7 +49,7 @@ class TGApi:
     @timeout_handler
     def post_send(message: str, chat_id: int):
 
-        resp = requests.post(
+        resp = TGApi._session.post(
             url=TGApi.tg_api_url.format(token=TGApi.token, method=TGApi.method_send),
             data={'chat_id': chat_id, 
                   'text': message,
@@ -133,7 +130,7 @@ class TGApi:
             text = cls.active_post_text
 
         try:
-            requests.post(
+            TGApi._session.post(
             url=TGApi.tg_api_url.format(token=TGApi.token, method=cls.method_edit),
             data={'chat_id': cls.CHAT_ID_PUB, 
                 'message_id': cls.active_post_id, 
@@ -160,7 +157,7 @@ class TGApi:
     @classmethod
     def winner_is(cls, winner: str, kills: int, timestamp: str, opened=False, link=None):
         
-        minutes = timestamp[0]
+        minutes = int(timestamp[0])
 
         timestamp_string = f"{timestamp[0]:02}:{timestamp[1]:02}"
         

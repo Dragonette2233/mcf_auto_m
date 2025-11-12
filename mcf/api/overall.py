@@ -31,6 +31,23 @@ class MCFApi:
         "PORO_SILVER": {}
     }
 
+    @staticmethod
+    def _champion_names_from_ids(ids: list[int]) -> list[str]:
+        return [ALL_CHAMPIONS_IDs.get(i) for i in ids]
+
+    @classmethod
+    def _collect_all_matches(cls) -> list[str | None]:
+        all_matches: list[str | None] = []
+        for key in cls.PARSED.keys():
+            all_matches += [item for sublist in cls.PARSED[key].values() for item in sublist]
+        return all_matches
+
+    @classmethod
+    def _log_parsed_lengths(cls) -> None:
+        for match in cls.PARSED.keys():
+            matches_len = sum(len(cls.PARSED[match][i]) for i in cls.PARSED[match].keys())
+            logger.info(f"{match} len: {matches_len}")
+
     @classmethod
     def get_characters(cls) -> dict[str, list]:
 
@@ -96,14 +113,8 @@ class MCFApi:
     @classmethod
     def get_games_by_character(cls, character: str):
 
-        all_matches = []
-
-        for key in cls.PARSED.keys():
-            all_matches += [item for sublist in cls.PARSED[key].values() for item in sublist]
-        
-        for match in cls.PARSED.keys():
-            matches_len = sum([len(cls.PARSED[match][i]) for i in cls.PARSED[match].keys()])
-            logger.info(f"{match} len: {matches_len}")
+        all_matches = cls._collect_all_matches()
+        cls._log_parsed_lengths()
 
         finded_games = set()
 
@@ -116,21 +127,27 @@ class MCFApi:
     
     @classmethod
     def parse_from_all_sources(cls, char_r):
-        
         while True:
             try:
                 logger.info('Parsing from RiotAPI and Poro...')
-                
-                cls.PARSED['PORO_REGIONS'] = PoroAPI.async_poro_parsing(champion_name=char_r) # Parse full PoroARAM by region
-                cls.PARSED['PORO_BRONZE'] = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Bronze') # Parse for Bronze+
-                cls.PARSED['PORO_SILVER'] = PoroAPI.async_poro_parsing(champion_name=char_r, advance_elo='Silver') # Parse for Silver+
-                # cls.PARSED['PORO_DIRECT'] = PoroAPI.direct_poro_parsing(red_champion=char_r) # Parse only main page PoroARAM
-                # cls.PARSED['RIOT_API'] = RiotAPI.async_riot_parse() # Parse featured games from Riot API
+
+                parse_presets = (
+                    ('PORO_REGIONS', None),
+                    ('PORO_BRONZE', 'Bronze'),
+                    ('PORO_SILVER', 'Silver'),
+                )
+
+                for key, elo in parse_presets:
+                    cls.PARSED[key] = PoroAPI.async_poro_parsing(
+                        champion_name=char_r,
+                        advance_elo=elo if elo else False,
+                    )
+                # cls.PARSED['PORO_DIRECT'] = PoroAPI.direct_poro_parsing(red_champion=char_r)
+                # cls.PARSED['RIOT_API'] = RiotAPI.async_riot_parse()
 
                 logger.info('Games parsed succesfully.')
                 break
             except Exception as ex:
-                # print('op')
                 logger.warning(str(ex), exc_info=True)
                 time.sleep(4)
                 continue
@@ -204,7 +221,7 @@ class MCFApi:
                                              range(10)]
         
         
-        champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
+        champions_names = cls._champion_names_from_ids(champions_ids)
         timestamp = divmod(lastgame['info']['gameDuration'], 60)
 
         end_game_data = (
@@ -265,7 +282,7 @@ class MCFApi:
             game_id = str(response['gameId']) # 1237890
             CF.ACT.match_id = CF.ACT.region.upper() + '_' + game_id # EUW_12378912
             champions_ids = [response['participants'][p]['championId'] for p in range(10)]
-            champions_names = [ALL_CHAMPIONS_IDs.get(champions_ids[i]) for i in range(10)]
+            champions_names = cls._champion_names_from_ids(champions_ids)
 
             activegame_data = (
                 champions_names[0:5], # blue_chars
