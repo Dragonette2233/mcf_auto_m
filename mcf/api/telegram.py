@@ -165,7 +165,7 @@ class TGApi:
             case 'blue' | 'red', True:
                 message = TelegramStr.winner_opened[winner].format(kills, timestamp_string)
                 if minutes >= 10:
-                    uStorage.upd_pr_signal(endgame_total=kills)
+                    # uStorage.upd_pr_signal(endgame_total=kills)
                     cls.post_send(message=message + '\n\n' + link, chat_id=cls.CHAT_ID_PR)
 
                 cls.post_request(message=message, message_type='winner_opened', link=link)
