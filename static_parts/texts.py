@@ -16,7 +16,7 @@ class TelegramStr:
     CLOCK = '⏳'
 
     # Predict notifications
-    ttb_predict_half = '{0}PR 110.5Б FL_0.5{0}'.format(ARROW_UP)
+    tb_predict_half = '{0}PR 110.5Б FL_0.5{0}'.format(ARROW_UP)
     tb_predict_full = '{0}PR 110.5Б FL_1{0}'.format(ARROW_UP)
     
     tl_predict_half = '{0}PR 110.5М FL_0.5{0}'.format(ARROW_DOWN)
