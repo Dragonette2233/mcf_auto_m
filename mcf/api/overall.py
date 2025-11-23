@@ -129,18 +129,19 @@ class MCFApi:
     def parse_from_all_sources(cls, char_r):
         while True:
             try:
-                logger.info('Parsing from RiotAPI and Poro...')
+                logger.info('Parsing from Porofessor.gg...')
 
                 parse_presets = (
+                    ('PORO_DIRECT', "Direct"),
                     ('PORO_REGIONS', None),
                     ('PORO_BRONZE', 'Bronze'),
                     ('PORO_SILVER', 'Silver'),
                 )
 
-                for key, elo in parse_presets:
+                for key, param in parse_presets:
                     cls.PARSED[key] = PoroAPI.async_poro_parsing(
                         champion_name=char_r,
-                        advance_elo=elo if elo else False,
+                        advance_param=param if param else False,
                     )
                 # cls.PARSED['PORO_DIRECT'] = PoroAPI.direct_poro_parsing(red_champion=char_r)
                 # cls.PARSED['RIOT_API'] = RiotAPI.async_riot_parse()

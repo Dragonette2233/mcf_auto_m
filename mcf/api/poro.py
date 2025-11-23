@@ -94,35 +94,35 @@ class PoroAPI:
         
         return featured_games
     
-    @classmethod
-    def direct_poro_parsing(cls, red_champion) -> dict:
+    # @classmethod
+    # def direct_poro_parsing(cls, red_champion) -> dict:
 
-        """
-            returning parsed games from ARAM page on porofessor.gg
+    #     """
+    #         returning parsed games from ARAM page on porofessor.gg
 
-        """
+    #     """
         
-        mock_dict = {}
+    #     mock_dict = {}
 
-        converted_champion = cls.convert_income_character(red_champion)
+    #     converted_champion = cls.convert_income_character(red_champion)
 
-        url = f'https://porofessor.gg/current-games/{converted_champion}/queue-450'
+    #     url = f'https://porofessor.gg/current-games/{converted_champion}/queue-450'
                
-        try:
-            result = requests.get(url, headers=HEADERS, timeout=3)
-            result.raise_for_status()  # Проверяет, не было ли ошибки при запросе
-        except requests.RequestException as e:
-            logger.warning("Connection to Poro failed. Error: %s", str(e))
-            mock_dict.setdefault("direct", [None, ])
-            return mock_dict
+    #     try:
+    #         result = requests.get(url, headers=HEADERS, timeout=3)
+    #         result.raise_for_status()  # Проверяет, не было ли ошибки при запросе
+    #     except requests.RequestException as e:
+    #         logger.warning("Connection to Poro failed. Error: %s", str(e))
+    #         mock_dict.setdefault("direct", [None, ])
+    #         return mock_dict
         
-        parse_result = result.text
-        mock_dict['direct'] = cls.get_games_from_parse(parse_result)
+    #     parse_result = result.text
+    #     mock_dict['direct'] = cls.get_games_from_parse(parse_result)
         
-        return mock_dict
+    #     return mock_dict
           
     @classmethod
-    def async_poro_parsing(cls, champion_name, advance_elo: str | bool = False):
+    def async_poro_parsing(cls, champion_name, advance_param: str | bool = False):
 
         """
             returning parsed games from ARAM page for all regions on porofessor.gg
@@ -133,11 +133,14 @@ class PoroAPI:
 
         async def parsing(session: ClientSession, champion, region):
             nonlocal missing_regions, featured_games
-            # print('inhere')
-            if advance_elo:
-                url = URL.PORO_ADVANCE.format(region=region, champion=champion, elo=advance_elo.lower())
-            else:
-                url = URL.PORO_BY_REGIONS.format(region=region, champion=champion)
+            
+            match advance_param:
+                case "Direct":
+                    url = URL.PORO_DIRECT.format(champion=champion)
+                case "Silver" | "Bronze":
+                    url = URL.PORO_ADVANCE.format(region=region, champion=champion, elo=advance_param.lower())
+                case _:
+                    url = URL.PORO_BY_REGIONS.format(region=region, champion=champion)
             
             timeout = ClientTimeout(total=3)
             async with session.get(url=url, timeout=timeout, headers=HEADERS) as response:
@@ -146,6 +149,7 @@ class PoroAPI:
                     featured_games[region] = cls.get_games_from_parse(parse_result=result)
                 except AttributeError:
                     logger.warning(f"{region} parse fail: ", exc_info=True)
+                    
         async def main_aram(champion_name):
 
             nonlocal missing_regions

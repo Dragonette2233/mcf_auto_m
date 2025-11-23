@@ -237,9 +237,9 @@ match command:
         ImageGrab.grab().save('x_full.png')
     case 'parse':
         from mcf.api.overall import MCFApi
-        MCFApi.parse_from_all_sources(char_r='Sona')
-        featured: list[str] = MCFApi.get_games_by_character(character='DrMundo')
-        finded_game_characerts = 'DrMundo Jhin Fiora Azir Rumble'.split()
+        MCFApi.parse_from_all_sources(char_r='Leona')
+        featured: list[str] = MCFApi.get_games_by_character(character='Soraka')
+        finded_game_characerts = 'Taliyah Velkoz Pantheon Veigar Soraka'.split()
         # print(featured)
         for charlist in featured:
             nicknames = charlist.split('-|-')[1].split('_|_')
